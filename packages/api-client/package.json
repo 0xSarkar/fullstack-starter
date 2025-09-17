@@ -1,0 +1,19 @@
+{
+  "name": "@fullstack-starter/api-client",
+  "version": "0.0.1",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "codegen": "node ./scripts/generate-client.mjs",
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "openapi-typescript": "^7.9.1",
+    "typescript": "^5.9.2"
+  },
+  "dependencies": {
+    "openapi-fetch": "^0.14.0"
+  }
+}

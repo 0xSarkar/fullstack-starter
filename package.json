@@ -1,0 +1,34 @@
+{
+  "name": "fullstack-starter",
+  "version": "1.0.0",
+  "description": "Fullstack TypeScript Starter",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "pnpm --parallel --filter \"./packages/*\" --filter \"./apps/*\" dev",
+    "start": "pnpm --parallel --filter \"./apps/*\" start",
+    "build": "pnpm --recursive --filter \"./packages/*\" --filter \"./apps/*\" build",
+    "test": "pnpm --recursive --filter \"./packages/*\" --filter \"./apps/*\" test",
+    "api:codegen": "pnpm --filter @fullstack-starter/api-client run codegen",
+    "dev:backend": "pnpm --filter @fullstack-starter/backend dev",
+    "dev:frontend": "pnpm --filter @fullstack-starter/frontend dev",
+    "build:backend": "pnpm --filter @fullstack-starter/backend build",
+    "build:frontend": "pnpm --filter @fullstack-starter/frontend build",
+    "clean": "pnpm --recursive exec rm -rf node_modules dist",
+    "migrate:new": "pnpm --filter @fullstack-starter/backend run migrate:new",
+    "migrate:up": "pnpm --filter @fullstack-starter/backend run migrate:up",
+    "migrate:down": "pnpm --filter @fullstack-starter/backend run migrate:down",
+    "migrate:status": "pnpm --filter @fullstack-starter/backend run migrate:status",
+    "db:generate-types": "pnpm --filter @fullstack-starter/backend run db:generate-types",
+    "test:backend": "pnpm --filter @fullstack-starter/backend run test",
+    "test:backend:file": "pnpm --filter @fullstack-starter/backend run test:file",
+    "typecheck": "pnpm --recursive --filter \"./packages/*\" --filter \"./apps/*\" run --if-present typecheck"
+  },
+  "devDependencies": {
+    "typescript": "~5.8.3"
+  },
+  "engines": {
+    "node": ">=18",
+    "pnpm": ">=8"
+  }
+}

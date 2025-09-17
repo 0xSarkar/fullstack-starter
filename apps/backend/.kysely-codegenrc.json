@@ -1,0 +1,12 @@
+{
+  "url": "env(DATABASE_URL)",
+  "outFile": "src/types/database.ts",
+  "camelCase": false,
+  "excludePattern": "^(pg_|information_schema)",
+  "defaultSchemas": [
+    "public"
+  ],
+  "dialect": "postgres",
+  "logLevel": "warn",
+  "typeOnlyImports": true
+}

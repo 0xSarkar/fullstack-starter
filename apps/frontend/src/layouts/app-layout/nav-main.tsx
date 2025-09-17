@@ -1,0 +1,95 @@
+import { MessageCirclePlus, PencilLine, LoaderCircle, type LucideIcon } from "lucide-react";
+
+import {
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  useSidebar,
+} from "@/components/ui/sidebar";
+import { Button } from "../../components/ui/button";
+import { Link } from "@tanstack/react-router";
+import { useNavigate, useRouter } from '@tanstack/react-router';
+import { useNotesStore } from '@/stores/notes-store';
+import { useMutation } from '@/hooks/use-mutation';
+import { notesApi } from '@/api/notes-api';
+import { toast } from 'sonner';
+
+export function NavMain({
+  items,
+}: {
+  items: {
+    title: string;
+    url: string;
+    icon: LucideIcon;
+    isActive?: boolean;
+    items?: {
+      title: string;
+      url: string;
+    }[];
+  }[];
+}) {
+  const navigate = useNavigate();
+  const router = useRouter();
+  const { setOpenMobile } = useSidebar();
+
+  const setCreatedNote = useNotesStore(state => state.setCreatedNote);
+  const createNoteMutation = useMutation(notesApi.createNote, {
+    onSuccess: async (response) => {
+      const noteData = { ...response, updatedAt: response.createdAt };
+      setCreatedNote(noteData);
+      setOpenMobile(false);
+      await navigate({ to: '/notes/$noteId', params: { noteId: response.id } });
+      router.invalidate();
+    },
+    onError: (error) => {
+      console.error('Failed to create note:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Failed to create note';
+      toast.error(errorMessage);
+    }
+  });
+  return (
+    <SidebarGroup>
+      <SidebarGroupContent className="flex flex-col gap-2">
+        <SidebarMenu>
+          <SidebarMenuItem className="flex items-center gap-2">
+            <SidebarMenuButton
+              tooltip="Create New Note"
+              className="bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground active:bg-primary/90 active:text-primary-foreground min-w-8 duration-200 ease-linear"
+              onClick={() => createNoteMutation.mutate({ title: 'New Note', content: '' })}
+              disabled={createNoteMutation.isLoading}
+            >
+              {createNoteMutation.isLoading ? <LoaderCircle className='animate-spin' /> : <PencilLine />}
+              <span>New Note</span>
+            </SidebarMenuButton>
+            <Button
+              size="icon"
+              className="size-8 group-data-[collapsible=icon]:opacity-0"
+              variant="outline"
+            >
+              <MessageCirclePlus />
+              <span className="sr-only">New Chat</span>
+            </Button>
+          </SidebarMenuItem>
+        </SidebarMenu>
+        <SidebarMenu>
+          {items.map((item) => (
+            <SidebarMenuItem key={item.title}>
+              <SidebarMenuButton tooltip={item.title} asChild>
+                <Link to={item.url}
+                  activeOptions={{ exact: true }}
+                  onClick={() => setOpenMobile(false)}
+                  className="[&.active]:bg-sidebar-accent [&.active]:font-medium [&.active]:text-sidebar-accent-foreground">
+                  {item.icon && <item.icon />}
+                  <span>{item.title}</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          ))}
+        </SidebarMenu>
+      </SidebarGroupContent>
+
+    </SidebarGroup>
+  );
+}

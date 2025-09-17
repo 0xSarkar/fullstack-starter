@@ -1,0 +1,114 @@
+import { useLoaderData, useMatch, useRouter } from '@tanstack/react-router';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { SidebarTrigger } from '@/components/ui/sidebar';
+import { Separator } from '@radix-ui/react-separator';
+import { DataTable } from '@/components/users/data-table';
+import { createColumns } from '@/components/users/columns';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
+import { usersApi } from '@/api/users-api';
+import type { AdminUser } from '@fullstack-starter/api-schema';
+import { useState } from 'react';
+import { toast } from 'sonner';
+
+export function UsersPage() {
+  const { data: users } = useLoaderData({ from: "/_appLayout" });
+  const parentMatch = useMatch({ from: "/_appLayout", shouldThrow: false });
+  const isParentSettled = parentMatch?.status !== 'pending' && parentMatch?.isFetching === false;
+  const router = useRouter();
+
+  const [userToToggle, setUserToToggle] = useState<AdminUser | null>(null);
+  const [isToggling, setIsToggling] = useState(false);
+
+  // Don't show any UI until the loader data is settled
+  if (!isParentSettled) {
+    return null;
+  }
+
+  const handleUserStatusToggle = (user: AdminUser) => {
+    setUserToToggle(user);
+  };
+
+  const handleConfirmToggle = async () => {
+    if (!userToToggle) return;
+
+    setIsToggling(true);
+    try {
+      await usersApi.updateUserStatus(userToToggle.id, { active: !userToToggle.active });
+      toast.success(`User ${userToToggle.active ? 'deactivated' : 'activated'} successfully`);
+      // Refresh the data
+      router.invalidate();
+    } catch (error) {
+      console.error('Failed to update user status:', error);
+      toast.error('Failed to update user status');
+    } finally {
+      setIsToggling(false);
+      setUserToToggle(null);
+    }
+  };
+
+  const handleCancelToggle = () => {
+    setUserToToggle(null);
+  };
+
+  const columns = createColumns(handleUserStatusToggle);
+
+  return (
+    <>
+      <header className="flex h-16 shrink-0 items-center gap-2">
+        <div className="flex items-center gap-1 px-4">
+          <SidebarTrigger className="-ml-1" />
+          <Separator
+            orientation="vertical"
+            className="mr-2 data-[orientation=vertical]:h-4"
+          />
+          <div className='font-semibold text-base max-w-56 md:max-w-xs truncate flex items-center gap-2'>
+            User Management
+          </div>
+        </div>
+      </header>
+
+      <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
+        <Card>
+          <CardHeader>
+            <CardTitle>Users</CardTitle>
+            <CardDescription>
+              Manage user accounts, roles, and permissions.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <DataTable columns={columns} data={users as AdminUser[]} />
+          </CardContent>
+        </Card>
+      </div>
+
+      <AlertDialog open={!!userToToggle} onOpenChange={() => setUserToToggle(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              {userToToggle?.active ? 'Deactivate' : 'Activate'} User
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to {userToToggle?.active ? 'deactivate' : 'activate'} user "{userToToggle?.email}"?
+              {userToToggle?.active && ' This will prevent them from accessing the application.'}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={handleCancelToggle}>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleConfirmToggle} disabled={isToggling}>
+              {isToggling ? 'Processing...' : 'Confirm'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
+  );
+}

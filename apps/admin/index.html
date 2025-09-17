@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" href="/favicon.ico" />
+  <meta name="theme-color" content="#000000" />
+  <meta name="description" content="Web site created using create-tsrouter-app" />
+  <link rel="apple-touch-icon" href="/logo192.png" />
+  <link rel="manifest" href="/manifest.json" />
+  <title>Fullstack Starter</title>
+
+  <!-- Google Identity Services -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+
+  <!-- Connection warming and preload for auth session (Vite will replace %VITE_API_BASE_URL%) -->
+  <link rel="dns-prefetch" href="%VITE_API_BASE_URL%">
+  <link rel="preconnect" href="%VITE_API_BASE_URL%" crossorigin>
+  <link rel="preload" as="fetch" href="%VITE_API_BASE_URL%/auth/me" crossorigin="use-credentials" fetchpriority="high">
+
+</head>
+
+<body>
+  <div id="app"></div>
+  <script type="module" src="/src/main.tsx"></script>
+</body>
+
+</html>
