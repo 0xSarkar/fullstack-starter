@@ -419,6 +419,16 @@ importers:
         specifier: ~5.8.2
         version: 5.8.3
 
+  packages/shared-schemas:
+    dependencies:
+      '@sinclair/typebox':
+        specifier: ^0.34.41
+        version: 0.34.41
+    devDependencies:
+      typescript:
+        specifier: ~5.8.2
+        version: 5.8.3
+
 packages:
 
   '@ampproject/remapping@2.3.0':
