@@ -1,6 +1,6 @@
 import { useLoaderData, useNavigate, useRouter, useMatch } from '@tanstack/react-router';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { notesApi } from '@/api/notes-api';
+import { createNoteApi } from '@fullstack-starter/shared-api';
 import { Button } from '@/components/ui/button';
 import { useNotesStore } from '@/stores/notes-store';
 import { LoaderCircle } from 'lucide-react';
@@ -17,7 +17,7 @@ export function NotesPage() {
   const parentMatch = useMatch({ from: "/_appLayout", shouldThrow: false });
   const isParentSettled = parentMatch?.status !== 'pending' && parentMatch?.isFetching === false;
 
-  const createNoteMutation = useMutation(notesApi.createNote, {
+  const createNoteMutation = useMutation(createNoteApi, {
     onSuccess: async (response) => {
       const noteData = { ...response, updatedAt: response.createdAt };
       setCreatedNote(noteData);

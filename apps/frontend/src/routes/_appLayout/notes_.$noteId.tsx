@@ -1,5 +1,5 @@
 import { NotePage } from '@/pages/note-page';
-import { notesApi } from '@/api/notes-api';
+import { getNoteApi } from '@fullstack-starter/shared-api';
 import { createFileRoute } from '@tanstack/react-router';
 import { useNotesStore } from '@/stores/notes-store';
 
@@ -15,7 +15,7 @@ export const Route = createFileRoute('/_appLayout/notes_/$noteId')({
     }
 
     // Otherwise fetch from API
-    const noteData = await notesApi.getNote(params.noteId!);
+    const noteData = await getNoteApi(params.noteId!);
     // Store the fetched note in store for future use
     return noteData;
   },

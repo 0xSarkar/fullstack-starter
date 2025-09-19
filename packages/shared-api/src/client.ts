@@ -1,4 +1,4 @@
-import { ErrorResponse, SuccessResponse } from '@fullstack-starter/shared-schemas';
+import { type ErrorResponse } from '@fullstack-starter/shared-schemas';
 
 export class ApiClient {
   private baseUrl: string;
@@ -62,7 +62,7 @@ export class ApiClient {
 }
 
 // Default client instance - apps can configure it
-export const defaultClient = new ApiClient('');
+export const defaultClient = new ApiClient('http://localhost:3000');
 
 // Export for apps to create their own
 export { ApiClient as createClient };

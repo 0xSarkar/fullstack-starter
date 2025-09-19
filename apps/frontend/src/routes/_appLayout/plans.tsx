@@ -1,4 +1,4 @@
-import { billingApi } from '@/api/billing-api';
+import { getPlansApi } from '@fullstack-starter/shared-api';
 import { createFileRoute } from '@tanstack/react-router';
 import { PlansPage } from '@/pages/plans-page';
 
@@ -11,7 +11,7 @@ export const Route = createFileRoute('/_appLayout/plans')({
     };
   },
   loader: async () => {
-    return billingApi.getPlans();
+    return getPlansApi();
   },
   component: PlansPage,
 });

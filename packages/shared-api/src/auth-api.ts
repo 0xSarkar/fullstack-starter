@@ -15,55 +15,55 @@ import { defaultClient } from './client.js';
 /**
  * Sign up a new user
  */
-export async function signup(data: SignupRequest): Promise<SignupResponse> {
+export async function signupApi(data: SignupRequest): Promise<SignupResponse> {
   return defaultClient.post<SignupResponse>('/auth/signup', data);
 }
 
 /**
  * Log in an existing user
  */
-export async function login(data: LoginRequest): Promise<LoginResponse> {
+export async function loginApi(data: LoginRequest): Promise<LoginResponse> {
   return defaultClient.post<LoginResponse>('/auth/login', data);
 }
 
 /**
  * Get current user information
  */
-export async function me(): Promise<MeResponse> {
+export async function meApi(): Promise<MeResponse> {
   return defaultClient.get<MeResponse>('/auth/me');
 }
 
 /**
  * Request password reset
  */
-export async function forgotPassword(data: ForgotPasswordRequest): Promise<void> {
+export async function forgotPasswordApi(data: ForgotPasswordRequest): Promise<void> {
   await defaultClient.post('/auth/forgot-password', data);
 }
 
 /**
  * Reset password using token
  */
-export async function resetPassword(data: ResetPasswordRequest): Promise<void> {
+export async function resetPasswordApi(data: ResetPasswordRequest): Promise<void> {
   await defaultClient.post('/auth/reset-password', data);
 }
 
 /**
  * Update current user's password
  */
-export async function updatePassword(data: UpdatePasswordRequest): Promise<void> {
+export async function updatePasswordApi(data: UpdatePasswordRequest): Promise<void> {
   await defaultClient.put('/auth/update-password', data);
 }
 
 /**
  * Log out the current user
  */
-export async function logout(): Promise<void> {
+export async function logoutApi(): Promise<void> {
   await defaultClient.post('/auth/logout');
 }
 
 /**
  * Google social login using ID token credential
  */
-export async function googleLogin(data: GoogleLoginRequest): Promise<GoogleLoginResponse> {
+export async function googleLoginApi(data: GoogleLoginRequest): Promise<GoogleLoginResponse> {
   return defaultClient.post<GoogleLoginResponse>('/auth/google', data);
 }

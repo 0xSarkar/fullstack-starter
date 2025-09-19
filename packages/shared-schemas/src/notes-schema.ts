@@ -1,4 +1,4 @@
-import { Type, Static } from '@sinclair/typebox';
+import { Type, type Static } from '@sinclair/typebox';
 import { PaginationSchema } from './response-schema.js';
 
 // Note request schemas

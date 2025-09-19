@@ -1,7 +1,7 @@
 import { AppLayout } from '@/layouts/app-layout/app-layout';
 import { createFileRoute, redirect, useRouter } from '@tanstack/react-router';
 import { useAuthStore } from '@/stores/auth-store';
-import { notesApi } from '@/api/notes-api';
+import { listNotesApi } from '@fullstack-starter/shared-api';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 import { LoaderCircle } from 'lucide-react';
@@ -19,7 +19,7 @@ export const Route = createFileRoute('/_appLayout')({
   },
 
   loader: async () => {
-    return notesApi.listNotes();
+    return listNotesApi();
   },
   shouldReload: () => false,
 

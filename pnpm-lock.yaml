@@ -20,6 +20,9 @@ importers:
       '@fullstack-starter/api-schema':
         specifier: workspace:*
         version: link:../../packages/api-schema
+      '@fullstack-starter/shared-api':
+        specifier: workspace:*
+        version: link:../../packages/shared-api
       '@radix-ui/react-alert-dialog':
         specifier: ^1.1.15
         version: 1.1.15(@types/react-dom@19.1.9(@types/react@19.1.12))(@types/react@19.1.12)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
@@ -274,6 +277,9 @@ importers:
       '@fullstack-starter/api-schema':
         specifier: workspace:*
         version: link:../../packages/api-schema
+      '@fullstack-starter/shared-api':
+        specifier: workspace:*
+        version: link:../../packages/shared-api
       '@radix-ui/react-alert-dialog':
         specifier: ^1.1.15
         version: 1.1.15(@types/react-dom@19.1.9(@types/react@19.1.12))(@types/react@19.1.12)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)

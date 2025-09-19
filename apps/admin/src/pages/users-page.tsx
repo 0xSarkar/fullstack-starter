@@ -14,7 +14,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { usersApi } from '@/api/users-api';
+import { updateUserStatusApi } from '@fullstack-starter/shared-api';
 import type { AdminUser } from '@fullstack-starter/api-schema';
 import { useState } from 'react';
 import { toast } from 'sonner';
@@ -42,7 +42,7 @@ export function UsersPage() {
 
     setIsToggling(true);
     try {
-      await usersApi.updateUserStatus(userToToggle.id, { active: !userToToggle.active });
+      await updateUserStatusApi(userToToggle.id, { active: !userToToggle.active });
       toast.success(`User ${userToToggle.active ? 'deactivated' : 'activated'} successfully`);
       // Refresh the data
       router.invalidate();

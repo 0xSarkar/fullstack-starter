@@ -12,7 +12,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Link, useRouter } from "@tanstack/react-router";
-import { authApi } from "@/api/auth-api";
+import { forgotPasswordApi } from "@fullstack-starter/shared-api";
 import { LoaderCircle } from "lucide-react";
 import { toast } from "sonner";
 
@@ -51,7 +51,7 @@ export function ForgotPasswordPage() {
       setErrors({}); // Clear errors
 
       try {
-        await authApi.forgotPassword({ email });
+        await forgotPasswordApi({ email });
         // Success - show toast and redirect to login
         toast.success("Password reset link sent! Check your email.");
         await router.navigate({ to: "/login" });

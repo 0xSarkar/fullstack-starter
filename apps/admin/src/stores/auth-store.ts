@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { authApi } from '@/api/auth-api';
+import { loginApi, meApi, logoutApi } from '@fullstack-starter/shared-api';
 import type { SubscriptionData } from '@fullstack-starter/api-schema';
 
 export interface AuthUser {
@@ -33,7 +33,7 @@ export const useAuthStore = create<AuthStoreState>((set, get) => ({
     if (get().status !== 'idle' && get().status !== 'loading') return;
     if (bootstrapPromise) return bootstrapPromise;
     set({ status: 'loading' });
-    bootstrapPromise = authApi.me()
+    bootstrapPromise = meApi()
       .then((me) => {
         if (me.user) {
           set({ user: me.user, status: 'authenticated', lastChecked: Date.now() });
@@ -51,12 +51,12 @@ export const useAuthStore = create<AuthStoreState>((set, get) => ({
   },
 
   login: async (email, password) => {
-    const resp = await authApi.login({ email, password });
+    const resp = await loginApi({ email, password });
     set({ user: resp.user, status: 'authenticated', lastChecked: Date.now() });
   },
 
   logout: async () => {
-    try { await authApi.logout(); } catch { /* ignore */ }
+    try { await logoutApi(); } catch { /* ignore */ }
     set({ user: null, status: 'unauthenticated', lastChecked: Date.now() });
   },
 

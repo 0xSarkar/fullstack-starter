@@ -1,5 +1,5 @@
 import { getRouteApi } from '@tanstack/react-router';
-import { billingApi } from '@/api/billing-api';
+import { confirmCheckoutSessionApi, createCheckoutSessionApi, createBillingPortalApi } from '@fullstack-starter/shared-api';
 import { Separator } from '@/components/ui/separator';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { sleep } from '@/lib/utils';
@@ -117,7 +117,7 @@ export function PlansPage() {
 
     while (attempt < POLLING_CONFIG.maxAttempts && isMountedRef.current) {
       try {
-        const data = await billingApi.confirmCheckoutSession(sessionId);
+        const data = await confirmCheckoutSessionApi(sessionId);
         const shouldStop = handleConfirmationResult(data.status, lastStatus);
         if (shouldStop) break;
       } catch (err) {
@@ -146,7 +146,7 @@ export function PlansPage() {
   const handleUpgrade = async (plan: PlansResponseType[0]) => {
     setLoading(true);
     try {
-      const res = await billingApi.createCheckoutSession(plan.stripe_price_id);
+      const res = await createCheckoutSessionApi(plan.stripe_price_id);
       if (res?.url) {
         window.location.assign(res.url);
       } else {
@@ -163,7 +163,7 @@ export function PlansPage() {
   const handleManageSubscription = async () => {
     setLoading(true);
     try {
-      const res = await billingApi.createBillingPortal();
+      const res = await createBillingPortalApi();
       if (res?.url) {
         window.location.assign(res.url);
       } else {

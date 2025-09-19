@@ -1,4 +1,4 @@
-import { TSchema, Type } from "@sinclair/typebox";
+import { type TSchema, Type } from "@sinclair/typebox";
 
 // Response type interfaces
 export interface SuccessResponse<T = any> {

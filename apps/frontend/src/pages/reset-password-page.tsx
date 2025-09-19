@@ -12,7 +12,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Link, useRouter, useSearch } from "@tanstack/react-router";
-import { authApi } from "@/api/auth-api";
+import { resetPasswordApi } from "@fullstack-starter/shared-api";
 import { LoaderCircle } from "lucide-react";
 import { toast } from "sonner";
 
@@ -62,7 +62,7 @@ export function ResetPasswordPage() {
       setErrors({}); // Clear errors
 
       try {
-        await authApi.resetPassword({
+        await resetPasswordApi({
           token: search.token,
           newPassword,
           confirmPassword

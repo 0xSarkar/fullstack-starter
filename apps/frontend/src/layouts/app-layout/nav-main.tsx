@@ -13,7 +13,7 @@ import { Link } from "@tanstack/react-router";
 import { useNavigate, useRouter } from '@tanstack/react-router';
 import { useNotesStore } from '@/stores/notes-store';
 import { useMutation } from '@/hooks/use-mutation';
-import { notesApi } from '@/api/notes-api';
+import { createNoteApi } from '@fullstack-starter/shared-api';
 import { toast } from 'sonner';
 
 export function NavMain({
@@ -35,7 +35,7 @@ export function NavMain({
   const { setOpenMobile } = useSidebar();
 
   const setCreatedNote = useNotesStore(state => state.setCreatedNote);
-  const createNoteMutation = useMutation(notesApi.createNote, {
+  const createNoteMutation = useMutation(createNoteApi, {
     onSuccess: async (response) => {
       const noteData = { ...response, updatedAt: response.createdAt };
       setCreatedNote(noteData);

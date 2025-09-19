@@ -3,7 +3,7 @@ import { useNotesStore } from '@/stores/notes-store';
 import { useEffect, useState, useRef } from 'react';
 import type { UpdateNoteRequest } from '@fullstack-starter/api-schema';
 import { useMutation } from '@/hooks/use-mutation';
-import { notesApi } from '@/api/notes-api';
+import { updateNoteApi } from '@fullstack-starter/shared-api';
 import Tiptap from '@/components/tiptap';
 import { useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
@@ -29,7 +29,7 @@ export function NotePage() {
   });
 
   const updateNoteMutation = useMutation(
-    (updateData: UpdateNoteRequest) => notesApi.updateNote(noteData.id, updateData),
+    (updateData: UpdateNoteRequest) => updateNoteApi(noteData.id, updateData),
     {
       onSuccess: () => {
         router.invalidate();
