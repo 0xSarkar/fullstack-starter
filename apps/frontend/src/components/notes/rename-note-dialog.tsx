@@ -6,9 +6,9 @@ import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { useNotesStore } from "@/stores/notes-store";
-import { notesApi } from "@/api/notes-api";
 import { LoaderCircle } from "lucide-react";
 import { toast } from "sonner";
+import { updateNoteApi } from "@fullstack-starter/shared-api";
 
 interface RenameNoteFormData {
   title: string;
@@ -47,7 +47,7 @@ export function RenameNoteDialog() {
       setErrors({}); // Clear errors
 
       try {
-        await notesApi.updateNote(noteToRename!.id, { title });
+        await updateNoteApi(noteToRename!.id, { title });
         toast.success("Note renamed successfully!");
         await router.invalidate({ sync: true });
         setNoteToRename(null);

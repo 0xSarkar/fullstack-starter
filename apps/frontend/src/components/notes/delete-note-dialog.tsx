@@ -1,10 +1,10 @@
 import { useRouter, useMatchRoute } from '@tanstack/react-router';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "../ui/alert-dialog";
 import { useNotesStore } from '@/stores/notes-store';
-import { notesApi } from '@/api/notes-api';
 import { LoaderCircle } from 'lucide-react';
 import { useMutation } from '@/hooks/use-mutation';
 import { toast } from 'sonner';
+import { deleteNoteApi } from '@fullstack-starter/shared-api';
 
 export function DeleteNoteConfirmDialog() {
   const router = useRouter();
@@ -16,7 +16,7 @@ export function DeleteNoteConfirmDialog() {
   const match = matchRoute({ to: '/notes/$noteId' });
   const currentNoteId = match ? match.noteId : null;
 
-  const deleteNoteMutation = useMutation(notesApi.deleteNote, {
+  const deleteNoteMutation = useMutation(deleteNoteApi, {
     onSuccess: async () => {
       // Check if the deleted note is currently being viewed
       if (currentNoteId === noteToDelete) {
