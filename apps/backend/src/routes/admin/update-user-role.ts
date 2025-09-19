@@ -7,7 +7,7 @@ import {
   AdminUserSchema,
   UserIdParamSchema,
   UpdateUserRoleSchema
-} from '@fullstack-starter/api-schema';
+} from '@fullstack-starter/shared-schemas';
 
 const UpdateUserRoleRequestSchema = {
   params: UserIdParamSchema,

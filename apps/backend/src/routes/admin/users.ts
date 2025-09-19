@@ -6,7 +6,7 @@ import {
   wrapPaginatedResponseSchema,
   AdminUserSchema,
   ListUsersQuerySchema
-} from '@fullstack-starter/api-schema';
+} from '@fullstack-starter/shared-schemas';
 
 const ListUsersSchema = {
   querystring: ListUsersQuerySchema,

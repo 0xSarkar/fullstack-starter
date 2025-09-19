@@ -1,7 +1,7 @@
 import { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
 import type Stripe from 'stripe';
 import { Readable } from 'stream';
-import { successResponse, errorResponse, wrapSuccessResponseSchema, wrapErrorResponseSchema, WebhookSuccessResponse } from '@fullstack-starter/api-schema';
+import { successResponse, errorResponse, wrapSuccessResponseSchema, wrapErrorResponseSchema, WebhookSuccessResponse } from '@fullstack-starter/shared-schemas';
 
 const WebhookSchema = {
   response: {

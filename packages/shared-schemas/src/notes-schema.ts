@@ -1,5 +1,5 @@
 import { Type, Static } from '@sinclair/typebox';
-import { PaginationSchema } from './response-schema';
+import { PaginationSchema } from './response-schema.js';
 
 // Note request schemas
 export const CreateNoteRequestSchema = Type.Object({

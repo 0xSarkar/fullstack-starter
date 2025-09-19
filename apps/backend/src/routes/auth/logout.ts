@@ -1,5 +1,5 @@
 import { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
-import { emptySuccessResponse, errorResponse, wrapEmptySuccessResponseSchema, wrapErrorResponseSchema } from '@fullstack-starter/api-schema';
+import { emptySuccessResponse, errorResponse, wrapEmptySuccessResponseSchema, wrapErrorResponseSchema } from '@fullstack-starter/shared-schemas';
 
 const LogoutSchema = {
   response: {

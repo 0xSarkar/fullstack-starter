@@ -1,5 +1,5 @@
 import { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
-import { successResponse, errorResponse, wrapSuccessResponseSchema, wrapErrorResponseSchema, ConfirmCheckoutSessionQuery, ConfirmCheckoutSessionResponse } from '@fullstack-starter/api-schema';
+import { successResponse, errorResponse, wrapSuccessResponseSchema, wrapErrorResponseSchema, ConfirmCheckoutSessionQuery, ConfirmCheckoutSessionResponse } from '@fullstack-starter/shared-schemas';
 
 const ConfirmSchema = {
   querystring: ConfirmCheckoutSessionQuery,

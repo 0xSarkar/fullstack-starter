@@ -1,5 +1,5 @@
 import { Type, Static } from '@sinclair/typebox';
-import { SubscriptionDataSchema } from './stripe-schema';
+import { SubscriptionDataSchema } from './stripe-schema.js';
 
 // Common schemas
 export const UserDataSchema = Type.Object({

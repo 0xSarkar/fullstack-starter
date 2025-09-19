@@ -1,6 +1,6 @@
 import { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
-import { emptySuccessResponse, errorResponse, wrapEmptySuccessResponseSchema, wrapErrorResponseSchema } from '@fullstack-starter/api-schema';
-import { NoteParamsSchema } from '@fullstack-starter/api-schema';
+import { emptySuccessResponse, errorResponse, wrapEmptySuccessResponseSchema, wrapErrorResponseSchema } from '@fullstack-starter/shared-schemas';
+import { NoteParamsSchema } from '@fullstack-starter/shared-schemas';
 
 const DeleteSchema = {
   params: NoteParamsSchema,

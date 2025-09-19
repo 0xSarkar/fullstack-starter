@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
 import { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
-import { errorResponse, wrapErrorResponseSchema, emptySuccessResponse, wrapEmptySuccessResponseSchema } from '@fullstack-starter/api-schema';
-import { UpdatePasswordRequestSchema } from '@fullstack-starter/api-schema';
+import { errorResponse, wrapErrorResponseSchema, emptySuccessResponse, wrapEmptySuccessResponseSchema } from '@fullstack-starter/shared-schemas';
+import { UpdatePasswordRequestSchema } from '@fullstack-starter/shared-schemas';
 
 const UpdatePasswordSchema = {
   body: UpdatePasswordRequestSchema,

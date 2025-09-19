@@ -1,10 +1,10 @@
 {
-  "name": "@fullstack-starter/shared-schemas",
+  "name": "@fullstack-starter/shared-api",
   "version": "1.0.0",
-  "description": "Shared API schemas and contracts",
+  "description": "Shared typed API client functions",
   "type": "module",
   "main": "dist/index.js",
-  "types": "index.ts",
+  "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch",
@@ -12,7 +12,7 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@sinclair/typebox": "^0.34.41"
+    "@fullstack-starter/shared-schemas": "workspace:*"
   },
   "devDependencies": {
     "typescript": "~5.8.2"

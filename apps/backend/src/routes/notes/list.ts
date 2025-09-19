@@ -1,6 +1,6 @@
 import { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
-import { errorResponse, wrapErrorResponseSchema, wrapPaginatedResponseSchema, paginatedResponse } from '@fullstack-starter/api-schema';
-import { ListNotesQuerySchema, NoteItemSchema } from '@fullstack-starter/api-schema';
+import { errorResponse, wrapErrorResponseSchema, wrapPaginatedResponseSchema, paginatedResponse } from '@fullstack-starter/shared-schemas';
+import { ListNotesQuerySchema, NoteItemSchema } from '@fullstack-starter/shared-schemas';
 
 const ListSchema = {
   querystring: ListNotesQuerySchema,

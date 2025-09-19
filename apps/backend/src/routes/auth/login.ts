@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
 import { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
-import { successResponse, wrapSuccessResponseSchema, errorResponse, wrapErrorResponseSchema } from '@fullstack-starter/api-schema';
-import { LoginRequestSchema, LoginResponseSchema } from '@fullstack-starter/api-schema';
+import { successResponse, wrapSuccessResponseSchema, errorResponse, wrapErrorResponseSchema } from '@fullstack-starter/shared-schemas';
+import { LoginRequestSchema, LoginResponseSchema } from '@fullstack-starter/shared-schemas';
 
 const LoginSchema = {
   body: LoginRequestSchema,

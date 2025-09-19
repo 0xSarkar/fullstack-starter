@@ -1,6 +1,6 @@
 import fp from 'fastify-plugin';
 import { FastifyPluginAsync } from 'fastify';
-import { errorResponse } from '@fullstack-starter/api-schema';
+import { errorResponse } from '@fullstack-starter/shared-schemas';
 
 const errorHandlerPlugin: FastifyPluginAsync = async (fastify) => {
   fastify.setErrorHandler((error, request, reply) => {

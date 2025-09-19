@@ -1,6 +1,6 @@
 import { FastifyPluginAsync, FastifyRequest, FastifyReply } from 'fastify';
 import fp from 'fastify-plugin';
-import { errorResponse } from '@fullstack-starter/api-schema';
+import { errorResponse } from '@fullstack-starter/shared-schemas';
 import "@fastify/jwt"; // imported due to module augmentation (at the end)
 
 // Type definition for JWT payload

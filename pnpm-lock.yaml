@@ -177,9 +177,9 @@ importers:
       '@fastify/type-provider-typebox':
         specifier: ^5.2.0
         version: 5.2.0(@sinclair/typebox@0.34.41)
-      '@fullstack-starter/api-schema':
+      '@fullstack-starter/shared-schemas':
         specifier: workspace:*
-        version: link:../../packages/api-schema
+        version: link:../../packages/shared-schemas
       '@sinclair/typebox':
         specifier: ^0.34.40
         version: 0.34.41
@@ -414,6 +414,16 @@ importers:
       '@sinclair/typebox':
         specifier: ^0.34.41
         version: 0.34.41
+    devDependencies:
+      typescript:
+        specifier: ~5.8.2
+        version: 5.8.3
+
+  packages/shared-api:
+    dependencies:
+      '@fullstack-starter/shared-schemas':
+        specifier: workspace:*
+        version: link:../shared-schemas
     devDependencies:
       typescript:
         specifier: ~5.8.2

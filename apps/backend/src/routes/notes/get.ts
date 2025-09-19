@@ -1,6 +1,6 @@
 import { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
-import { successResponse, errorResponse, wrapSuccessResponseSchema, wrapErrorResponseSchema } from '@fullstack-starter/api-schema';
-import { NoteParamsSchema, NoteDataSchema } from '@fullstack-starter/api-schema';
+import { successResponse, errorResponse, wrapSuccessResponseSchema, wrapErrorResponseSchema } from '@fullstack-starter/shared-schemas';
+import { NoteParamsSchema, NoteDataSchema } from '@fullstack-starter/shared-schemas';
 
 const GetSchema = {
   params: NoteParamsSchema,

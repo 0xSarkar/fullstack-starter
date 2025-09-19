@@ -7,7 +7,7 @@ import {
   AdminUserSchema,
   UserIdParamSchema,
   UpdateUserStatusSchema
-} from '@fullstack-starter/api-schema';
+} from '@fullstack-starter/shared-schemas';
 
 const UpdateUserStatusRequestSchema = {
   params: UserIdParamSchema,

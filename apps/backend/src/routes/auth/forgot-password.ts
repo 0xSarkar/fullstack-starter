@@ -1,7 +1,7 @@
 import { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
 import crypto from 'crypto';
-import { emptySuccessResponse, errorResponse, wrapEmptySuccessResponseSchema, wrapErrorResponseSchema } from '@fullstack-starter/api-schema';
-import { ForgotPasswordRequestSchema } from '@fullstack-starter/api-schema';
+import { emptySuccessResponse, errorResponse, wrapEmptySuccessResponseSchema, wrapErrorResponseSchema } from '@fullstack-starter/shared-schemas';
+import { ForgotPasswordRequestSchema } from '@fullstack-starter/shared-schemas';
 
 const ForgotSchema = {
   body: ForgotPasswordRequestSchema,

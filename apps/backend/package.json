@@ -36,7 +36,7 @@
     "@fastify/swagger": "^9.5.1",
     "@fastify/swagger-ui": "^5.2.3",
     "@fastify/type-provider-typebox": "^5.2.0",
-    "@fullstack-starter/api-schema": "workspace:*",
+    "@fullstack-starter/shared-schemas": "workspace:*",
     "@sinclair/typebox": "^0.34.40",
     "@types/bcrypt": "^6.0.0",
     "bcrypt": "^6.0.0",

@@ -1,7 +1,7 @@
 import { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
 import { OAuth2Client } from 'google-auth-library';
-import { successResponse, errorResponse, wrapSuccessResponseSchema, wrapErrorResponseSchema } from '@fullstack-starter/api-schema';
-import { GoogleLoginRequestSchema, GoogleLoginResponseSchema } from '@fullstack-starter/api-schema';
+import { successResponse, errorResponse, wrapSuccessResponseSchema, wrapErrorResponseSchema } from '@fullstack-starter/shared-schemas';
+import { GoogleLoginRequestSchema, GoogleLoginResponseSchema } from '@fullstack-starter/shared-schemas';
 
 // Schema definition for the route
 const GoogleAuthSchema = {
