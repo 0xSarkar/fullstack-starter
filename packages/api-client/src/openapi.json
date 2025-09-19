@@ -1454,20 +1454,125 @@
                       "properties": {
                         "user": {
                           "type": "object",
-                          "properties": {
-                            "id": {
-                              "type": "string"
+                          "allOf": [
+                            {
+                              "type": "object",
+                              "properties": {
+                                "id": {
+                                  "type": "string"
+                                },
+                                "email": {
+                                  "type": "string"
+                                },
+                                "display_name": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "id",
+                                "email"
+                              ]
                             },
-                            "email": {
-                              "type": "string"
-                            },
-                            "display_name": {
-                              "type": "string"
+                            {
+                              "type": "object",
+                              "properties": {
+                                "subscription": {
+                                  "type": "object",
+                                  "properties": {
+                                    "stripe_price_id": {
+                                      "type": "string"
+                                    },
+                                    "status": {
+                                      "anyOf": [
+                                        {
+                                          "type": "string",
+                                          "enum": [
+                                            "incomplete"
+                                          ]
+                                        },
+                                        {
+                                          "type": "string",
+                                          "enum": [
+                                            "incomplete_expired"
+                                          ]
+                                        },
+                                        {
+                                          "type": "string",
+                                          "enum": [
+                                            "trialing"
+                                          ]
+                                        },
+                                        {
+                                          "type": "string",
+                                          "enum": [
+                                            "active"
+                                          ]
+                                        },
+                                        {
+                                          "type": "string",
+                                          "enum": [
+                                            "past_due"
+                                          ]
+                                        },
+                                        {
+                                          "type": "string",
+                                          "enum": [
+                                            "canceled"
+                                          ]
+                                        },
+                                        {
+                                          "type": "string",
+                                          "enum": [
+                                            "unpaid"
+                                          ]
+                                        },
+                                        {
+                                          "type": "string",
+                                          "enum": [
+                                            "paused"
+                                          ]
+                                        }
+                                      ]
+                                    },
+                                    "stripe_product_id": {
+                                      "type": "string"
+                                    },
+                                    "current_period_start": {
+                                      "format": "date-time",
+                                      "type": "string"
+                                    },
+                                    "current_period_end": {
+                                      "format": "date-time",
+                                      "type": "string"
+                                    },
+                                    "cancel_at_period_end": {
+                                      "type": "boolean"
+                                    },
+                                    "price_name": {
+                                      "type": "string"
+                                    },
+                                    "product_name": {
+                                      "type": "string"
+                                    },
+                                    "amount": {
+                                      "type": "number"
+                                    },
+                                    "currency": {
+                                      "type": "string"
+                                    },
+                                    "interval": {
+                                      "type": "string"
+                                    }
+                                  },
+                                  "required": [
+                                    "stripe_price_id",
+                                    "status",
+                                    "stripe_product_id",
+                                    "cancel_at_period_end"
+                                  ]
+                                }
+                              }
                             }
-                          },
-                          "required": [
-                            "id",
-                            "email"
                           ]
                         },
                         "token": {
@@ -1602,20 +1707,125 @@
                       "properties": {
                         "user": {
                           "type": "object",
-                          "properties": {
-                            "id": {
-                              "type": "string"
+                          "allOf": [
+                            {
+                              "type": "object",
+                              "properties": {
+                                "id": {
+                                  "type": "string"
+                                },
+                                "email": {
+                                  "type": "string"
+                                },
+                                "display_name": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "id",
+                                "email"
+                              ]
                             },
-                            "email": {
-                              "type": "string"
-                            },
-                            "display_name": {
-                              "type": "string"
+                            {
+                              "type": "object",
+                              "properties": {
+                                "subscription": {
+                                  "type": "object",
+                                  "properties": {
+                                    "stripe_price_id": {
+                                      "type": "string"
+                                    },
+                                    "status": {
+                                      "anyOf": [
+                                        {
+                                          "type": "string",
+                                          "enum": [
+                                            "incomplete"
+                                          ]
+                                        },
+                                        {
+                                          "type": "string",
+                                          "enum": [
+                                            "incomplete_expired"
+                                          ]
+                                        },
+                                        {
+                                          "type": "string",
+                                          "enum": [
+                                            "trialing"
+                                          ]
+                                        },
+                                        {
+                                          "type": "string",
+                                          "enum": [
+                                            "active"
+                                          ]
+                                        },
+                                        {
+                                          "type": "string",
+                                          "enum": [
+                                            "past_due"
+                                          ]
+                                        },
+                                        {
+                                          "type": "string",
+                                          "enum": [
+                                            "canceled"
+                                          ]
+                                        },
+                                        {
+                                          "type": "string",
+                                          "enum": [
+                                            "unpaid"
+                                          ]
+                                        },
+                                        {
+                                          "type": "string",
+                                          "enum": [
+                                            "paused"
+                                          ]
+                                        }
+                                      ]
+                                    },
+                                    "stripe_product_id": {
+                                      "type": "string"
+                                    },
+                                    "current_period_start": {
+                                      "format": "date-time",
+                                      "type": "string"
+                                    },
+                                    "current_period_end": {
+                                      "format": "date-time",
+                                      "type": "string"
+                                    },
+                                    "cancel_at_period_end": {
+                                      "type": "boolean"
+                                    },
+                                    "price_name": {
+                                      "type": "string"
+                                    },
+                                    "product_name": {
+                                      "type": "string"
+                                    },
+                                    "amount": {
+                                      "type": "number"
+                                    },
+                                    "currency": {
+                                      "type": "string"
+                                    },
+                                    "interval": {
+                                      "type": "string"
+                                    }
+                                  },
+                                  "required": [
+                                    "stripe_price_id",
+                                    "status",
+                                    "stripe_product_id",
+                                    "cancel_at_period_end"
+                                  ]
+                                }
+                              }
                             }
-                          },
-                          "required": [
-                            "id",
-                            "email"
                           ]
                         },
                         "token": {
@@ -2194,20 +2404,125 @@
                       "properties": {
                         "user": {
                           "type": "object",
-                          "properties": {
-                            "id": {
-                              "type": "string"
+                          "allOf": [
+                            {
+                              "type": "object",
+                              "properties": {
+                                "id": {
+                                  "type": "string"
+                                },
+                                "email": {
+                                  "type": "string"
+                                },
+                                "display_name": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "id",
+                                "email"
+                              ]
                             },
-                            "email": {
-                              "type": "string"
-                            },
-                            "display_name": {
-                              "type": "string"
+                            {
+                              "type": "object",
+                              "properties": {
+                                "subscription": {
+                                  "type": "object",
+                                  "properties": {
+                                    "stripe_price_id": {
+                                      "type": "string"
+                                    },
+                                    "status": {
+                                      "anyOf": [
+                                        {
+                                          "type": "string",
+                                          "enum": [
+                                            "incomplete"
+                                          ]
+                                        },
+                                        {
+                                          "type": "string",
+                                          "enum": [
+                                            "incomplete_expired"
+                                          ]
+                                        },
+                                        {
+                                          "type": "string",
+                                          "enum": [
+                                            "trialing"
+                                          ]
+                                        },
+                                        {
+                                          "type": "string",
+                                          "enum": [
+                                            "active"
+                                          ]
+                                        },
+                                        {
+                                          "type": "string",
+                                          "enum": [
+                                            "past_due"
+                                          ]
+                                        },
+                                        {
+                                          "type": "string",
+                                          "enum": [
+                                            "canceled"
+                                          ]
+                                        },
+                                        {
+                                          "type": "string",
+                                          "enum": [
+                                            "unpaid"
+                                          ]
+                                        },
+                                        {
+                                          "type": "string",
+                                          "enum": [
+                                            "paused"
+                                          ]
+                                        }
+                                      ]
+                                    },
+                                    "stripe_product_id": {
+                                      "type": "string"
+                                    },
+                                    "current_period_start": {
+                                      "format": "date-time",
+                                      "type": "string"
+                                    },
+                                    "current_period_end": {
+                                      "format": "date-time",
+                                      "type": "string"
+                                    },
+                                    "cancel_at_period_end": {
+                                      "type": "boolean"
+                                    },
+                                    "price_name": {
+                                      "type": "string"
+                                    },
+                                    "product_name": {
+                                      "type": "string"
+                                    },
+                                    "amount": {
+                                      "type": "number"
+                                    },
+                                    "currency": {
+                                      "type": "string"
+                                    },
+                                    "interval": {
+                                      "type": "string"
+                                    }
+                                  },
+                                  "required": [
+                                    "stripe_price_id",
+                                    "status",
+                                    "stripe_product_id",
+                                    "cancel_at_period_end"
+                                  ]
+                                }
+                              }
                             }
-                          },
-                          "required": [
-                            "id",
-                            "email"
                           ]
                         },
                         "token": {

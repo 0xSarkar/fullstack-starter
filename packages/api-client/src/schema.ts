@@ -808,6 +808,22 @@ export type paths = {
                                     id: string;
                                     email: string;
                                     display_name?: string;
+                                } & {
+                                    subscription?: {
+                                        stripe_price_id: string;
+                                        status: "incomplete" | "incomplete_expired" | "trialing" | "active" | "past_due" | "canceled" | "unpaid" | "paused";
+                                        stripe_product_id: string;
+                                        /** Format: date-time */
+                                        current_period_start?: string;
+                                        /** Format: date-time */
+                                        current_period_end?: string;
+                                        cancel_at_period_end: boolean;
+                                        price_name?: string;
+                                        product_name?: string;
+                                        amount?: number;
+                                        currency?: string;
+                                        interval?: string;
+                                    };
                                 };
                                 /** @description JWT token for API authentication (mirrors login/signup) */
                                 token: string;
@@ -902,6 +918,22 @@ export type paths = {
                                     id: string;
                                     email: string;
                                     display_name?: string;
+                                } & {
+                                    subscription?: {
+                                        stripe_price_id: string;
+                                        status: "incomplete" | "incomplete_expired" | "trialing" | "active" | "past_due" | "canceled" | "unpaid" | "paused";
+                                        stripe_product_id: string;
+                                        /** Format: date-time */
+                                        current_period_start?: string;
+                                        /** Format: date-time */
+                                        current_period_end?: string;
+                                        cancel_at_period_end: boolean;
+                                        price_name?: string;
+                                        product_name?: string;
+                                        amount?: number;
+                                        currency?: string;
+                                        interval?: string;
+                                    };
                                 };
                                 /** @description JWT token for API authentication (use this for mobile apps) */
                                 token: string;
@@ -1260,6 +1292,22 @@ export type paths = {
                                     id: string;
                                     email: string;
                                     display_name?: string;
+                                } & {
+                                    subscription?: {
+                                        stripe_price_id: string;
+                                        status: "incomplete" | "incomplete_expired" | "trialing" | "active" | "past_due" | "canceled" | "unpaid" | "paused";
+                                        stripe_product_id: string;
+                                        /** Format: date-time */
+                                        current_period_start?: string;
+                                        /** Format: date-time */
+                                        current_period_end?: string;
+                                        cancel_at_period_end: boolean;
+                                        price_name?: string;
+                                        product_name?: string;
+                                        amount?: number;
+                                        currency?: string;
+                                        interval?: string;
+                                    };
                                 };
                                 /** @description JWT token for API authentication (use this for mobile apps) */
                                 token: string;

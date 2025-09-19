@@ -7,7 +7,7 @@ export type { paths } from './schema';
 export type UnauthorizedHandler = () => void;
 
 export type CreateClientOptions = {
-  baseUrl?: string;
+  baseUrl: string;
   /** default: true, include cookies for auth */
   includeCredentials?: boolean;
   /** request timeout in ms, default: 10000 */
@@ -18,8 +18,8 @@ export type CreateClientOptions = {
   headers?: HeadersInit;
 };
 
-export const createClient = (opts: CreateClientOptions = {}) => {
-  const baseUrl = opts.baseUrl || (typeof window !== 'undefined' ? (window as any).VITE_API_BASE_URL || '' : '');
+export const createClient = (opts: CreateClientOptions) => {
+  const baseUrl = opts.baseUrl;
   const includeCredentials = opts.includeCredentials ?? true;
   const timeoutMs = opts.timeoutMs ?? 10000;
   const onUnauthorized = opts.onUnauthorized;

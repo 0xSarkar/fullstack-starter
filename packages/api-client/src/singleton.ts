@@ -12,7 +12,7 @@ export class ApiClientSingleton {
   private _client: ReturnType<typeof createClient>;
   private _onUnauthorizedHandler?: UnauthorizedHandler;
 
-  constructor(options: CreateClientOptions = {}) {
+  constructor(options: CreateClientOptions) {
     // Create the client with our internal unauthorized handler
     this._client = createClient({
       ...options,
@@ -47,7 +47,7 @@ export class ApiClientSingleton {
  * Factory function to create a singleton API client instance
  * Use this in your app's lib/api-client.ts file
  */
-export function createApiClientSingleton(options: CreateClientOptions = {}): ApiClientSingleton {
+export function createApiClientSingleton(options: CreateClientOptions): ApiClientSingleton {
   return new ApiClientSingleton(options);
 }
 

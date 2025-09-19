@@ -1,9 +1,8 @@
 #!/usr/bin/env node
-// Generates OpenAPI types and a typed client for openapi-fetch
+// Generates OpenAPI json and schema
 // - Fetches schema from backend swagger at /docs/json
 // - Writes schema to src/openapi.json
 // - Runs openapi-typescript to generate src/schema.ts
-// - Writes a thin openapi-fetch client wrapper at src/client.ts
 
 import fs from 'node:fs/promises';
 import path from 'node:path';
@@ -20,7 +19,6 @@ const SCHEMA_URL = `${DEFAULT_BACKEND_URL}/docs/json`;
 const SRC_DIR = path.join(pkgRoot, 'src');
 const SCHEMA_JSON_PATH = path.join(SRC_DIR, 'openapi.json');
 const SCHEMA_TS_PATH = path.join(SRC_DIR, 'schema.ts');
-const CLIENT_TS_PATH = path.join(SRC_DIR, 'client.ts');
 
 async function ensureDir(p) {
   await fs.mkdir(p, { recursive: true });
@@ -56,71 +54,6 @@ async function runOpenapiTypescript(inputPath, outputPath) {
   });
 }
 
-async function writeClientWrapper() {
-  const content = `// Auto-generated thin client wrapper. Do not edit manually.
-import createClientOrig from 'openapi-fetch';
-import type { paths } from './schema';
-
-export type { paths } from './schema';
-
-export type UnauthorizedHandler = () => void;
-
-export type CreateClientOptions = {
-  baseUrl?: string;
-  /** default: true, include cookies for auth */
-  includeCredentials?: boolean;
-  /** request timeout in ms, default: 10000 */
-  timeoutMs?: number;
-  /** called when a response is 401 */
-  onUnauthorized?: UnauthorizedHandler;
-  /** default headers */
-  headers?: HeadersInit;
-};
-
-export const createClient = (opts: CreateClientOptions = {}) => {
-  const baseUrl = opts.baseUrl || (typeof window !== 'undefined' ? (window as any).VITE_API_BASE_URL || '' : '');
-  const includeCredentials = opts.includeCredentials ?? true;
-  const timeoutMs = opts.timeoutMs ?? 10000;
-  const onUnauthorized = opts.onUnauthorized;
-  const defaultHeaders = opts.headers;
-
-  const fetchWithConfig: typeof fetch = async (input, init) => {
-    const controller = new AbortController();
-    const id = setTimeout(() => controller.abort(), timeoutMs);
-    try {
-      // Conditionally set Content-Type only for methods that typically send a body
-      const headers = { ...defaultHeaders, ...(init?.headers as any) };
-      const method = init?.method?.toUpperCase();
-      if (method && ['POST', 'PUT', 'PATCH'].includes(method) && init?.body != null) {
-        headers['Content-Type'] = 'application/json';
-      }
-
-      const res = await fetch(input, {
-        ...init,
-        credentials: includeCredentials ? 'include' : init?.credentials,
-        headers,
-        signal: init?.signal ?? controller.signal,
-      });
-      if (res.status === 401 && onUnauthorized) {
-        // fire async to not block consumer
-        setTimeout(() => onUnauthorized(), 0);
-      }
-      return res;
-    } finally {
-      clearTimeout(id);
-    }
-  };
-
-  const client = createClientOrig<paths>({ baseUrl, fetch: fetchWithConfig });
-  return client;
-};
-
-export default createClient;
-`;
-
-  await fs.writeFile(CLIENT_TS_PATH, content, 'utf8');
-}
-
 async function maybeStartBackend() {
   // If backend responds, reuse. Otherwise attempt to start it temporarily.
   const up = await waitForHttp(`${DEFAULT_BACKEND_URL}/docs`);
@@ -154,10 +87,6 @@ async function main() {
     console.log('[api-client] Generating TypeScript types with openapi-typescript...');
     await runOpenapiTypescript(SCHEMA_JSON_PATH, SCHEMA_TS_PATH);
     console.log(`[api-client] Wrote types to ${path.relative(pkgRoot, SCHEMA_TS_PATH)}`);
-
-    console.log('[api-client] Writing client wrapper...');
-    await writeClientWrapper();
-    console.log(`[api-client] Wrote client to ${path.relative(pkgRoot, CLIENT_TS_PATH)}`);
   } finally {
     await handle.stop();
   }
