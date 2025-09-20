@@ -6,9 +6,9 @@ import { sleep } from '@/lib/utils';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { PricingTable } from '@/components/plans/pricing-table';
 import { toast } from 'sonner';
-import type { PlansResponseType } from '@fullstack-starter/api-schema';
 import { useAuthStore } from '@/stores/auth-store';
 import { CurrentPlan } from '@/components/plans/current-plan';
+import type { PlansResponseType } from '@fullstack-starter/shared-schemas';
 
 // Constants
 const POLLING_CONFIG = {

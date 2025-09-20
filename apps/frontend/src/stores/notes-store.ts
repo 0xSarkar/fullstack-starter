@@ -1,5 +1,5 @@
+import type { NoteData } from '@fullstack-starter/shared-schemas';
 import { create } from 'zustand';
-import type { NoteData } from '@fullstack-starter/api-schema';
 
 interface NotesStore {
   noteToDelete: string | null;

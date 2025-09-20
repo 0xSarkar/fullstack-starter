@@ -17,12 +17,12 @@ importers:
       '@fullstack-starter/api-client':
         specifier: workspace:*
         version: link:../../packages/api-client
-      '@fullstack-starter/api-schema':
-        specifier: workspace:*
-        version: link:../../packages/api-schema
       '@fullstack-starter/shared-api':
         specifier: workspace:*
         version: link:../../packages/shared-api
+      '@fullstack-starter/shared-schemas':
+        specifier: workspace:*
+        version: link:../../packages/shared-schemas
       '@radix-ui/react-alert-dialog':
         specifier: ^1.1.15
         version: 1.1.15(@types/react-dom@19.1.9(@types/react@19.1.12))(@types/react@19.1.12)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
@@ -274,12 +274,12 @@ importers:
       '@fullstack-starter/api-client':
         specifier: workspace:*
         version: link:../../packages/api-client
-      '@fullstack-starter/api-schema':
-        specifier: workspace:*
-        version: link:../../packages/api-schema
       '@fullstack-starter/shared-api':
         specifier: workspace:*
         version: link:../../packages/shared-api
+      '@fullstack-starter/shared-schemas':
+        specifier: workspace:*
+        version: link:../../packages/shared-schemas
       '@radix-ui/react-alert-dialog':
         specifier: ^1.1.15
         version: 1.1.15(@types/react-dom@19.1.9(@types/react@19.1.12))(@types/react@19.1.12)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
@@ -415,16 +415,6 @@ importers:
         specifier: ^5.9.2
         version: 5.9.2
 
-  packages/api-schema:
-    dependencies:
-      '@sinclair/typebox':
-        specifier: ^0.34.41
-        version: 0.34.41
-    devDependencies:
-      typescript:
-        specifier: ~5.8.2
-        version: 5.8.3
-
   packages/shared-api:
     dependencies:
       '@fullstack-starter/shared-schemas':
@@ -437,9 +427,6 @@ importers:
 
   packages/shared-schemas:
     dependencies:
-      '@fullstack-starter/api-schema':
-        specifier: workspace:*
-        version: link:../api-schema
       '@sinclair/typebox':
         specifier: ^0.34.41
         version: 0.34.41

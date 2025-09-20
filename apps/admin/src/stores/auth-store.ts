@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { loginApi, meApi, logoutApi } from '@fullstack-starter/shared-api';
-import type { SubscriptionData } from '@fullstack-starter/api-schema';
+import type { SubscriptionData } from '@fullstack-starter/shared-schemas';
 
 export interface AuthUser {
   id: string;

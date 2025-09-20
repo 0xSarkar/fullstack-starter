@@ -15,9 +15,9 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { updateUserStatusApi } from '@fullstack-starter/shared-api';
-import type { AdminUser } from '@fullstack-starter/api-schema';
 import { useState } from 'react';
 import { toast } from 'sonner';
+import type { AdminUser } from '@fullstack-starter/shared-schemas';
 
 export function UsersPage() {
   const { data: users } = useLoaderData({ from: "/_appLayout" });

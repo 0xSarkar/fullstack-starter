@@ -1,4 +1,4 @@
-import { type TSchema, Type, type Static } from "@sinclair/typebox";
+import { Type, type Static } from "@sinclair/typebox";
 
 export interface ErrorResponse {
   success: false;

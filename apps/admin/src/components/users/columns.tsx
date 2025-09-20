@@ -12,8 +12,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import type { AdminUser } from "@fullstack-starter/api-schema";
 import { toast } from "sonner";
+import type { AdminUser } from "@fullstack-starter/shared-schemas";
 
 export const createColumns = (onUserStatusToggle?: (user: AdminUser) => void): ColumnDef<AdminUser>[] => [
   {

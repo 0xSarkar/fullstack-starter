@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
-import type { PlansResponseType } from '@fullstack-starter/api-schema';
+import type { PlansResponseType } from '@fullstack-starter/shared-schemas';
 
 interface PricingTableProps {
   plans: PlansResponseType;

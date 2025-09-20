@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { loginApi, meApi, signupApi, googleLoginApi, logoutApi } from '@fullstack-starter/shared-api';
 import { useNotesStore } from '@/stores/notes-store';
-import type { SubscriptionData } from '@fullstack-starter/api-schema';
+import type { SubscriptionData } from '@fullstack-starter/shared-schemas';
 
 export interface AuthUser {
   id: string;

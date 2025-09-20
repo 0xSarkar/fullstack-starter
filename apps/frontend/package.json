@@ -10,8 +10,8 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@fullstack-starter/api-schema": "workspace:*",
     "@fullstack-starter/shared-api": "workspace:*",
+    "@fullstack-starter/shared-schemas": "workspace:*",
     "@fullstack-starter/api-client": "workspace:*",
     "@radix-ui/react-alert-dialog": "^1.1.15",
     "@radix-ui/react-avatar": "^1.1.10",

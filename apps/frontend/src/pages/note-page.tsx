@@ -1,7 +1,6 @@
 import { useRouter, getRouteApi } from '@tanstack/react-router';
 import { useNotesStore } from '@/stores/notes-store';
 import { useEffect, useState, useRef } from 'react';
-import type { UpdateNoteRequest } from '@fullstack-starter/api-schema';
 import { useMutation } from '@/hooks/use-mutation';
 import { updateNoteApi } from '@fullstack-starter/shared-api';
 import Tiptap from '@/components/tiptap';
@@ -10,6 +9,7 @@ import StarterKit from '@tiptap/starter-kit';
 import { Separator } from '@/components/ui/separator';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { Edit } from 'lucide-react';
+import type { UpdateNoteRequest } from '@fullstack-starter/shared-schemas';
 
 const route = getRouteApi('/_appLayout/notes_/$noteId');
 
