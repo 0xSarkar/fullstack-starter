@@ -1,14 +1,15 @@
 import { AppLayout } from '@/layouts/app-layout/app-layout';
 import { createFileRoute, redirect, useRouter } from '@tanstack/react-router';
 import { useAuthStore } from '@/stores/auth-store';
-import { listUsersApi } from '@fullstack-starter/shared-api';
+import { HttpError, listUsersApi } from '@fullstack-starter/shared-api';
 import { Button } from '@/components/ui/button';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { LoaderCircle } from 'lucide-react';
+import { toast } from 'sonner';
 
 export const Route = createFileRoute('/_appLayout')({
-  beforeLoad: async ({ context }) => {
-    const auth = context.auth;
+  beforeLoad: async () => {
+    const auth = useAuthStore.getState();
     // If we haven't bootstrapped yet, do it now
     if (auth.status === 'idle' || auth.status === 'loading') {
       await useAuthStore.getState().bootstrap();
@@ -35,6 +36,20 @@ export const Route = createFileRoute('/_appLayout')({
       await router.navigate({ to: '/' });
       setIsLoading(false);
     };
+
+    // If we get a 401 error, log the user out and redirect to login
+    useEffect(() => {
+      if (error instanceof HttpError && error.status === 401) {
+        const state = useAuthStore.getState();
+        if (state.status === 'authenticated') {
+          state.setFrom401();
+          // Preserve current location for potential redirect after login
+          const path = window.location.pathname + window.location.search;
+          toast.error('Session expired. Please log in again.');
+          router.navigate({ to: '/login', search: { redirect: path } }).catch(() => { });
+        }
+      }
+    }, [error, router]);
 
     return (
       <div className="flex items-center justify-center min-h-[400px]">
