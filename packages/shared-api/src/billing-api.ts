@@ -2,7 +2,7 @@ import type {
   CreateCheckoutSessionResponseType,
   CreateBillingPortalResponseType,
   ConfirmCheckoutSessionResponseType,
-  PlansResponseType,
+  GetPlansResponseType,
 } from '@fullstack-starter/shared-schemas';
 import { defaultClient } from './client.js';
 
@@ -15,9 +15,9 @@ export async function confirmCheckoutSessionApi(sessionId: string): Promise<Conf
 }
 
 export async function createBillingPortalApi(): Promise<CreateBillingPortalResponseType> {
-  return defaultClient.post<CreateBillingPortalResponseType>('/billing/billing-portal');
+  return defaultClient.post<CreateBillingPortalResponseType>('/billing/billing-portal', {});
 }
 
-export async function getPlansApi(): Promise<PlansResponseType> {
-  return defaultClient.get<PlansResponseType>('/billing/plans');
+export async function getPlansApi(): Promise<GetPlansResponseType> {
+  return defaultClient.get<GetPlansResponseType>('/billing/plans');
 }

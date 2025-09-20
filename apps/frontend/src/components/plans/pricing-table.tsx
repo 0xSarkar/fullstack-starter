@@ -1,13 +1,13 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
-import type { PlansResponseType } from '@fullstack-starter/shared-schemas';
+import type { GetPlansResponseType, PlanType } from '@fullstack-starter/shared-schemas';
 
 interface PricingTableProps {
-  plans: PlansResponseType;
+  plans: GetPlansResponseType['data'];
   isYearly: boolean;
   setIsYearly: (value: boolean) => void;
-  onUpgrade: (plan: PlansResponseType[0]) => void;
+  onUpgrade: (plan: PlanType) => void;
   loading: boolean;
   confirming: boolean;
   mostPopularPlanId?: string;

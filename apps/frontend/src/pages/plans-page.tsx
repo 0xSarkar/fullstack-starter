@@ -8,7 +8,7 @@ import { PricingTable } from '@/components/plans/pricing-table';
 import { toast } from 'sonner';
 import { useAuthStore } from '@/stores/auth-store';
 import { CurrentPlan } from '@/components/plans/current-plan';
-import type { PlansResponseType } from '@fullstack-starter/shared-schemas';
+import type { PlanType } from '@fullstack-starter/shared-schemas';
 
 // Constants
 const POLLING_CONFIG = {
@@ -36,7 +36,7 @@ export function PlansPage() {
   const [status, setStatus] = useState<ConfirmationStatus>('idle');
   const [isYearly, setIsYearly] = useState(false);
 
-  const plans = route.useLoaderData();
+  const { data: plans } = route.useLoaderData();
   const navigate = route.useNavigate();
   const isMountedRef = useRef(true);
   const startedSessionRef = useRef<string | undefined>(undefined);
@@ -45,10 +45,10 @@ export function PlansPage() {
 
   // Determine the most popular plan (highest price for current interval)
   const mostPopularPlanId = useMemo(() => {
-    const filteredPlans = plans.filter((plan: PlansResponseType[0]) => plan.interval === (isYearly ? 'year' : 'month'));
+    const filteredPlans = plans.filter((plan: PlanType) => plan.interval === (isYearly ? 'year' : 'month'));
     if (filteredPlans.length === 0) return undefined;
 
-    const highestPricePlan = filteredPlans.reduce((prev: PlansResponseType[0], current: PlansResponseType[0]) =>
+    const highestPricePlan = filteredPlans.reduce((prev: PlanType, current: PlanType) =>
       (current.amount || 0) > (prev.amount || 0) ? current : prev
     );
 
@@ -143,7 +143,7 @@ export function PlansPage() {
     setConfirming(false);
   }, [handleConfirmationResult, handleConfirmationError, clearCheckoutParams]);
 
-  const handleUpgrade = async (plan: PlansResponseType[0]) => {
+  const handleUpgrade = async (plan: PlanType) => {
     setLoading(true);
     try {
       const res = await createCheckoutSessionApi(plan.stripe_price_id);

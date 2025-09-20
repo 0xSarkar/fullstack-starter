@@ -71,7 +71,7 @@ export class ApiClient {
   }
 
   delete<T>(path: string): Promise<T> {
-    return this.request<T>('DELETE', path);
+    return this.request<T>('DELETE', path, {});
   }
 }
 

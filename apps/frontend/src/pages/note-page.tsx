@@ -14,7 +14,7 @@ import type { UpdateNoteRequest } from '@fullstack-starter/shared-schemas';
 const route = getRouteApi('/_appLayout/notes_/$noteId');
 
 export function NotePage() {
-  const noteData = route.useLoaderData();
+  const { data: noteData } = route.useLoaderData();
   const router = useRouter();
   const setNoteToRename = useNotesStore((state) => state.setNoteToRename);
   const [content, setContent] = useState(noteData.content || '');
