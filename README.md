@@ -1,15 +1,15 @@
 
 # Fullstack TypeScript SaaS Starter
 
-Build, iterate, and ship SaaS apps fast with a batteries-included TypeScript monorepo: fully typed backend (Fastify + PostgreSQL + Kysely), modern React frontends (TanStack Router + Shadcn UI), shared API contracts, and a generated typed API client. Develop with confidence, avoid boilerplate, and scale features without reinventing the basics.
+Build, iterate, and ship SaaS apps fast with a batteries-included TypeScript monorepo: fully typed backend (Fastify + PostgreSQL + Kysely), modern React frontends (TanStack Router + Shadcn UI), shared API contracts, and lightweight API helpers. Develop with confidence, avoid boilerplate, and scale features without reinventing the basics.
 
 ## Why this starter
 
-- Type-safe across the stack: shared TypeBox schemas power runtime validation, OpenAPI docs, and generated client types.
+- Type-safe across the stack: shared TypeBox schemas (`@fullstack-starter/shared-schemas`) power runtime validation; lightweight shared API helper functions (`@fullstack-starter/shared-api`) provide typed calls.
 - Real-world auth: email/password + JWT httpOnly cookie, optional Google login, secure password reset, and standardized error shapes.
 - Subscriptions ready: Stripe checkout, billing portal, webhook handling, plans in DB, and current subscription exposure to the client.
-- Production-minded backend: Fastify plugins, centralized error handling, CORS/Cookie/JWT, env-typed config, Swagger docs at `/docs`.
-- DX you’ll love: pnpm monorepo, Vite frontends, nodemon+esbuild dev server, dbmate migrations + Kysely query builder, codegen for clients.
+- Production-minded backend: Fastify plugins, centralized error handling, CORS/Cookie/JWT, env-typed config, optional interactive Swagger docs at `/docs`.
+- DX you’ll love: pnpm monorepo, Vite frontends, nodemon+esbuild dev server, dbmate migrations + Kysely query builder, simple api client helpers.
 - Admin and App UIs out of the box: user management (roles/activate/deactivate), notes demo, pricing, and auth flows—copy and extend.
 
 ## Feature highlights
@@ -25,8 +25,8 @@ Build, iterate, and ship SaaS apps fast with a batteries-included TypeScript mon
 	- Plans stored in Postgres (`stripe_prices`), checkout sessions, confirm checkout, billing portal
 	- Webhook ingestion, subscriptions table with status, and subscription exposure via `/auth/login`/`/auth/me`
 - API & Type Safety
-	- TypeBox request/response schemas, standardized responses, OpenAPI via Swagger (`/docs` and `/docs/json`)
-	- Generated typed client (`@fullstack-starter/api-client`) using `openapi-fetch`
+	- TypeBox request/response schemas, standardized responses
+	- Lightweight API utilities in `@fullstack-starter/shared-api`
 - Data & Migrations
 	- Postgres + Kysely query builder, raw SQL migrations (dbmate), Kysely codegen for DB typings
 - Frontend
@@ -43,13 +43,13 @@ Build, iterate, and ship SaaS apps fast with a batteries-included TypeScript mon
 
 ```
 apps/
-	backend/     # Fastify API server (Swagger at /docs)
-	frontend/    # App UI (Notes, Auth, Plans)
-	admin/       # Admin UI (Users management)
+	backend/        # Fastify API server (Swagger at /docs)
+	frontend/       # App UI (Notes, Auth, Plans)
+	admin/          # Admin UI (Users management)
 packages/
-	api-schema/  # Shared TypeBox schemas & TS types
-	api-client/  # OpenAPI-driven typed client (openapi-fetch)
-docs/          # Deep-dive docs (architecture, feature guides)
+	shared-schemas/ # Shared TypeBox schemas & TS types
+	shared-api/     # Hand-authored typed API helper functions
+docs/             # Deep-dive docs (architecture, feature guides)
 ```
 
 Key paths to skim:
@@ -58,8 +58,8 @@ Key paths to skim:
 - DB schema & migrations: `apps/backend/db/schema.sql`, `apps/backend/db/migrations/*`
 - Admin UI: `apps/admin/src/*` (users table, auth store, layouts)
 - Frontend UI: `apps/frontend/src/*` (notes, plans, auth pages)
-- API schemas: `packages/api-schema/src/*`
-- API client: `packages/api-client/*` (codegen script, singleton wrapper)
+- API schemas: `packages/shared-schemas/src/*`
+- API helpers: `packages/shared-api/src/*` (manually maintained functions)
 
 ## Getting started
 
@@ -108,20 +108,11 @@ pnpm dev:frontend    # runs both apps/frontends; use app’s own scripts if need
 
 ## Development workflow
 
-- Add a route: create a file under `apps/backend/src/routes/<feature>/<name>.ts` and export a `FastifyPluginAsyncTypebox`. Use schema wrappers from `@fullstack-starter/api-schema` for consistent responses. AutoLoad mounts it at `/<feature>/<name>`.
+- Add a route: create a file under `apps/backend/src/routes/<feature>/<name>.ts` and export a `FastifyPluginAsyncTypebox`. Use schemas from `@fullstack-starter/shared-schemas` for consistent responses. AutoLoad mounts it at `/<feature>/<name>`.
 - Query the DB: use `fastify.kysely` with generated types; run `pnpm db:generate-types` after migrations.
 - Evolve schema: `pnpm migrate:new <name>` ➜ edit SQL ➜ `pnpm migrate:up` (types regenerate automatically).
 - See/try the API: open `http://localhost:3000/docs`.
-- Update client types: `pnpm api:codegen` fetches `/docs/json` and regenerates `packages/api-client` types and wrapper.
-
-### Standardized responses
-
-All endpoints respond with one of:
-- Success: `{ success: true, data, message? }`
-- Error: `{ success: false, error, code?, details? }`
-- Paginated: `{ success: true, data: [...], pagination: { page, limit, total, totalPages } }`
-
-Schemas and helpers live in `packages/api-schema/src/response-schema.ts`.
+Client helpers live in `packages/shared-api` — add or adjust functions when you introduce new endpoints (import request/response types from `@fullstack-starter/shared-schemas`).
 
 ### Auth model at a glance
 
@@ -137,7 +128,7 @@ Schemas and helpers live in `packages/api-schema/src/response-schema.ts`.
 ## Frontend patterns
 
 - Router-first UI with TanStack Router; file-based routes under `src/routes`.
-- Zustand `auth-store` uses typed API client. A global 401 handler (via `@fullstack-starter/api-client` singleton) gracefully resets session and redirects to login.
+- Zustand `auth-store` uses the shared API helpers.
 - Tailwind v4 + Shadcn UI components for accessible, polished UI. The Admin app ships with a data table (TanStack Table) for user management.
 
 ## CLI scripts
@@ -153,7 +144,6 @@ From the repo root (`package.json`):
 	- `pnpm migrate:new <name>`
 	- `pnpm migrate:up` | `pnpm migrate:down` | `pnpm migrate:status`
 	- `pnpm db:generate-types`
-- API client codegen: `pnpm api:codegen`
 
 ## Deploy notes
 
