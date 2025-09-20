@@ -8,7 +8,9 @@ import { deleteNoteApi } from '@fullstack-starter/shared-api';
 
 export function DeleteNoteConfirmDialog() {
   const router = useRouter();
-  const { noteToDelete, setNoteToDelete } = useNotesStore((state) => ({ noteToDelete: state.noteToDelete, setNoteToDelete: state.setNoteToDelete }));
+
+  const noteToDelete = useNotesStore(state => state.noteToDelete);
+  const setNoteToDelete = useNotesStore((state) => state.setNoteToDelete);
 
   // Check if we're currently on a notes page
   const matchRoute = useMatchRoute();
@@ -54,10 +56,7 @@ export function DeleteNoteConfirmDialog() {
           <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
           <AlertDialogAction
             // prevent Radix from auto-closing the dialog so the loading state is visible until the async flow finishes
-            onClick={(e) => {
-              e.preventDefault();
-              if (!isDeleting) void handleDeleteNote();
-            }}
+            onClick={handleDeleteNote}
             disabled={isDeleting}
           >
             {isDeleting && <LoaderCircle className='animate-spin' />} Delete

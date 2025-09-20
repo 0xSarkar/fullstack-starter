@@ -12,9 +12,9 @@ import { Button } from "../../components/ui/button";
 import { Link } from "@tanstack/react-router";
 import { useNavigate, useRouter } from '@tanstack/react-router';
 import { useNotesStore } from '@/stores/notes-store';
-import { useMutation } from '@/hooks/use-mutation';
 import { createNoteApi } from '@fullstack-starter/shared-api';
 import { toast } from 'sonner';
+import { useState } from 'react';
 
 export function NavMain({
   items,
@@ -35,20 +35,25 @@ export function NavMain({
   const { setOpenMobile } = useSidebar();
 
   const setCreatedNote = useNotesStore(state => state.setCreatedNote);
-  const createNoteMutation = useMutation(createNoteApi, {
-    onSuccess: async (response) => {
+  const [isCreating, setIsCreating] = useState(false);
+
+  const handleCreateNote = async () => {
+    setIsCreating(true);
+    try {
+      const response = await createNoteApi({ title: 'New Note', content: '' });
       const noteData = { ...response.data, updatedAt: response.data.createdAt };
       setCreatedNote(noteData);
       setOpenMobile(false);
       await navigate({ to: '/notes/$noteId', params: { noteId: response.data.id } });
       router.invalidate();
-    },
-    onError: (error) => {
+    } catch (error: any) {
       console.error('Failed to create note:', error);
       const errorMessage = error instanceof Error ? error.message : 'Failed to create note';
       toast.error(errorMessage);
+    } finally {
+      setIsCreating(false);
     }
-  });
+  };
   return (
     <SidebarGroup>
       <SidebarGroupContent className="flex flex-col gap-2">
@@ -57,10 +62,10 @@ export function NavMain({
             <SidebarMenuButton
               tooltip="Create New Note"
               className="bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground active:bg-primary/90 active:text-primary-foreground min-w-8 duration-200 ease-linear"
-              onClick={() => createNoteMutation.mutate({ title: 'New Note', content: '' })}
-              disabled={createNoteMutation.isLoading}
+              onClick={() => handleCreateNote()}
+              disabled={isCreating}
             >
-              {createNoteMutation.isLoading ? <LoaderCircle className='animate-spin' /> : <PencilLine />}
+              {isCreating ? <LoaderCircle className='animate-spin' /> : <PencilLine />}
               <span>New Note</span>
             </SidebarMenuButton>
             <Button

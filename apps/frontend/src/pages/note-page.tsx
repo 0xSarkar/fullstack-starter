@@ -1,7 +1,6 @@
 import { useRouter, getRouteApi } from '@tanstack/react-router';
 import { useNotesStore } from '@/stores/notes-store';
 import { useEffect, useState, useRef } from 'react';
-import { useMutation } from '@/hooks/use-mutation';
 import { updateNoteApi } from '@fullstack-starter/shared-api';
 import Tiptap from '@/components/tiptap';
 import { useEditor } from '@tiptap/react';
@@ -10,6 +9,7 @@ import { Separator } from '@/components/ui/separator';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { Edit } from 'lucide-react';
 import type { UpdateNoteRequest } from '@fullstack-starter/shared-schemas';
+import { toast } from 'sonner';
 
 const route = getRouteApi('/_appLayout/notes_/$noteId');
 
@@ -28,23 +28,17 @@ export function NotePage() {
     },
   });
 
-  const updateNoteMutation = useMutation(
-    (updateData: UpdateNoteRequest) => updateNoteApi(noteData.id, updateData),
-    {
-      onSuccess: () => {
-        router.invalidate();
-      },
-      onError: (error) => {
-        console.error('Failed to save note:', error);
-      }
+  const handleSave = async () => {
+    try {
+      const updateData: UpdateNoteRequest = {
+        content: content ?? undefined,
+      };
+      await updateNoteApi(noteData.id, updateData);
+      router.invalidate();
+    } catch (error: any) {
+      console.error('Failed to save note:', error);
+      toast.error('Failed to save note');
     }
-  );
-
-  const handleSave = () => {
-    const updateData: UpdateNoteRequest = {
-      content: content ?? undefined,
-    };
-    updateNoteMutation.mutate(updateData);
   };
 
   // Autosave on content change, skip initial load
