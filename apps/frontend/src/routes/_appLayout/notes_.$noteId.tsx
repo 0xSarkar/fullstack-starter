@@ -11,7 +11,7 @@ export const Route = createFileRoute('/_appLayout/notes_/$noteId')({
     if (createdNote && createdNote.id === params.noteId) {
       setCreatedNote(null);
       // Use the cached note
-      return createdNote;
+      return { data: createdNote };
     }
 
     // Otherwise fetch from API

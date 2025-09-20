@@ -13,7 +13,7 @@ export async function createNoteApi(data: CreateNoteRequest): Promise<CreateNote
 }
 
 export async function updateNoteApi(id: string, data: UpdateNoteRequest): Promise<UpdateNoteResponse> {
-  return defaultClient.put<UpdateNoteResponse>(`/notes/${id}`, data);
+  return defaultClient.patch<UpdateNoteResponse>(`/notes/${id}`, data);
 }
 
 export async function getNoteApi(id: string): Promise<any> { // Assuming a response type
