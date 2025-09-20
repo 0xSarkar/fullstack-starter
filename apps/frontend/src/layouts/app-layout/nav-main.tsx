@@ -37,10 +37,10 @@ export function NavMain({
   const setCreatedNote = useNotesStore(state => state.setCreatedNote);
   const createNoteMutation = useMutation(createNoteApi, {
     onSuccess: async (response) => {
-      const noteData = { ...response, updatedAt: response.createdAt };
+      const noteData = { ...response.data, updatedAt: response.data.createdAt };
       setCreatedNote(noteData);
       setOpenMobile(false);
-      await navigate({ to: '/notes/$noteId', params: { noteId: response.id } });
+      await navigate({ to: '/notes/$noteId', params: { noteId: response.data.id } });
       router.invalidate();
     },
     onError: (error) => {

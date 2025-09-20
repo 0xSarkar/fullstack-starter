@@ -1,12 +1,17 @@
 import { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
-import { successResponse, errorResponse, wrapSuccessResponseSchema, wrapErrorResponseSchema } from '@fullstack-starter/shared-schemas';
-import { NoteParamsSchema, NoteDataSchema } from '@fullstack-starter/shared-schemas';
+import { errorResponse } from '@fullstack-starter/shared-schemas';
+import { NoteParamsSchema, GetNoteResponseSchema } from '@fullstack-starter/shared-schemas';
 
 const GetSchema = {
   params: NoteParamsSchema,
   response: {
-    200: wrapSuccessResponseSchema(NoteDataSchema),
-    default: wrapErrorResponseSchema()
+    200: GetNoteResponseSchema,
+    default: {
+      success: { type: 'boolean', enum: [false] },
+      error: { type: 'string' },
+      code: { type: 'string', nullable: true },
+      details: { type: 'object', nullable: true }
+    }
   }
 };
 
@@ -38,7 +43,10 @@ const getNote: FastifyPluginAsyncTypebox = async (fastify) => {
         updatedAt: typeof row.updated_at === 'string' ? row.updated_at : new Date(row.updated_at as any).toISOString()
       };
 
-      return reply.code(200).send(successResponse(response));
+      return reply.code(200).send({
+        success: true as const,
+        data: response
+      });
     } catch (err: any) {
       fastify.log.error(err);
       return reply.code(500).send(errorResponse('Failed to fetch note', 'FETCH_NOTE_FAILED'));

@@ -1,12 +1,17 @@
 import { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
-import { errorResponse, wrapErrorResponseSchema, wrapPaginatedResponseSchema, paginatedResponse } from '@fullstack-starter/shared-schemas';
-import { ListNotesQuerySchema, NoteItemSchema } from '@fullstack-starter/shared-schemas';
+import { errorResponse } from '@fullstack-starter/shared-schemas';
+import { ListNotesQuerySchema, ListNotesResponseSchema } from '@fullstack-starter/shared-schemas';
 
 const ListSchema = {
   querystring: ListNotesQuerySchema,
   response: {
-    200: wrapPaginatedResponseSchema(NoteItemSchema),
-    default: wrapErrorResponseSchema()
+    200: ListNotesResponseSchema,
+    default: {
+      success: { type: 'boolean', enum: [false] },
+      error: { type: 'string' },
+      code: { type: 'string', nullable: true },
+      details: { type: 'object', nullable: true }
+    }
   }
 };
 
@@ -49,7 +54,16 @@ const list: FastifyPluginAsyncTypebox = async (fastify) => {
         updatedAt: typeof r.updated_at === 'string' ? r.updated_at : new Date(r.updated_at as any).toISOString()
       }));
 
-      return reply.code(200).send(paginatedResponse(items, { page, limit, total }));
+      return reply.code(200).send({
+        success: true as const,
+        data: items,
+        pagination: {
+          page,
+          limit,
+          total,
+          totalPages: Math.ceil(total / limit)
+        }
+      });
     } catch (err: any) {
       fastify.log.error(err);
       return reply.code(500).send(errorResponse('Failed to list notes', 'LIST_NOTES_FAILED'));

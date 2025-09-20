@@ -30,20 +30,6 @@ export const NoteDataSchema = Type.Object({
   updatedAt: Type.String()
 });
 
-export const CreateNoteResponseSchema = Type.Object({
-  id: Type.String(),
-  title: Type.Union([Type.String(), Type.Null()]),
-  content: Type.Union([Type.String(), Type.Null()]),
-  createdAt: Type.String()
-});
-
-export const UpdateNoteResponseSchema = Type.Object({
-  id: Type.String(),
-  title: Type.Union([Type.String(), Type.Null()]),
-  content: Type.Union([Type.String(), Type.Null()]),
-  updatedAt: Type.String()
-});
-
 export const NoteItemSchema = Type.Object({
   id: Type.String(),
   title: Type.Union([Type.String(), Type.Null()]),
@@ -52,9 +38,45 @@ export const NoteItemSchema = Type.Object({
   updatedAt: Type.String()
 });
 
+export const GetNoteResponseSchema = Type.Object({
+  success: Type.Literal(true),
+  data: NoteDataSchema,
+  message: Type.Optional(Type.String())
+});
+
+export const CreateNoteResponseSchema = Type.Object({
+  success: Type.Literal(true),
+  data: Type.Object({
+    id: Type.String(),
+    title: Type.Union([Type.String(), Type.Null()]),
+    content: Type.Union([Type.String(), Type.Null()]),
+    createdAt: Type.String()
+  }),
+  message: Type.Optional(Type.String())
+});
+
+export const UpdateNoteResponseSchema = Type.Object({
+  success: Type.Literal(true),
+  data: Type.Object({
+    id: Type.String(),
+    title: Type.Union([Type.String(), Type.Null()]),
+    content: Type.Union([Type.String(), Type.Null()]),
+    updatedAt: Type.String()
+  }),
+  message: Type.Optional(Type.String())
+});
+
+export const DeleteNoteResponseSchema = Type.Object({
+  success: Type.Literal(true),
+  data: Type.Null(),
+  message: Type.Optional(Type.String())
+});
+
 export const ListNotesResponseSchema = Type.Object({
+  success: Type.Literal(true),
   data: Type.Array(NoteItemSchema),
-  pagination: PaginationSchema
+  pagination: PaginationSchema,
+  message: Type.Optional(Type.String())
 });
 
 // TypeScript types derived from schemas
@@ -63,7 +85,9 @@ export type UpdateNoteRequest = Static<typeof UpdateNoteRequestSchema>;
 export type NoteParams = Static<typeof NoteParamsSchema>;
 export type ListNotesQuery = Static<typeof ListNotesQuerySchema>;
 export type NoteData = Static<typeof NoteDataSchema>;
+export type GetNoteResponse = Static<typeof GetNoteResponseSchema>;
 export type CreateNoteResponse = Static<typeof CreateNoteResponseSchema>;
 export type UpdateNoteResponse = Static<typeof UpdateNoteResponseSchema>;
 export type NoteItem = Static<typeof NoteItemSchema>;
 export type ListNotesResponse = Static<typeof ListNotesResponseSchema>;
+export type DeleteNoteResponse = Static<typeof DeleteNoteResponseSchema>;

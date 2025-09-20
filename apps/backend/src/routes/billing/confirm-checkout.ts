@@ -1,15 +1,18 @@
 import { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
-import { successResponse, errorResponse, wrapSuccessResponseSchema, wrapErrorResponseSchema, ConfirmCheckoutSessionQuery, ConfirmCheckoutSessionResponse } from '@fullstack-starter/shared-schemas';
+import { errorResponse, ConfirmCheckoutSessionQuery, ConfirmCheckoutSessionResponse } from '@fullstack-starter/shared-schemas';
 
 const ConfirmSchema = {
   querystring: ConfirmCheckoutSessionQuery,
   response: {
-    200: wrapSuccessResponseSchema(ConfirmCheckoutSessionResponse),
-    default: wrapErrorResponseSchema()
+    200: ConfirmCheckoutSessionResponse,
+    default: {
+      success: { type: 'boolean', enum: [false] },
+      error: { type: 'string' },
+      code: { type: 'string', nullable: true },
+      details: { type: 'object', nullable: true }
+    }
   }
-};
-
-const confirmCheckoutSession: FastifyPluginAsyncTypebox = async (fastify) => {
+}; const confirmCheckoutSession: FastifyPluginAsyncTypebox = async (fastify) => {
   const stripe = fastify.stripe;
 
   fastify.get('/checkout', {
@@ -38,9 +41,12 @@ const confirmCheckoutSession: FastifyPluginAsyncTypebox = async (fastify) => {
         status = 'failed';
       }
 
-      return reply.code(200).send(successResponse({
-        status,
-      }));
+      return reply.code(200).send({
+        success: true as const,
+        data: {
+          status,
+        }
+      });
     } catch (err) {
       const e = err as any;
       // If Stripe indicates the session/resource is missing, return 404 so the frontend can stop polling

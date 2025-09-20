@@ -1,12 +1,17 @@
 import { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
 import type Stripe from 'stripe';
 import { Readable } from 'stream';
-import { successResponse, errorResponse, wrapSuccessResponseSchema, wrapErrorResponseSchema, WebhookSuccessResponse } from '@fullstack-starter/shared-schemas';
+import { errorResponse, WebhookSuccessResponse } from '@fullstack-starter/shared-schemas';
 
 const WebhookSchema = {
   response: {
-    200: wrapSuccessResponseSchema(WebhookSuccessResponse),
-    400: wrapErrorResponseSchema()
+    200: WebhookSuccessResponse,
+    400: {
+      success: { type: 'boolean', enum: [false] },
+      error: { type: 'string' },
+      code: { type: 'string', nullable: true },
+      details: { type: 'object', nullable: true }
+    }
   }
 };
 
@@ -214,7 +219,12 @@ const webhook: FastifyPluginAsyncTypebox = async (fastify): Promise<void> => {
         .execute();
     });
 
-    return reply.code(200).send(successResponse({ received: true }));
+    return reply.code(200).send({
+      success: true as const,
+      data: {
+        received: true
+      }
+    });
   });
 };
 

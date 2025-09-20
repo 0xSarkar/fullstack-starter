@@ -1,12 +1,17 @@
 import { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
-import { successResponse, errorResponse, wrapSuccessResponseSchema, wrapErrorResponseSchema } from '@fullstack-starter/shared-schemas';
+import { errorResponse } from '@fullstack-starter/shared-schemas';
 import { CreateCheckoutSessionResponse, CreateCheckoutSessionQuery } from '@fullstack-starter/shared-schemas';
 
 const CreateSchema = {
   querystring: CreateCheckoutSessionQuery,
   response: {
-    200: wrapSuccessResponseSchema(CreateCheckoutSessionResponse),
-    default: wrapErrorResponseSchema()
+    200: CreateCheckoutSessionResponse,
+    default: {
+      success: { type: 'boolean', enum: [false] },
+      error: { type: 'string' },
+      code: { type: 'string', nullable: true },
+      details: { type: 'object', nullable: true }
+    }
   }
 };
 
@@ -73,7 +78,12 @@ const createCheckoutSession: FastifyPluginAsyncTypebox = async (fastify) => {
         client_reference_id: request.user.id,
       });
 
-      return reply.code(200).send(successResponse({ url: session.url ?? undefined }));
+      return reply.code(200).send({
+        success: true as const,
+        data: {
+          url: session.url ?? undefined
+        }
+      });
     } catch (err) {
       fastify.log.error({ err }, 'create-checkout-session failed');
       return reply.code(500).send(errorResponse('Unable to create checkout session', 'CHECKOUT_SESSION_CREATE_FAILED'));

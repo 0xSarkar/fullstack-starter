@@ -1,24 +1,45 @@
 import { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
 import {
-  successResponse,
   errorResponse,
-  wrapSuccessResponseSchema,
-  wrapErrorResponseSchema,
-  AdminUserSchema,
   UserIdParamSchema,
-  UpdateUserStatusSchema
+  UpdateUserStatusSchema,
+  UpdateUserStatusResponseSchema
 } from '@fullstack-starter/shared-schemas';
 
 const UpdateUserStatusRequestSchema = {
   params: UserIdParamSchema,
   body: UpdateUserStatusSchema,
   response: {
-    200: wrapSuccessResponseSchema(AdminUserSchema),
-    400: wrapErrorResponseSchema(),
-    401: wrapErrorResponseSchema(),
-    403: wrapErrorResponseSchema(),
-    404: wrapErrorResponseSchema(),
-    default: wrapErrorResponseSchema()
+    200: UpdateUserStatusResponseSchema,
+    400: {
+      success: { type: 'boolean', enum: [false] },
+      error: { type: 'string' },
+      code: { type: 'string', nullable: true },
+      details: { type: 'object', nullable: true }
+    },
+    401: {
+      success: { type: 'boolean', enum: [false] },
+      error: { type: 'string' },
+      code: { type: 'string', nullable: true },
+      details: { type: 'object', nullable: true }
+    },
+    403: {
+      success: { type: 'boolean', enum: [false] },
+      error: { type: 'string' },
+      code: { type: 'string', nullable: true },
+      details: { type: 'object', nullable: true }
+    },
+    404: {
+      success: { type: 'boolean', enum: [false] },
+      error: { type: 'string', nullable: true },
+      details: { type: 'object', nullable: true }
+    },
+    default: {
+      success: { type: 'boolean', enum: [false] },
+      error: { type: 'string' },
+      code: { type: 'string', nullable: true },
+      details: { type: 'object', nullable: true }
+    }
   }
 };
 
@@ -74,7 +95,10 @@ const updateUserStatus: FastifyPluginAsyncTypebox = async (fastify): Promise<voi
         updated_at: updatedUser.updated_at.toISOString()
       };
 
-      return reply.code(200).send(successResponse(userResponse));
+      return reply.code(200).send({
+        success: true as const,
+        data: userResponse
+      });
 
     } catch (error: any) {
       fastify.log.error('Error updating user status:', error);

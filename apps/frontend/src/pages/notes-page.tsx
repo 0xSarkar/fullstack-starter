@@ -19,9 +19,9 @@ export function NotesPage() {
 
   const createNoteMutation = useMutation(createNoteApi, {
     onSuccess: async (response) => {
-      const noteData = { ...response, updatedAt: response.createdAt };
+      const noteData = { ...response.data, updatedAt: response.data.createdAt };
       setCreatedNote(noteData);
-      await navigate({ to: '/notes/$noteId', params: { noteId: response.id } });
+      await navigate({ to: '/notes/$noteId', params: { noteId: response.data.id } });
       router.invalidate();
     },
     onError: (error) => {

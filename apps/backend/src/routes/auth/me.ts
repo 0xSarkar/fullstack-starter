@@ -1,11 +1,16 @@
 import { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
-import { successResponse, errorResponse, wrapSuccessResponseSchema, wrapErrorResponseSchema } from '@fullstack-starter/shared-schemas';
+import { errorResponse } from '@fullstack-starter/shared-schemas';
 import { MeResponseSchema } from '@fullstack-starter/shared-schemas';
 
 const MeSchema = {
   response: {
-    200: wrapSuccessResponseSchema(MeResponseSchema),
-    default: wrapErrorResponseSchema()
+    200: MeResponseSchema,
+    default: {
+      success: { type: 'boolean', enum: [false] },
+      error: { type: 'string' },
+      code: { type: 'string', nullable: true },
+      details: { type: 'object', nullable: true }
+    }
   }
 };
 
@@ -51,27 +56,31 @@ const me: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<void> => {
         .executeTakeFirst();
 
       const response = {
-        user: {
-          id: userData.id,
-          email: userData.email,
-          display_name: userData.display_name || undefined,
-          subscription: subscriptionData ? {
-            stripe_price_id: subscriptionData.stripe_price_id,
-            status: subscriptionData.status,
-            stripe_product_id: subscriptionData.stripe_product_id,
-            current_period_start: subscriptionData.current_period_start?.toISOString(),
-            current_period_end: subscriptionData.current_period_end?.toISOString(),
-            cancel_at_period_end: subscriptionData.cancel_at_period_end,
-            price_name: subscriptionData.price_name || undefined,
-            product_name: subscriptionData.product_name || undefined,
-            amount: subscriptionData.amount || undefined,
-            currency: subscriptionData.currency || undefined,
-            interval: subscriptionData.interval || undefined,
-          } : undefined
-        }
+        success: true as const,
+        data: {
+          user: {
+            id: userData.id,
+            email: userData.email,
+            display_name: userData.display_name || undefined,
+            subscription: subscriptionData ? {
+              stripe_price_id: subscriptionData.stripe_price_id,
+              status: subscriptionData.status,
+              stripe_product_id: subscriptionData.stripe_product_id,
+              current_period_start: subscriptionData.current_period_start?.toISOString(),
+              current_period_end: subscriptionData.current_period_end?.toISOString(),
+              cancel_at_period_end: subscriptionData.cancel_at_period_end,
+              price_name: subscriptionData.price_name || undefined,
+              product_name: subscriptionData.product_name || undefined,
+              amount: subscriptionData.amount || undefined,
+              currency: subscriptionData.currency || undefined,
+              interval: subscriptionData.interval || undefined,
+            } : undefined
+          }
+        },
+        message: 'User data retrieved successfully'
       };
 
-      return reply.code(200).send(successResponse(response, 'User data retrieved successfully'));
+      return reply.code(200).send(response);
     } catch (error) {
       fastify.log.error(error);
       return reply.code(500).send(errorResponse('Failed to retrieve user data', 'USER_DATA_FETCH_FAILED'));

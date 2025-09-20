@@ -1,7 +1,11 @@
 import { Type, type Static } from '@sinclair/typebox';
 
 export const WebhookSuccessResponse = Type.Object({
-  received: Type.Boolean(),
+  success: Type.Literal(true),
+  data: Type.Object({
+    received: Type.Boolean(),
+  }),
+  message: Type.Optional(Type.String())
 });
 
 export type WebhookSuccessResponseType = Static<typeof WebhookSuccessResponse>;

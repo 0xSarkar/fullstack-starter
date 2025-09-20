@@ -1,14 +1,19 @@
 import { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
 import { OAuth2Client } from 'google-auth-library';
-import { successResponse, errorResponse, wrapSuccessResponseSchema, wrapErrorResponseSchema } from '@fullstack-starter/shared-schemas';
+import { errorResponse } from '@fullstack-starter/shared-schemas';
 import { GoogleLoginRequestSchema, GoogleLoginResponseSchema } from '@fullstack-starter/shared-schemas';
 
 // Schema definition for the route
 const GoogleAuthSchema = {
   body: GoogleLoginRequestSchema,
   response: {
-    200: wrapSuccessResponseSchema(GoogleLoginResponseSchema),
-    default: wrapErrorResponseSchema()
+    200: GoogleLoginResponseSchema,
+    default: {
+      success: { type: 'boolean', enum: [false] },
+      error: { type: 'string' },
+      code: { type: 'string', nullable: true },
+      details: { type: 'object', nullable: true }
+    }
   }
 };
 
@@ -140,27 +145,31 @@ const googleAuthRoute: FastifyPluginAsyncTypebox = async (fastify) => {
         .where('stripe_subscriptions.user_id', '=', userId)
         .executeTakeFirst();
 
-      return reply.code(200).send(successResponse({
-        user: {
-          id: userId,
-          email: userEmail,
-          display_name: userDisplayName || undefined,
-          subscription: subscriptionData ? {
-            stripe_price_id: subscriptionData.stripe_price_id,
-            status: subscriptionData.status,
-            stripe_product_id: subscriptionData.stripe_product_id,
-            current_period_start: subscriptionData.current_period_start?.toISOString(),
-            current_period_end: subscriptionData.current_period_end?.toISOString(),
-            cancel_at_period_end: subscriptionData.cancel_at_period_end,
-            price_name: subscriptionData.price_name || undefined,
-            product_name: subscriptionData.product_name || undefined,
-            amount: subscriptionData.amount || undefined,
-            currency: subscriptionData.currency || undefined,
-            interval: subscriptionData.interval || undefined,
-          } : undefined
+      return reply.code(200).send({
+        success: true as const,
+        data: {
+          user: {
+            id: userId,
+            email: userEmail,
+            display_name: userDisplayName || undefined,
+            subscription: subscriptionData ? {
+              stripe_price_id: subscriptionData.stripe_price_id,
+              status: subscriptionData.status,
+              stripe_product_id: subscriptionData.stripe_product_id,
+              current_period_start: subscriptionData.current_period_start?.toISOString(),
+              current_period_end: subscriptionData.current_period_end?.toISOString(),
+              cancel_at_period_end: subscriptionData.cancel_at_period_end,
+              price_name: subscriptionData.price_name || undefined,
+              product_name: subscriptionData.product_name || undefined,
+              amount: subscriptionData.amount || undefined,
+              currency: subscriptionData.currency || undefined,
+              interval: subscriptionData.interval || undefined,
+            } : undefined
+          },
+          token
         },
-        token
-      }, 'Google login successful'));
+        message: 'Google login successful'
+      });
     } catch (err: any) {
       fastify.log.error({ err }, 'Google auth failed');
       return reply.code(401).send(errorResponse('Google authentication failed', 'GOOGLE_AUTH_FAILED'));

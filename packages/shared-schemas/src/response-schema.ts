@@ -23,7 +23,7 @@ export interface PaginatedResponse<T = any> extends SuccessResponse<T[]> {
   };
 }
 
-// Schema wrappers for OpenAPI documentation
+// Schema wrappers for OpenAPI documentation (DEPRECATED - use explicit response schemas instead)
 export function wrapSuccessResponseSchema<T extends TSchema>(dataSchema: T) {
   return Type.Object({
     success: Type.Literal(true),
@@ -86,6 +86,7 @@ export const ValidationErrorDetails = Type.Object({
   description: 'Additional error context (structure varies by error type)'
 });
 
+// DEPRECATED - use explicit response schemas instead
 export function wrapPaginatedResponseSchema<T extends TSchema>(dataSchema: T) {
   return Type.Object({
     success: Type.Literal(true),

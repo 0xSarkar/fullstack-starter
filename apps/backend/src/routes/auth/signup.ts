@@ -1,13 +1,18 @@
 import bcrypt from 'bcrypt';
 import { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
-import { successResponse, errorResponse, wrapSuccessResponseSchema, wrapErrorResponseSchema } from '@fullstack-starter/shared-schemas';
+import { errorResponse } from '@fullstack-starter/shared-schemas';
 import { SignupRequestSchema, SignupResponseSchema } from '@fullstack-starter/shared-schemas';
 
 const SignupSchema = {
   body: SignupRequestSchema,
   response: {
-    201: wrapSuccessResponseSchema(SignupResponseSchema),
-    default: wrapErrorResponseSchema()
+    201: SignupResponseSchema,
+    default: {
+      success: { type: 'boolean', enum: [false] },
+      error: { type: 'string' },
+      code: { type: 'string', nullable: true },
+      details: { type: 'object', nullable: true }
+    }
   }
 };
 
@@ -53,16 +58,20 @@ const signup: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<void> =
       reply.setAuthCookie(token);
 
       // Return user data with token
-      const authResponse = {
-        user: {
-          id: newUser.id,
-          email: newUser.email,
-          display_name: newUser.display_name || undefined,
-          subscription: undefined // New users don't have subscriptions yet
+      const response = {
+        success: true as const,
+        data: {
+          user: {
+            id: newUser.id,
+            email: newUser.email,
+            display_name: newUser.display_name || undefined,
+            subscription: undefined // New users don't have subscriptions yet
+          },
+          token
         },
-        token
+        message: 'User created successfully'
       };
-      return reply.code(201).send(successResponse(authResponse, 'User created successfully'));
+      return reply.code(201).send(response);
     } catch (error) {
       fastify.log.error(error);
       return reply.code(500).send(errorResponse('Failed to create user', 'USER_CREATION_FAILED'));

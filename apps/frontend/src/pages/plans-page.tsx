@@ -118,7 +118,7 @@ export function PlansPage() {
     while (attempt < POLLING_CONFIG.maxAttempts && isMountedRef.current) {
       try {
         const data = await confirmCheckoutSessionApi(sessionId);
-        const shouldStop = handleConfirmationResult(data.status, lastStatus);
+        const shouldStop = handleConfirmationResult(data.data.status, lastStatus);
         if (shouldStop) break;
       } catch (err) {
         const shouldStop = handleConfirmationError(err, lastStatus);
@@ -147,8 +147,8 @@ export function PlansPage() {
     setLoading(true);
     try {
       const res = await createCheckoutSessionApi(plan.stripe_price_id);
-      if (res?.url) {
-        window.location.assign(res.url);
+      if (res.data?.url) {
+        window.location.assign(res.data.url);
       } else {
         toast.error(MESSAGES.genericError);
       }
@@ -164,8 +164,8 @@ export function PlansPage() {
     setLoading(true);
     try {
       const res = await createBillingPortalApi();
-      if (res?.url) {
-        window.location.assign(res.url);
+      if (res.data?.url) {
+        window.location.assign(res.data.url);
       } else {
         toast.error(MESSAGES.genericError);
       }

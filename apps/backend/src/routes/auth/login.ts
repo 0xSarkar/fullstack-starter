@@ -1,13 +1,18 @@
 import bcrypt from 'bcrypt';
 import { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
-import { successResponse, wrapSuccessResponseSchema, errorResponse, wrapErrorResponseSchema } from '@fullstack-starter/shared-schemas';
+import { errorResponse } from '@fullstack-starter/shared-schemas';
 import { LoginRequestSchema, LoginResponseSchema } from '@fullstack-starter/shared-schemas';
 
 const LoginSchema = {
   body: LoginRequestSchema,
   response: {
-    200: wrapSuccessResponseSchema(LoginResponseSchema),
-    default: wrapErrorResponseSchema()
+    200: LoginResponseSchema,
+    default: {
+      success: { type: 'boolean', enum: [false] },
+      error: { type: 'string' },
+      code: { type: 'string', nullable: true },
+      details: { type: 'object', nullable: true }
+    }
   }
 };
 
@@ -72,29 +77,32 @@ const login: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<void> =>
       reply.setAuthCookie(token);
 
       // Return user data with token
-      const authResponse = {
-        user: {
-          id: user.id,
-          email: user.email,
-          display_name: user.display_name || undefined,
-          subscription: subscriptionData ? {
-            stripe_price_id: subscriptionData.stripe_price_id,
-            status: subscriptionData.status,
-            stripe_product_id: subscriptionData.stripe_product_id,
-            current_period_start: subscriptionData.current_period_start?.toISOString(),
-            current_period_end: subscriptionData.current_period_end?.toISOString(),
-            cancel_at_period_end: subscriptionData.cancel_at_period_end,
-            price_name: subscriptionData.price_name || undefined,
-            product_name: subscriptionData.product_name || undefined,
-            amount: subscriptionData.amount || undefined,
-            currency: subscriptionData.currency || undefined,
-            interval: subscriptionData.interval || undefined,
-          } : undefined
-        },
-        token
+      const response = {
+        success: true as const,
+        data: {
+          user: {
+            id: user.id,
+            email: user.email,
+            display_name: user.display_name || undefined,
+            subscription: subscriptionData ? {
+              stripe_price_id: subscriptionData.stripe_price_id,
+              status: subscriptionData.status,
+              stripe_product_id: subscriptionData.stripe_product_id,
+              current_period_start: subscriptionData.current_period_start?.toISOString(),
+              current_period_end: subscriptionData.current_period_end?.toISOString(),
+              cancel_at_period_end: subscriptionData.cancel_at_period_end,
+              price_name: subscriptionData.price_name || undefined,
+              product_name: subscriptionData.product_name || undefined,
+              amount: subscriptionData.amount || undefined,
+              currency: subscriptionData.currency || undefined,
+              interval: subscriptionData.interval || undefined,
+            } : undefined
+          },
+          token
+        }
       };
       //return reply.success<LoginResponseType>(authResponse, 'Login successful');
-      return reply.code(200).send(successResponse(authResponse));
+      return reply.code(200).send(response);
     } catch (error) {
       fastify.log.error(error);
       return reply.code(500).send(errorResponse('Login failed', 'LOGIN_FAILED'));

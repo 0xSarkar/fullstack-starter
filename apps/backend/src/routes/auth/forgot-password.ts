@@ -1,13 +1,17 @@
 import { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
 import crypto from 'crypto';
-import { emptySuccessResponse, errorResponse, wrapEmptySuccessResponseSchema, wrapErrorResponseSchema } from '@fullstack-starter/shared-schemas';
-import { ForgotPasswordRequestSchema } from '@fullstack-starter/shared-schemas';
+import { errorResponse, ForgotPasswordRequestSchema, ForgotPasswordResponseSchema } from '@fullstack-starter/shared-schemas';
 
 const ForgotSchema = {
   body: ForgotPasswordRequestSchema,
   response: {
-    200: wrapEmptySuccessResponseSchema(),
-    default: wrapErrorResponseSchema()
+    200: ForgotPasswordResponseSchema,
+    default: {
+      success: { type: 'boolean', enum: [false] },
+      error: { type: 'string' },
+      code: { type: 'string', nullable: true },
+      details: { type: 'object', nullable: true }
+    }
   }
 };
 
@@ -23,7 +27,11 @@ const forgotPassword: FastifyPluginAsyncTypebox = async (fastify, opts): Promise
         .executeTakeFirst();
 
       // Always respond with a generic message to avoid user enumeration
-      const genericResponse = emptySuccessResponse('If an account exists, a password reset link has been sent');
+      const genericResponse = {
+        success: true as const,
+        data: null,
+        message: 'If an account exists, a password reset link has been sent'
+      };
 
       if (!user) {
         // Still return 200 with generic message

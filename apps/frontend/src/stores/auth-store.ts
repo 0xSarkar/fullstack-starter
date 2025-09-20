@@ -38,8 +38,8 @@ export const useAuthStore = create<AuthStoreState>((set, get) => ({
     set({ status: 'loading' });
     bootstrapPromise = meApi()
       .then((me) => {
-        if (me.user) {
-          set({ user: me.user, status: 'authenticated', lastChecked: Date.now() });
+        if (me.data?.user) {
+          set({ user: me.data.user, status: 'authenticated', lastChecked: Date.now() });
         } else {
           set({ user: null, status: 'unauthenticated', lastChecked: Date.now() });
         }
@@ -55,17 +55,17 @@ export const useAuthStore = create<AuthStoreState>((set, get) => ({
 
   login: async (email, password) => {
     const resp = await loginApi({ email, password });
-    set({ user: resp.user, status: 'authenticated', lastChecked: Date.now() });
+    set({ user: resp.data.user, status: 'authenticated', lastChecked: Date.now() });
   },
 
   signup: async (email, password) => {
     const resp = await signupApi({ email, password });
-    set({ user: resp.user, status: 'authenticated', lastChecked: Date.now() });
+    set({ user: resp.data.user, status: 'authenticated', lastChecked: Date.now() });
   },
 
   googleLogin: async (credential: string) => {
     const resp = await googleLoginApi({ credential });
-    set({ user: resp.user, status: 'authenticated', lastChecked: Date.now() });
+    set({ user: resp.data.user, status: 'authenticated', lastChecked: Date.now() });
   },
 
   logout: async () => {

@@ -1,13 +1,18 @@
 import { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
-import { successResponse, errorResponse, wrapSuccessResponseSchema, wrapErrorResponseSchema } from '@fullstack-starter/shared-schemas';
+import { errorResponse } from '@fullstack-starter/shared-schemas';
 import { NoteParamsSchema, UpdateNoteRequestSchema, UpdateNoteResponseSchema } from '@fullstack-starter/shared-schemas';
 
 const UpdateSchema = {
   params: NoteParamsSchema,
   body: UpdateNoteRequestSchema,
   response: {
-    200: wrapSuccessResponseSchema(UpdateNoteResponseSchema),
-    default: wrapErrorResponseSchema()
+    200: UpdateNoteResponseSchema,
+    default: {
+      success: { type: 'boolean', enum: [false] },
+      error: { type: 'string' },
+      code: { type: 'string', nullable: true },
+      details: { type: 'object', nullable: true }
+    }
   }
 };
 
@@ -48,7 +53,10 @@ const update: FastifyPluginAsyncTypebox = async (fastify) => {
         updatedAt: typeof updated.updated_at === 'string' ? updated.updated_at : new Date(updated.updated_at as any).toISOString()
       };
 
-      return reply.code(200).send(successResponse(response));
+      return reply.code(200).send({
+        success: true as const,
+        data: response
+      });
     } catch (err: any) {
       fastify.log.error(err);
       return reply.code(500).send(errorResponse('Failed to update note', 'UPDATE_NOTE_FAILED'));

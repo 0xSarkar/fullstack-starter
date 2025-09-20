@@ -51,23 +51,63 @@ export const UpdatePasswordRequestSchema = Type.Object({
   newPassword: Type.String({ minLength: 5 })
 });
 
+// Forgot password response schema
+export const ForgotPasswordResponseSchema = Type.Object({
+  success: Type.Literal(true),
+  data: Type.Null(),
+  message: Type.Optional(Type.String())
+});
+
+// Reset password response schema
+export const ResetPasswordResponseSchema = Type.Object({
+  success: Type.Literal(true),
+  data: Type.Null(),
+  message: Type.Optional(Type.String())
+});
+
+// Update password response schema
+export const UpdatePasswordResponseSchema = Type.Object({
+  success: Type.Literal(true),
+  data: Type.Null(),
+  message: Type.Optional(Type.String())
+});
+
+// Logout response schema
+export const LogoutResponseSchema = Type.Object({
+  success: Type.Literal(true),
+  data: Type.Null(),
+  message: Type.Optional(Type.String())
+});
+
 // Auth response schemas
 export const SignupResponseSchema = Type.Object({
-  user: UserDataWithSubscriptionSchema,
-  token: Type.String({
-    description: 'JWT token for API authentication (use this for mobile apps)'
-  })
+  success: Type.Literal(true),
+  data: Type.Object({
+    user: UserDataWithSubscriptionSchema,
+    token: Type.String({
+      description: 'JWT token for API authentication (use this for mobile apps)'
+    })
+  }),
+  message: Type.Optional(Type.String())
 });
 
 export const LoginResponseSchema = Type.Object({
-  user: UserDataWithSubscriptionSchema,
-  token: Type.String({
-    description: 'JWT token for API authentication (use this for mobile apps)'
-  })
+  success: Type.Literal(true),
+  data: Type.Object({
+    user: UserDataWithSubscriptionSchema,
+    token: Type.String({
+      description: 'JWT token for API authentication (use this for mobile apps)'
+    })
+  }),
+  message: Type.Optional(Type.String())
 });
 
 export const MeResponseSchema = Type.Object({
-  user: UserDataWithSubscriptionSchema
+  success: Type.Literal(true),
+  data: Type.Object({
+    user: UserDataWithSubscriptionSchema
+  }),
+  message: Type.Optional(Type.String())
 });
 
 // Google login (social) request schema
@@ -77,8 +117,12 @@ export const GoogleLoginRequestSchema = Type.Object({
 
 // Response shape identical to existing login/signup responses for consistency
 export const GoogleLoginResponseSchema = Type.Object({
-  user: UserDataWithSubscriptionSchema,
-  token: Type.String({ description: 'JWT token for API authentication (mirrors login/signup)' })
+  success: Type.Literal(true),
+  data: Type.Object({
+    user: UserDataWithSubscriptionSchema,
+    token: Type.String({ description: 'JWT token for API authentication (mirrors login/signup)' })
+  }),
+  message: Type.Optional(Type.String())
 });
 
 // TypeScript types derived from schemas
@@ -94,3 +138,7 @@ export type LoginResponse = Static<typeof LoginResponseSchema>;
 export type MeResponse = Static<typeof MeResponseSchema>;
 export type GoogleLoginRequest = Static<typeof GoogleLoginRequestSchema>;
 export type GoogleLoginResponse = Static<typeof GoogleLoginResponseSchema>;
+export type ForgotPasswordResponse = Static<typeof ForgotPasswordResponseSchema>;
+export type ResetPasswordResponse = Static<typeof ResetPasswordResponseSchema>;
+export type UpdatePasswordResponse = Static<typeof UpdatePasswordResponseSchema>;
+export type LogoutResponse = Static<typeof LogoutResponseSchema>;

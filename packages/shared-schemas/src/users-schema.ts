@@ -19,6 +19,33 @@ export const AdminUserSchema = Type.Object({
   stripe_customer_id: Type.Union([Type.String(), Type.Null()])
 });
 
+// List users response schema
+export const ListUsersResponseSchema = Type.Object({
+  success: Type.Literal(true),
+  data: Type.Array(AdminUserSchema),
+  pagination: Type.Object({
+    page: Type.Number(),
+    limit: Type.Number(),
+    total: Type.Number(),
+    totalPages: Type.Number()
+  }),
+  message: Type.Optional(Type.String())
+});
+
+// Update user role response schema
+export const UpdateUserRoleResponseSchema = Type.Object({
+  success: Type.Literal(true),
+  data: AdminUserSchema,
+  message: Type.Optional(Type.String())
+});
+
+// Update user status response schema
+export const UpdateUserStatusResponseSchema = Type.Object({
+  success: Type.Literal(true),
+  data: AdminUserSchema,
+  message: Type.Optional(Type.String())
+});
+
 // List users query parameters
 export const ListUsersQuerySchema = Type.Object({
   page: Type.Optional(Type.Number({ minimum: 1, default: 1 })),
@@ -48,3 +75,6 @@ export type ListUsersQuery = Static<typeof ListUsersQuerySchema>;
 export type UpdateUserRole = Static<typeof UpdateUserRoleSchema>;
 export type UpdateUserStatus = Static<typeof UpdateUserStatusSchema>;
 export type UserIdParam = Static<typeof UserIdParamSchema>;
+export type ListUsersResponse = Static<typeof ListUsersResponseSchema>;
+export type UpdateUserRoleResponse = Static<typeof UpdateUserRoleResponseSchema>;
+export type UpdateUserStatusResponse = Static<typeof UpdateUserStatusResponseSchema>;

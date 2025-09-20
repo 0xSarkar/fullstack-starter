@@ -1,13 +1,17 @@
 import bcrypt from 'bcrypt';
 import { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
-import { errorResponse, wrapErrorResponseSchema, emptySuccessResponse, wrapEmptySuccessResponseSchema } from '@fullstack-starter/shared-schemas';
-import { UpdatePasswordRequestSchema } from '@fullstack-starter/shared-schemas';
+import { errorResponse, UpdatePasswordRequestSchema, UpdatePasswordResponseSchema } from '@fullstack-starter/shared-schemas';
 
 const UpdatePasswordSchema = {
   body: UpdatePasswordRequestSchema,
   response: {
-    200: wrapEmptySuccessResponseSchema(),
-    default: wrapErrorResponseSchema()
+    200: UpdatePasswordResponseSchema,
+    default: {
+      success: { type: 'boolean', enum: [false] },
+      error: { type: 'string' },
+      code: { type: 'string', nullable: true },
+      details: { type: 'object', nullable: true }
+    }
   }
 };
 
@@ -63,7 +67,11 @@ const updatePassword: FastifyPluginAsyncTypebox = async (fastify, opts): Promise
         .where('id', '=', user.id)
         .execute();
 
-      return reply.code(200).send(emptySuccessResponse('Password updated successfully'));
+      return reply.code(200).send({
+        success: true as const,
+        data: null,
+        message: 'Password updated successfully'
+      });
     } catch (error) {
       fastify.log.error(error);
       return reply.code(500).send(errorResponse('Failed to update password', 'UPDATE_PASSWORD_FAILED'));

@@ -1,14 +1,18 @@
 import bcrypt from 'bcrypt';
 import crypto from 'crypto';
 import { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
-import { emptySuccessResponse, errorResponse, wrapEmptySuccessResponseSchema, wrapErrorResponseSchema } from '@fullstack-starter/shared-schemas';
-import { ResetPasswordRequestSchema } from '@fullstack-starter/shared-schemas';
+import { errorResponse, ResetPasswordRequestSchema, ResetPasswordResponseSchema } from '@fullstack-starter/shared-schemas';
 
 const ResetSchema = {
   body: ResetPasswordRequestSchema,
   response: {
-    200: wrapEmptySuccessResponseSchema(),
-    default: wrapErrorResponseSchema()
+    200: ResetPasswordResponseSchema,
+    default: {
+      success: { type: 'boolean', enum: [false] },
+      error: { type: 'string' },
+      code: { type: 'string', nullable: true },
+      details: { type: 'object', nullable: true }
+    }
   }
 };
 
@@ -80,7 +84,11 @@ const resetPassword: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<
       });
 
       // Do not auto-login after password reset
-      return reply.code(200).send(emptySuccessResponse('Password updated successfully'));
+      return reply.code(200).send({
+        success: true as const,
+        data: null,
+        message: 'Password updated successfully'
+      });
     } catch (err) {
       fastify.log.error({ err }, 'Reset password error');
       return reply.code(500).send(errorResponse('Failed to reset password', 'RESET_PASSWORD_FAILED'));

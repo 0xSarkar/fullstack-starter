@@ -1,12 +1,16 @@
 import { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
-import { emptySuccessResponse, errorResponse, wrapEmptySuccessResponseSchema, wrapErrorResponseSchema } from '@fullstack-starter/shared-schemas';
-import { NoteParamsSchema } from '@fullstack-starter/shared-schemas';
+import { errorResponse, NoteParamsSchema, DeleteNoteResponseSchema } from '@fullstack-starter/shared-schemas';
 
 const DeleteSchema = {
   params: NoteParamsSchema,
   response: {
-    200: wrapEmptySuccessResponseSchema(),
-    default: wrapErrorResponseSchema()
+    200: DeleteNoteResponseSchema,
+    default: {
+      success: { type: 'boolean', enum: [false] },
+      error: { type: 'string' },
+      code: { type: 'string', nullable: true },
+      details: { type: 'object', nullable: true }
+    }
   }
 };
 
@@ -31,7 +35,10 @@ const del: FastifyPluginAsyncTypebox = async (fastify) => {
         return reply.code(404).send(errorResponse('Note not found', 'NOTE_NOT_FOUND'));
       }
 
-      return reply.code(200).send(emptySuccessResponse());
+      return reply.code(200).send({
+        success: true as const,
+        data: null
+      });
     } catch (err: any) {
       fastify.log.error(err);
       return reply.code(500).send(errorResponse('Failed to delete note', 'DELETE_NOTE_FAILED'));

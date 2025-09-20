@@ -1,11 +1,16 @@
 import { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
-import { successResponse, errorResponse, wrapSuccessResponseSchema, wrapErrorResponseSchema } from '@fullstack-starter/shared-schemas';
+import { errorResponse } from '@fullstack-starter/shared-schemas';
 import { CreateBillingPortalResponse } from '@fullstack-starter/shared-schemas';
 
 const CreateSchema = {
   response: {
-    200: wrapSuccessResponseSchema(CreateBillingPortalResponse),
-    default: wrapErrorResponseSchema()
+    200: CreateBillingPortalResponse,
+    default: {
+      success: { type: 'boolean', enum: [false] },
+      error: { type: 'string' },
+      code: { type: 'string', nullable: true },
+      details: { type: 'object', nullable: true }
+    }
   }
 };
 
@@ -61,7 +66,12 @@ const createBillingPortal: FastifyPluginAsyncTypebox = async (fastify) => {
         return_url: `${frontendUrl}/plans`,
       });
 
-      return reply.code(200).send(successResponse({ url: session.url }));
+      return reply.code(200).send({
+        success: true as const,
+        data: {
+          url: session.url
+        }
+      });
     } catch (err) {
       fastify.log.error({ err }, 'create-billing-portal failed');
       return reply.code(500).send(errorResponse('Unable to create billing portal session', 'BILLING_PORTAL_CREATE_FAILED'));

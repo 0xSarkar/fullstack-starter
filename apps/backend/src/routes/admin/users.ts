@@ -1,20 +1,29 @@
 import { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
-import {
-  errorResponse,
-  paginatedResponse,
-  wrapErrorResponseSchema,
-  wrapPaginatedResponseSchema,
-  AdminUserSchema,
-  ListUsersQuerySchema
-} from '@fullstack-starter/shared-schemas';
+import { errorResponse } from '@fullstack-starter/shared-schemas';
+import { ListUsersQuerySchema, ListUsersResponseSchema } from '@fullstack-starter/shared-schemas';
 
 const ListUsersSchema = {
   querystring: ListUsersQuerySchema,
   response: {
-    200: wrapPaginatedResponseSchema(AdminUserSchema),
-    401: wrapErrorResponseSchema(),
-    403: wrapErrorResponseSchema(),
-    default: wrapErrorResponseSchema()
+    200: ListUsersResponseSchema,
+    401: {
+      success: { type: 'boolean', enum: [false] },
+      error: { type: 'string' },
+      code: { type: 'string', nullable: true },
+      details: { type: 'object', nullable: true }
+    },
+    403: {
+      success: { type: 'boolean', enum: [false] },
+      error: { type: 'string' },
+      code: { type: 'string', nullable: true },
+      details: { type: 'object', nullable: true }
+    },
+    default: {
+      success: { type: 'boolean', enum: [false] },
+      error: { type: 'string' },
+      code: { type: 'string', nullable: true },
+      details: { type: 'object', nullable: true }
+    }
   }
 };
 
@@ -75,13 +84,16 @@ const listUsers: FastifyPluginAsyncTypebox = async (fastify): Promise<void> => {
         updated_at: user.updated_at.toISOString()
       }));
 
-      return reply.code(200).send(
-        paginatedResponse(users, {
+      return reply.code(200).send({
+        success: true as const,
+        data: users,
+        pagination: {
           page,
           limit,
-          total
-        })
-      );
+          total,
+          totalPages: Math.ceil(total / limit)
+        }
+      });
 
     } catch (error: any) {
       fastify.log.error('Error listing users:', error);

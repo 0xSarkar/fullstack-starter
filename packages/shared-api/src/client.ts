@@ -30,14 +30,14 @@ export class ApiClient {
       credentials: 'include', // Include cookies for auth
     });
 
-    const data = await response.json();
+    const responseJson = await response.json();
 
     if (!response.ok) {
-      const error = data as ErrorResponse;
+      const error = responseJson as ErrorResponse;
       throw new Error(error.error || 'Request failed');
     }
 
-    return data as T;
+    return responseJson as T;
   }
 
   get<T>(path: string, query?: Record<string, any>): Promise<T> {

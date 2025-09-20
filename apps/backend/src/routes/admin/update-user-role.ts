@@ -1,24 +1,46 @@
 import { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
 import {
-  successResponse,
   errorResponse,
-  wrapSuccessResponseSchema,
-  wrapErrorResponseSchema,
-  AdminUserSchema,
   UserIdParamSchema,
-  UpdateUserRoleSchema
+  UpdateUserRoleSchema,
+  UpdateUserRoleResponseSchema
 } from '@fullstack-starter/shared-schemas';
 
 const UpdateUserRoleRequestSchema = {
   params: UserIdParamSchema,
   body: UpdateUserRoleSchema,
   response: {
-    200: wrapSuccessResponseSchema(AdminUserSchema),
-    400: wrapErrorResponseSchema(),
-    401: wrapErrorResponseSchema(),
-    403: wrapErrorResponseSchema(),
-    404: wrapErrorResponseSchema(),
-    default: wrapErrorResponseSchema()
+    200: UpdateUserRoleResponseSchema,
+    400: {
+      success: { type: 'boolean', enum: [false] },
+      error: { type: 'string' },
+      code: { type: 'string', nullable: true },
+      details: { type: 'object', nullable: true }
+    },
+    401: {
+      success: { type: 'boolean', enum: [false] },
+      error: { type: 'string' },
+      code: { type: 'string', nullable: true },
+      details: { type: 'object', nullable: true }
+    },
+    403: {
+      success: { type: 'boolean', enum: [false] },
+      error: { type: 'string' },
+      code: { type: 'string', nullable: true },
+      details: { type: 'object', nullable: true }
+    },
+    404: {
+      success: { type: 'boolean', enum: [false] },
+      error: { type: 'string' },
+      code: { type: 'string', nullable: true },
+      details: { type: 'object', nullable: true }
+    },
+    default: {
+      success: { type: 'boolean', enum: [false] },
+      error: { type: 'string' },
+      code: { type: 'string', nullable: true },
+      details: { type: 'object', nullable: true }
+    }
   }
 };
 
@@ -79,7 +101,10 @@ const updateUserRole: FastifyPluginAsyncTypebox = async (fastify): Promise<void>
         updated_at: updatedUser.updated_at.toISOString()
       };
 
-      return reply.code(200).send(successResponse(userResponse));
+      return reply.code(200).send({
+        success: true as const,
+        data: userResponse
+      });
 
     } catch (error: any) {
       fastify.log.error('Error updating user role:', error);
