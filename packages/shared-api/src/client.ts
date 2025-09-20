@@ -34,7 +34,7 @@ export class ApiClient {
 
     if (!response.ok) {
       const error = responseJson as ErrorResponse;
-      throw new Error(error.error || 'Request failed');
+      throw error;
     }
 
     return responseJson as T;
