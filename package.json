@@ -9,7 +9,6 @@
     "start": "pnpm --parallel --filter \"./apps/*\" start",
     "build": "pnpm --recursive --filter \"./packages/*\" --filter \"./apps/*\" build",
     "test": "pnpm --recursive --filter \"./packages/*\" --filter \"./apps/*\" test",
-    "api:codegen": "pnpm --filter @fullstack-starter/api-client run codegen",
     "dev:backend": "pnpm --filter @fullstack-starter/backend dev",
     "dev:frontend": "pnpm --filter @fullstack-starter/frontend dev",
     "build:backend": "pnpm --filter @fullstack-starter/backend build",

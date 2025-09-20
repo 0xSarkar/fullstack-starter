@@ -46,14 +46,14 @@
   - User management
 
 #### Packages (`packages/`)
-- **`api-schema/`**: Shared TypeScript schemas using TypeBox
+- **`shared-schemas/`**: Shared TypeScript schemas using TypeBox
   - Auth, billing, notes, and response contracts
   - Ensures type safety between frontend and backend
 
 ### Key Architectural Patterns
 
 #### Type-Safe API Contracts
-- **Shared Schemas**: TypeBox schemas in `api-schema` package
+- **Shared Schemas**: TypeBox schemas in `shared-schemas` package
 - **Runtime Validation**: Backend validates requests against schemas
 - **Frontend Types**: Auto-generated TypeScript types for API responses
 - **Code Generation**: Database types generated from PostgreSQL schema
