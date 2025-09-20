@@ -1,4 +1,4 @@
-import { useLoaderData, useNavigate, useRouter, useMatch } from '@tanstack/react-router';
+import { useLoaderData, useNavigate, useRouter } from '@tanstack/react-router';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { createNoteApi } from '@fullstack-starter/shared-api';
 import { Button } from '@/components/ui/button';
@@ -14,8 +14,6 @@ export function NotesPage() {
   const navigate = useNavigate();
   const router = useRouter();
   const setCreatedNote = useNotesStore(state => state.setCreatedNote);
-  const parentMatch = useMatch({ from: "/_appLayout", shouldThrow: false });
-  const isParentSettled = parentMatch?.status !== 'pending' && parentMatch?.isFetching === false;
 
   const createNoteMutation = useMutation(createNoteApi, {
     onSuccess: async (response) => {
@@ -31,11 +29,6 @@ export function NotesPage() {
 
   const setNoteToDelete = useNotesStore((state) => state.setNoteToDelete);
   const setNoteToRename = useNotesStore((state) => state.setNoteToRename);
-
-  // Don't show any UI until the loader data is settled
-  if (!isParentSettled) {
-    return null;
-  }
 
   return (
     <>
