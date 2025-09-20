@@ -1,5 +1,19 @@
 import { type ErrorResponse } from '@fullstack-starter/shared-schemas';
 
+export class HttpError extends Error {
+  status: number;
+  code?: string;
+  details?: unknown;
+
+  constructor(status: number, code?: string, details?: unknown, message?: string) {
+    super(message || 'HTTP Error');
+    this.name = 'HttpError';
+    this.status = status;
+    this.code = code;
+    this.details = details;
+  }
+}
+
 export class ApiClient {
   private baseUrl: string;
 
@@ -34,7 +48,7 @@ export class ApiClient {
 
     if (!response.ok) {
       const error = responseJson as ErrorResponse;
-      throw error;
+      throw new HttpError(response.status, error.code, error.details, error.error);
     }
 
     return responseJson as T;

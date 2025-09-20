@@ -1,13 +1,8 @@
 import { ThemeProvider } from '@/components/theme-provider';
 import { Toaster } from '@/components/ui/sonner';
-import type { AuthStoreState } from '@/stores/auth-store';
-import { Outlet, createRootRouteWithContext } from '@tanstack/react-router';
+import { Outlet, createRootRoute } from '@tanstack/react-router';
 
-interface MyRouterContext {
-  auth: AuthStoreState;
-}
-
-export const Route = createRootRouteWithContext<MyRouterContext>()({
+export const Route = createRootRoute({
   component: () => (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
       <Toaster richColors theme='light' />

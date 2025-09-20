@@ -3,8 +3,10 @@ import { createFileRoute, redirect } from '@tanstack/react-router';
 import { useAuthStore } from '@/stores/auth-store';
 
 export const Route = createFileRoute('/_authLayout')({
-  beforeLoad: async ({ context }) => {
-    if (context.auth.status === 'idle' || context.auth.status === 'loading') {
+  beforeLoad: async () => {
+    const auth = useAuthStore.getState();
+    // If we haven't bootstrapped yet, do it now
+    if (auth.status === 'idle' || auth.status === 'loading') {
       await useAuthStore.getState().bootstrap();
     }
     if (useAuthStore.getState().status === 'authenticated') {
