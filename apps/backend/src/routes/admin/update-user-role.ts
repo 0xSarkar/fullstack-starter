@@ -3,7 +3,8 @@ import {
   errorResponse,
   UserIdParamSchema,
   UpdateUserRoleSchema,
-  UpdateUserRoleResponseSchema
+  UpdateUserRoleResponseSchema,
+  DefaultErrorResponseSchema
 } from '@fullstack-starter/shared-schemas';
 
 const UpdateUserRoleRequestSchema = {
@@ -11,36 +12,11 @@ const UpdateUserRoleRequestSchema = {
   body: UpdateUserRoleSchema,
   response: {
     200: UpdateUserRoleResponseSchema,
-    400: {
-      success: { type: 'boolean', enum: [false] },
-      error: { type: 'string' },
-      code: { type: 'string', nullable: true },
-      details: { type: 'object', nullable: true }
-    },
-    401: {
-      success: { type: 'boolean', enum: [false] },
-      error: { type: 'string' },
-      code: { type: 'string', nullable: true },
-      details: { type: 'object', nullable: true }
-    },
-    403: {
-      success: { type: 'boolean', enum: [false] },
-      error: { type: 'string' },
-      code: { type: 'string', nullable: true },
-      details: { type: 'object', nullable: true }
-    },
-    404: {
-      success: { type: 'boolean', enum: [false] },
-      error: { type: 'string' },
-      code: { type: 'string', nullable: true },
-      details: { type: 'object', nullable: true }
-    },
-    default: {
-      success: { type: 'boolean', enum: [false] },
-      error: { type: 'string' },
-      code: { type: 'string', nullable: true },
-      details: { type: 'object', nullable: true }
-    }
+    400: DefaultErrorResponseSchema,
+    401: DefaultErrorResponseSchema,
+    403: DefaultErrorResponseSchema,
+    404: DefaultErrorResponseSchema,
+    default: DefaultErrorResponseSchema
   }
 };
 

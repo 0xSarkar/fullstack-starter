@@ -1,15 +1,10 @@
 import { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
-import { errorResponse, LogoutResponseSchema } from '@fullstack-starter/shared-schemas';
+import { errorResponse, LogoutResponseSchema, DefaultErrorResponseSchema } from '@fullstack-starter/shared-schemas';
 
 const LogoutSchema = {
   response: {
     200: LogoutResponseSchema,
-    default: {
-      success: { type: 'boolean', enum: [false] },
-      error: { type: 'string' },
-      code: { type: 'string', nullable: true },
-      details: { type: 'object', nullable: true }
-    }
+    default: DefaultErrorResponseSchema
   }
 };
 

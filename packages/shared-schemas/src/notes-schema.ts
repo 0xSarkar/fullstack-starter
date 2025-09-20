@@ -1,5 +1,4 @@
 import { Type, type Static } from '@sinclair/typebox';
-import { PaginationSchema } from './response-schema.js';
 
 // Note request schemas
 export const CreateNoteRequestSchema = Type.Object({
@@ -75,7 +74,12 @@ export const DeleteNoteResponseSchema = Type.Object({
 export const ListNotesResponseSchema = Type.Object({
   success: Type.Literal(true),
   data: Type.Array(NoteItemSchema),
-  pagination: PaginationSchema,
+  pagination: Type.Object({
+    page: Type.Number(),
+    limit: Type.Number(),
+    total: Type.Number(),
+    totalPages: Type.Number()
+  }),
   message: Type.Optional(Type.String())
 });
 

@@ -64,3 +64,11 @@ export type PlanType = Static<typeof PlanSchema>;
 export const PlansResponseSchema = Type.Array(PlanSchema);
 
 export type PlansResponseType = Static<typeof PlansResponseSchema>;
+
+export const GetPlansResponseSchema = Type.Object({
+  success: Type.Literal(true),
+  data: PlansResponseSchema,
+  message: Type.Optional(Type.String())
+});
+
+export type GetPlansResponseType = Static<typeof GetPlansResponseSchema>;

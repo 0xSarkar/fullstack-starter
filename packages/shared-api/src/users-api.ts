@@ -2,16 +2,15 @@ import type {
   ListUsersQuery,
   UpdateUserRole,
   UpdateUserStatus,
-  AdminUser,
-  PaginatedResponse,
+  ListUsersResponse,
 } from '@fullstack-starter/shared-schemas';
 import { defaultClient } from './client.js';
 
 /**
  * List users with pagination and filtering
  */
-export async function listUsersApi(query?: ListUsersQuery): Promise<PaginatedResponse<AdminUser>> {
-  return defaultClient.get<PaginatedResponse<AdminUser>>('/admin/users', query);
+export async function listUsersApi(query?: ListUsersQuery): Promise<ListUsersResponse> {
+  return defaultClient.get<ListUsersResponse>('/admin/users', query);
 }
 
 /**

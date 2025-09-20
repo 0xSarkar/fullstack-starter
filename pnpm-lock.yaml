@@ -437,6 +437,9 @@ importers:
 
   packages/shared-schemas:
     dependencies:
+      '@fullstack-starter/api-schema':
+        specifier: workspace:*
+        version: link:../api-schema
       '@sinclair/typebox':
         specifier: ^0.34.41
         version: 0.34.41

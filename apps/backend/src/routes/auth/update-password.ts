@@ -1,17 +1,12 @@
 import bcrypt from 'bcrypt';
 import { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
-import { errorResponse, UpdatePasswordRequestSchema, UpdatePasswordResponseSchema } from '@fullstack-starter/shared-schemas';
+import { errorResponse, UpdatePasswordRequestSchema, UpdatePasswordResponseSchema, DefaultErrorResponseSchema } from '@fullstack-starter/shared-schemas';
 
 const UpdatePasswordSchema = {
   body: UpdatePasswordRequestSchema,
   response: {
     200: UpdatePasswordResponseSchema,
-    default: {
-      success: { type: 'boolean', enum: [false] },
-      error: { type: 'string' },
-      code: { type: 'string', nullable: true },
-      details: { type: 'object', nullable: true }
-    }
+    default: DefaultErrorResponseSchema
   }
 };
 

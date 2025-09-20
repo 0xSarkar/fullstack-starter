@@ -1,6 +1,6 @@
 import { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
 import { OAuth2Client } from 'google-auth-library';
-import { errorResponse } from '@fullstack-starter/shared-schemas';
+import { errorResponse, DefaultErrorResponseSchema } from '@fullstack-starter/shared-schemas';
 import { GoogleLoginRequestSchema, GoogleLoginResponseSchema } from '@fullstack-starter/shared-schemas';
 
 // Schema definition for the route
@@ -8,12 +8,7 @@ const GoogleAuthSchema = {
   body: GoogleLoginRequestSchema,
   response: {
     200: GoogleLoginResponseSchema,
-    default: {
-      success: { type: 'boolean', enum: [false] },
-      error: { type: 'string' },
-      code: { type: 'string', nullable: true },
-      details: { type: 'object', nullable: true }
-    }
+    default: DefaultErrorResponseSchema
   }
 };
 

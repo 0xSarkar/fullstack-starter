@@ -1,11 +1,11 @@
 import { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
-import { successResponse, wrapSuccessResponseSchema, wrapErrorResponseSchema } from '@fullstack-starter/shared-schemas';
-import { PlansResponseSchema } from '@fullstack-starter/shared-schemas';
+import { DefaultErrorResponseSchema } from '@fullstack-starter/shared-schemas';
+import { GetPlansResponseSchema } from '@fullstack-starter/shared-schemas';
 
 const PlansSchema = {
   response: {
-    200: wrapSuccessResponseSchema(PlansResponseSchema),
-    default: wrapErrorResponseSchema()
+    200: GetPlansResponseSchema,
+    default: DefaultErrorResponseSchema
   }
 };
 
@@ -33,7 +33,10 @@ const plans: FastifyPluginAsyncTypebox = async (fastify) => {
         .orderBy('created_at', 'asc')
         .execute();
 
-      return reply.code(200).send(successResponse(activePlans));
+      return reply.code(200).send({
+        success: true as const,
+        data: activePlans
+      });
     } catch (error) {
       fastify.log.error(error);
       return reply.code(500).send({

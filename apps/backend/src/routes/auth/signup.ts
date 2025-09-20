@@ -1,18 +1,13 @@
 import bcrypt from 'bcrypt';
 import { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
-import { errorResponse } from '@fullstack-starter/shared-schemas';
+import { errorResponse, DefaultErrorResponseSchema } from '@fullstack-starter/shared-schemas';
 import { SignupRequestSchema, SignupResponseSchema } from '@fullstack-starter/shared-schemas';
 
 const SignupSchema = {
   body: SignupRequestSchema,
   response: {
     201: SignupResponseSchema,
-    default: {
-      success: { type: 'boolean', enum: [false] },
-      error: { type: 'string' },
-      code: { type: 'string', nullable: true },
-      details: { type: 'object', nullable: true }
-    }
+    default: DefaultErrorResponseSchema
   }
 };
 

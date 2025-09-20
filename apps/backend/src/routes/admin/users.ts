@@ -1,29 +1,14 @@
 import { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
-import { errorResponse } from '@fullstack-starter/shared-schemas';
+import { errorResponse, DefaultErrorResponseSchema } from '@fullstack-starter/shared-schemas';
 import { ListUsersQuerySchema, ListUsersResponseSchema } from '@fullstack-starter/shared-schemas';
 
 const ListUsersSchema = {
   querystring: ListUsersQuerySchema,
   response: {
     200: ListUsersResponseSchema,
-    401: {
-      success: { type: 'boolean', enum: [false] },
-      error: { type: 'string' },
-      code: { type: 'string', nullable: true },
-      details: { type: 'object', nullable: true }
-    },
-    403: {
-      success: { type: 'boolean', enum: [false] },
-      error: { type: 'string' },
-      code: { type: 'string', nullable: true },
-      details: { type: 'object', nullable: true }
-    },
-    default: {
-      success: { type: 'boolean', enum: [false] },
-      error: { type: 'string' },
-      code: { type: 'string', nullable: true },
-      details: { type: 'object', nullable: true }
-    }
+    401: DefaultErrorResponseSchema,
+    403: DefaultErrorResponseSchema,
+    default: DefaultErrorResponseSchema
   }
 };
 

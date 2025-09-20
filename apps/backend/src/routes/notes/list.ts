@@ -1,17 +1,12 @@
 import { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
-import { errorResponse } from '@fullstack-starter/shared-schemas';
+import { errorResponse, DefaultErrorResponseSchema } from '@fullstack-starter/shared-schemas';
 import { ListNotesQuerySchema, ListNotesResponseSchema } from '@fullstack-starter/shared-schemas';
 
 const ListSchema = {
   querystring: ListNotesQuerySchema,
   response: {
     200: ListNotesResponseSchema,
-    default: {
-      success: { type: 'boolean', enum: [false] },
-      error: { type: 'string' },
-      code: { type: 'string', nullable: true },
-      details: { type: 'object', nullable: true }
-    }
+    default: DefaultErrorResponseSchema
   }
 };
 

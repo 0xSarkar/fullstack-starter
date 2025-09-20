@@ -1,18 +1,13 @@
 import bcrypt from 'bcrypt';
 import crypto from 'crypto';
 import { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
-import { errorResponse, ResetPasswordRequestSchema, ResetPasswordResponseSchema } from '@fullstack-starter/shared-schemas';
+import { errorResponse, ResetPasswordRequestSchema, ResetPasswordResponseSchema, DefaultErrorResponseSchema } from '@fullstack-starter/shared-schemas';
 
 const ResetSchema = {
   body: ResetPasswordRequestSchema,
   response: {
     200: ResetPasswordResponseSchema,
-    default: {
-      success: { type: 'boolean', enum: [false] },
-      error: { type: 'string' },
-      code: { type: 'string', nullable: true },
-      details: { type: 'object', nullable: true }
-    }
+    default: DefaultErrorResponseSchema
   }
 };
 

@@ -58,7 +58,7 @@ export async function updatePasswordApi(data: UpdatePasswordRequest): Promise<vo
  * Log out the current user
  */
 export async function logoutApi(): Promise<void> {
-  await defaultClient.post('/auth/logout');
+  await defaultClient.post('/auth/logout', {});
 }
 
 /**

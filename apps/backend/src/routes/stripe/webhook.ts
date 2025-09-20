@@ -1,17 +1,12 @@
 import { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
 import type Stripe from 'stripe';
 import { Readable } from 'stream';
-import { errorResponse, WebhookSuccessResponse } from '@fullstack-starter/shared-schemas';
+import { errorResponse, DefaultErrorResponseSchema, WebhookSuccessResponse } from '@fullstack-starter/shared-schemas';
 
 const WebhookSchema = {
   response: {
     200: WebhookSuccessResponse,
-    400: {
-      success: { type: 'boolean', enum: [false] },
-      error: { type: 'string' },
-      code: { type: 'string', nullable: true },
-      details: { type: 'object', nullable: true }
-    }
+    400: DefaultErrorResponseSchema
   }
 };
 

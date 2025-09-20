@@ -1,16 +1,11 @@
 import { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
-import { errorResponse, ConfirmCheckoutSessionQuery, ConfirmCheckoutSessionResponse } from '@fullstack-starter/shared-schemas';
+import { errorResponse, DefaultErrorResponseSchema, ConfirmCheckoutSessionQuery, ConfirmCheckoutSessionResponse } from '@fullstack-starter/shared-schemas';
 
 const ConfirmSchema = {
   querystring: ConfirmCheckoutSessionQuery,
   response: {
     200: ConfirmCheckoutSessionResponse,
-    default: {
-      success: { type: 'boolean', enum: [false] },
-      error: { type: 'string' },
-      code: { type: 'string', nullable: true },
-      details: { type: 'object', nullable: true }
-    }
+    default: DefaultErrorResponseSchema
   }
 }; const confirmCheckoutSession: FastifyPluginAsyncTypebox = async (fastify) => {
   const stripe = fastify.stripe;

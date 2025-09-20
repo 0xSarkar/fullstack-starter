@@ -1,17 +1,12 @@
 import { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
 import crypto from 'crypto';
-import { errorResponse, ForgotPasswordRequestSchema, ForgotPasswordResponseSchema } from '@fullstack-starter/shared-schemas';
+import { errorResponse, ForgotPasswordRequestSchema, ForgotPasswordResponseSchema, DefaultErrorResponseSchema } from '@fullstack-starter/shared-schemas';
 
 const ForgotSchema = {
   body: ForgotPasswordRequestSchema,
   response: {
     200: ForgotPasswordResponseSchema,
-    default: {
-      success: { type: 'boolean', enum: [false] },
-      error: { type: 'string' },
-      code: { type: 'string', nullable: true },
-      details: { type: 'object', nullable: true }
-    }
+    default: DefaultErrorResponseSchema
   }
 };
 
