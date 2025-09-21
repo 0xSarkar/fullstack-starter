@@ -17,8 +17,8 @@ import { Route as AuthLayoutResetPasswordRouteImport } from './routes/_authLayou
 import { Route as AuthLayoutLoginRouteImport } from './routes/_authLayout/login'
 import { Route as AuthLayoutForgotPasswordRouteImport } from './routes/_authLayout/forgot-password'
 import { Route as AppLayoutPlansRouteImport } from './routes/_appLayout/plans'
+import { Route as AppLayoutPageTwoRouteImport } from './routes/_appLayout/page-two'
 import { Route as AppLayoutNotesRouteImport } from './routes/_appLayout/notes'
-import { Route as AppLayoutChatsRouteImport } from './routes/_appLayout/chats'
 import { Route as AppLayoutNotesNoteIdRouteImport } from './routes/_appLayout/notes_.$noteId'
 
 const AuthLayoutRoute = AuthLayoutRouteImport.update({
@@ -60,14 +60,14 @@ const AppLayoutPlansRoute = AppLayoutPlansRouteImport.update({
   path: '/plans',
   getParentRoute: () => AppLayoutRoute,
 } as any)
+const AppLayoutPageTwoRoute = AppLayoutPageTwoRouteImport.update({
+  id: '/page-two',
+  path: '/page-two',
+  getParentRoute: () => AppLayoutRoute,
+} as any)
 const AppLayoutNotesRoute = AppLayoutNotesRouteImport.update({
   id: '/notes',
   path: '/notes',
-  getParentRoute: () => AppLayoutRoute,
-} as any)
-const AppLayoutChatsRoute = AppLayoutChatsRouteImport.update({
-  id: '/chats',
-  path: '/chats',
   getParentRoute: () => AppLayoutRoute,
 } as any)
 const AppLayoutNotesNoteIdRoute = AppLayoutNotesNoteIdRouteImport.update({
@@ -77,8 +77,8 @@ const AppLayoutNotesNoteIdRoute = AppLayoutNotesNoteIdRouteImport.update({
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/chats': typeof AppLayoutChatsRoute
   '/notes': typeof AppLayoutNotesRoute
+  '/page-two': typeof AppLayoutPageTwoRoute
   '/plans': typeof AppLayoutPlansRoute
   '/forgot-password': typeof AuthLayoutForgotPasswordRoute
   '/login': typeof AuthLayoutLoginRoute
@@ -88,8 +88,8 @@ export interface FileRoutesByFullPath {
   '/notes/$noteId': typeof AppLayoutNotesNoteIdRoute
 }
 export interface FileRoutesByTo {
-  '/chats': typeof AppLayoutChatsRoute
   '/notes': typeof AppLayoutNotesRoute
+  '/page-two': typeof AppLayoutPageTwoRoute
   '/plans': typeof AppLayoutPlansRoute
   '/forgot-password': typeof AuthLayoutForgotPasswordRoute
   '/login': typeof AuthLayoutLoginRoute
@@ -102,8 +102,8 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_appLayout': typeof AppLayoutRouteWithChildren
   '/_authLayout': typeof AuthLayoutRouteWithChildren
-  '/_appLayout/chats': typeof AppLayoutChatsRoute
   '/_appLayout/notes': typeof AppLayoutNotesRoute
+  '/_appLayout/page-two': typeof AppLayoutPageTwoRoute
   '/_appLayout/plans': typeof AppLayoutPlansRoute
   '/_authLayout/forgot-password': typeof AuthLayoutForgotPasswordRoute
   '/_authLayout/login': typeof AuthLayoutLoginRoute
@@ -115,8 +115,8 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    | '/chats'
     | '/notes'
+    | '/page-two'
     | '/plans'
     | '/forgot-password'
     | '/login'
@@ -126,8 +126,8 @@ export interface FileRouteTypes {
     | '/notes/$noteId'
   fileRoutesByTo: FileRoutesByTo
   to:
-    | '/chats'
     | '/notes'
+    | '/page-two'
     | '/plans'
     | '/forgot-password'
     | '/login'
@@ -139,8 +139,8 @@ export interface FileRouteTypes {
     | '__root__'
     | '/_appLayout'
     | '/_authLayout'
-    | '/_appLayout/chats'
     | '/_appLayout/notes'
+    | '/_appLayout/page-two'
     | '/_appLayout/plans'
     | '/_authLayout/forgot-password'
     | '/_authLayout/login'
@@ -213,18 +213,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppLayoutPlansRouteImport
       parentRoute: typeof AppLayoutRoute
     }
+    '/_appLayout/page-two': {
+      id: '/_appLayout/page-two'
+      path: '/page-two'
+      fullPath: '/page-two'
+      preLoaderRoute: typeof AppLayoutPageTwoRouteImport
+      parentRoute: typeof AppLayoutRoute
+    }
     '/_appLayout/notes': {
       id: '/_appLayout/notes'
       path: '/notes'
       fullPath: '/notes'
       preLoaderRoute: typeof AppLayoutNotesRouteImport
-      parentRoute: typeof AppLayoutRoute
-    }
-    '/_appLayout/chats': {
-      id: '/_appLayout/chats'
-      path: '/chats'
-      fullPath: '/chats'
-      preLoaderRoute: typeof AppLayoutChatsRouteImport
       parentRoute: typeof AppLayoutRoute
     }
     '/_appLayout/notes_/$noteId': {
@@ -238,16 +238,16 @@ declare module '@tanstack/react-router' {
 }
 
 interface AppLayoutRouteChildren {
-  AppLayoutChatsRoute: typeof AppLayoutChatsRoute
   AppLayoutNotesRoute: typeof AppLayoutNotesRoute
+  AppLayoutPageTwoRoute: typeof AppLayoutPageTwoRoute
   AppLayoutPlansRoute: typeof AppLayoutPlansRoute
   AppLayoutIndexRoute: typeof AppLayoutIndexRoute
   AppLayoutNotesNoteIdRoute: typeof AppLayoutNotesNoteIdRoute
 }
 
 const AppLayoutRouteChildren: AppLayoutRouteChildren = {
-  AppLayoutChatsRoute: AppLayoutChatsRoute,
   AppLayoutNotesRoute: AppLayoutNotesRoute,
+  AppLayoutPageTwoRoute: AppLayoutPageTwoRoute,
   AppLayoutPlansRoute: AppLayoutPlansRoute,
   AppLayoutIndexRoute: AppLayoutIndexRoute,
   AppLayoutNotesNoteIdRoute: AppLayoutNotesNoteIdRoute,

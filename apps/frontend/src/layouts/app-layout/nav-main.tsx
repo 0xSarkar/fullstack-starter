@@ -1,4 +1,4 @@
-import { MessageCirclePlus, PencilLine, LoaderCircle, type LucideIcon } from "lucide-react";
+import { PencilLine, LoaderCircle, type LucideIcon, Search } from "lucide-react";
 
 import {
   SidebarGroup,
@@ -57,7 +57,7 @@ export function NavMain({
   return (
     <SidebarGroup>
       <SidebarGroupContent className="flex flex-col gap-2">
-        <SidebarMenu>
+        <SidebarMenu className="mb-1">
           <SidebarMenuItem className="flex items-center gap-2">
             <SidebarMenuButton
               tooltip="Create New Note"
@@ -73,8 +73,8 @@ export function NavMain({
               className="size-8 group-data-[collapsible=icon]:opacity-0"
               variant="outline"
             >
-              <MessageCirclePlus />
-              <span className="sr-only">New Chat</span>
+              <Search />
+              <span className="sr-only">Search</span>
             </Button>
           </SidebarMenuItem>
         </SidebarMenu>

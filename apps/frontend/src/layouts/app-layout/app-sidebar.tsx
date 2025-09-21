@@ -1,7 +1,7 @@
 import * as React from "react";
 import {
   Command,
-  MessageCircleMore,
+  File,
   NotebookPen,
 } from "lucide-react";
 
@@ -32,9 +32,9 @@ const data = {
       icon: NotebookPen,
     },
     {
-      title: "Chats",
-      url: "/chats",
-      icon: MessageCircleMore,
+      title: "Page Two",
+      url: "/page-two",
+      icon: File,
     }
   ]
 };
