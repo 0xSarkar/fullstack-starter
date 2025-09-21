@@ -1,5 +1,5 @@
 import type { ColumnDef } from "@tanstack/react-table";
-import { MoreHorizontal, ArrowUpDown, CheckCircle, XCircle, Shield, ShieldCheck, User } from "lucide-react";
+import { MoreHorizontal, CheckCircle, XCircle, Shield, ShieldCheck, User } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -18,18 +18,7 @@ import type { AdminUser } from "@fullstack-starter/shared-schemas";
 export const createColumns = (onUserStatusToggle?: (user: AdminUser) => void): ColumnDef<AdminUser>[] => [
   {
     accessorKey: "email",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="p-0 h-auto font-medium"
-        >
-          Email
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
+    header: "Email",
   },
   {
     accessorKey: "display_name",
@@ -99,18 +88,7 @@ export const createColumns = (onUserStatusToggle?: (user: AdminUser) => void): C
   },
   {
     accessorKey: "created_at",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="p-0 h-auto font-medium"
-        >
-          Created
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
+    header: "Created",
     cell: ({ row }) => {
       const date = new Date(row.getValue("created_at") as string);
       return <div className="text-sm text-muted-foreground">{date.toLocaleDateString()}</div>;
