@@ -10,11 +10,11 @@ export const CreateCheckoutSessionResponse = Type.Object({
 
 export type CreateCheckoutSessionResponseType = Static<typeof CreateCheckoutSessionResponse>;
 
-export const CreateCheckoutSessionQuery = Type.Object({
+export const CreateCheckoutSessionBody = Type.Object({
   priceId: Type.String(),
 });
 
-export type CreateCheckoutSessionQueryType = Static<typeof CreateCheckoutSessionQuery>;
+export type CreateCheckoutSessionBodyType = Static<typeof CreateCheckoutSessionBody>;
 
 export const CreateBillingPortalResponse = Type.Object({
   success: Type.Literal(true),

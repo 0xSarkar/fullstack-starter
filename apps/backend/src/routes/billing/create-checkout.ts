@@ -1,9 +1,9 @@
 import { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { errorResponse, DefaultErrorResponseSchema } from '@fullstack-starter/shared-schemas';
-import { CreateCheckoutSessionResponse, CreateCheckoutSessionQuery } from '@fullstack-starter/shared-schemas';
+import { CreateCheckoutSessionResponse, CreateCheckoutSessionBody } from '@fullstack-starter/shared-schemas';
 
 const CreateSchema = {
-  querystring: CreateCheckoutSessionQuery,
+  body: CreateCheckoutSessionBody,
   response: {
     200: CreateCheckoutSessionResponse,
     default: DefaultErrorResponseSchema
@@ -17,8 +17,8 @@ const createCheckoutSession: FastifyPluginAsyncTypebox = async (fastify) => {
     schema: CreateSchema,
     onRequest: fastify.authenticate
   }, async function (request, reply) {
-    // Get price id from query parameter
-    const { priceId } = request.query;
+    // Get price id from request body
+    const { priceId } = request.body;
     const frontendUrl = fastify.config.FRONTEND_URL || 'http://localhost:3000';
 
     // Get user data including stripe_customer_id
