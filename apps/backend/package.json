@@ -20,7 +20,12 @@
     "migrate:up": "dbmate up && pnpm db:generate-types",
     "migrate:down": "dbmate down && pnpm db:generate-types",
     "migrate:status": "dbmate status",
-    "db:generate-types": "kysely-codegen --out-file src/types/database.ts"
+    "db:generate-types": "kysely-codegen --out-file src/types/database.ts",
+    "seed:run": "pnpm build:ts && node dist/scripts/seed.js run",
+    "seed:reset": "pnpm build:ts && node dist/scripts/seed.js reset",
+    "seed:reset-and-seed": "pnpm build:ts && node dist/scripts/seed.js reset-and-seed",
+    "seed:dev": "NODE_ENV=development pnpm seed:reset-and-seed",
+    "seed:test": "NODE_ENV=test pnpm seed:reset-and-seed"
   },
   "keywords": [],
   "author": "",

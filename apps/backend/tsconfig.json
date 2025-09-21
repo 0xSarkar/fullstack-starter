@@ -11,6 +11,8 @@
     "noUncheckedIndexedAccess": true
   },
   "include": [
-    "src/**/*.ts"
+    "src/**/*.ts",
+    "scripts/**/*.ts",
+    "db/seeds/**/*.ts"
   ]
 }
