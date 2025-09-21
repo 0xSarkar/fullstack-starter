@@ -6,7 +6,6 @@ import { DataTable } from '@/components/users/data-table';
 import { createColumns } from '@/components/users/columns';
 import {
   AlertDialog,
-  AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
@@ -19,6 +18,8 @@ import { useState, useEffect, useMemo } from 'react';
 import { toast } from 'sonner';
 import type { AdminUser } from '@fullstack-starter/shared-schemas';
 import { Route } from '@/routes/_appLayout/users';
+import { Button } from '@/components/ui/button';
+import { LoaderCircle } from 'lucide-react';
 
 export function UsersPage() {
   const { data: users, pagination } = useLoaderData({ from: "/_appLayout/users" });
@@ -140,9 +141,9 @@ export function UsersPage() {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel onClick={handleCancelToggle}>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleConfirmToggle} disabled={isToggling}>
-              {isToggling ? 'Processing...' : 'Confirm'}
-            </AlertDialogAction>
+            <Button onClick={handleConfirmToggle} disabled={isToggling}>
+              {isToggling && <LoaderCircle className='animate-spin' />} Confirm
+            </Button>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
