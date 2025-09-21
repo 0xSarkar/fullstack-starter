@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import { useRouter, useMatchRoute } from '@tanstack/react-router';
 import { AlertDialog, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "../ui/alert-dialog";
 import { useNotesStore } from '@/stores/notes-store';
@@ -20,7 +20,7 @@ export function DeleteNoteConfirmDialog() {
 
   const [isDeleting, setIsDeleting] = useState(false);
 
-  const handleDeleteNote = useCallback(async () => {
+  const handleDeleteNote = async () => {
     setIsDeleting(true);
     try {
       await deleteNoteApi(noteToDelete!);
@@ -35,7 +35,7 @@ export function DeleteNoteConfirmDialog() {
     } finally {
       setIsDeleting(false);
     }
-  }, [noteToDelete, router, setNoteToDelete, currentNoteId]);
+  };
 
   return (
     <AlertDialog
