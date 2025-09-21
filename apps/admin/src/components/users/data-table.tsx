@@ -11,13 +11,19 @@ import {
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
-  getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -33,14 +39,31 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
+interface PaginationState {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+}
+
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  pagination: PaginationState;
+  onPaginationChange: (offset: number) => void;
+  onLimitChange: (limit: number) => void;
+  searchQuery: string;
+  onSearchChange: (query: string) => void;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  pagination,
+  onPaginationChange,
+  onLimitChange,
+  searchQuery,
+  onSearchChange,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -55,7 +78,6 @@ export function DataTable<TData, TValue>({
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
@@ -64,19 +86,36 @@ export function DataTable<TData, TValue>({
       columnFilters,
       columnVisibility,
     },
+    manualPagination: true,
+    pageCount: pagination.totalPages,
   });
+
+  const canPreviousPage = pagination.page > 1;
+  const canNextPage = pagination.page < pagination.totalPages;
 
   return (
     <div className="w-full">
-      <div className="flex items-center py-4">
+      <div className="flex items-center py-4 space-x-2">
         <Input
-          placeholder="Filter emails..."
-          value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn("email")?.setFilterValue(event.target.value)
-          }
+          placeholder="Search users..."
+          value={searchQuery}
+          onChange={(event) => onSearchChange(event.target.value)}
           className="max-w-sm"
         />
+        <Select
+          value={pagination.limit.toString()}
+          onValueChange={(value) => onLimitChange(Number(value))}
+        >
+          <SelectTrigger className="w-24">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="10">10</SelectItem>
+            <SelectItem value="20">20</SelectItem>
+            <SelectItem value="50">50</SelectItem>
+            <SelectItem value="100">100</SelectItem>
+          </SelectContent>
+        </Select>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto">
@@ -154,21 +193,27 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center justify-end space-x-2 py-4">
+      <div className="flex items-center justify-between space-x-2 py-4">
+        <div className="text-sm text-muted-foreground">
+          Showing {((pagination.page - 1) * pagination.limit) + 1} to {Math.min(pagination.page * pagination.limit, pagination.total)} of {pagination.total} results
+        </div>
         <div className="space-x-2">
           <Button
             variant="outline"
             size="sm"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
+            onClick={() => onPaginationChange((pagination.page - 2) * pagination.limit)}
+            disabled={!canPreviousPage}
           >
             Previous
           </Button>
+          <span className="text-sm">
+            Page {pagination.page} of {pagination.totalPages}
+          </span>
           <Button
             variant="outline"
             size="sm"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
+            onClick={() => onPaginationChange(pagination.page * pagination.limit)}
+            disabled={!canNextPage}
           >
             Next
           </Button>

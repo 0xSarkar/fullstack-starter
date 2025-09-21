@@ -1,4 +1,4 @@
-import { useLoaderData, useRouter } from '@tanstack/react-router';
+import { useLoaderData, useRouter, useSearch } from '@tanstack/react-router';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { Separator } from '@radix-ui/react-separator';
@@ -15,17 +15,38 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { updateUserStatusApi } from '@fullstack-starter/shared-api';
-import { useState } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { toast } from 'sonner';
 import type { AdminUser } from '@fullstack-starter/shared-schemas';
+import { Route } from '@/routes/_appLayout/users';
 
 export function UsersPage() {
-  const { data: users } = useLoaderData({ from: "/_appLayout/users" });
+  const { data: users, pagination } = useLoaderData({ from: "/_appLayout/users" });
   const router = useRouter();
+  const search = useSearch({ from: "/_appLayout/users" });
+  const navigate = Route.useNavigate();
 
   const [userToToggle, setUserToToggle] = useState<AdminUser | null>(null);
   const [isToggling, setIsToggling] = useState(false);
+  const [searchQuery, setSearchQuery] = useState(search.q || '');
 
+  // Debounce search query
+  const debouncedSearchQuery = useMemo(() => {
+    const timeoutId = setTimeout(() => {
+      if (searchQuery !== search.q) {
+        navigate({
+          search: (prev) => ({ ...prev, q: searchQuery || undefined }),
+          replace: true,
+        });
+      }
+    }, 300);
+
+    return () => clearTimeout(timeoutId);
+  }, [searchQuery, search.q, navigate]);
+
+  useEffect(() => {
+    debouncedSearchQuery();
+  }, [debouncedSearchQuery]);
 
   const handleUserStatusToggle = (user: AdminUser) => {
     setUserToToggle(user);
@@ -51,6 +72,20 @@ export function UsersPage() {
 
   const handleCancelToggle = () => {
     setUserToToggle(null);
+  };
+
+  const handlePaginationChange = (newOffset: number) => {
+    navigate({
+      search: (prev) => ({ ...prev, offset: newOffset }),
+      replace: true,
+    });
+  };
+
+  const handleLimitChange = (newLimit: number) => {
+    navigate({
+      search: (prev) => ({ ...prev, limit: newLimit, offset: 0 }),
+      replace: true,
+    });
   };
 
   const columns = createColumns(handleUserStatusToggle);
@@ -79,7 +114,15 @@ export function UsersPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <DataTable columns={columns} data={users as AdminUser[]} />
+            <DataTable
+              columns={columns}
+              data={users as AdminUser[]}
+              pagination={pagination}
+              onPaginationChange={handlePaginationChange}
+              onLimitChange={handleLimitChange}
+              searchQuery={searchQuery}
+              onSearchChange={setSearchQuery}
+            />
           </CardContent>
         </Card>
       </div>
