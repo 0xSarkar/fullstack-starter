@@ -100,9 +100,9 @@ export function NavUser() {
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              {/* TODO: Add plans route for admin panel */}
-              {/* <DropdownMenuItem asChild>
+            {/* TODO: Add plans route for admin panel */}
+            {/* <DropdownMenuGroup>
+              <DropdownMenuItem asChild>
                 <Link to={"/plans"} search={{ checkout: undefined, session_id: undefined }}>
                   {hasActiveSubscription ? (
                     <>
@@ -116,9 +116,9 @@ export function NavUser() {
                     </>
                   )}
                 </Link>
-              </DropdownMenuItem> */}
+              </DropdownMenuItem>
             </DropdownMenuGroup>
-            <DropdownMenuSeparator />
+            <DropdownMenuSeparator /> */}
             <DropdownMenuGroup>
               <DropdownMenuItem>
                 <Settings />
