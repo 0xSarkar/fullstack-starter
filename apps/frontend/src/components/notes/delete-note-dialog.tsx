@@ -25,10 +25,13 @@ export function DeleteNoteConfirmDialog() {
     try {
       await deleteNoteApi(noteToDelete!);
       if (currentNoteId === noteToDelete) {
-        await router.navigate({ to: '/notes' });
+        await router.invalidate({ sync: true, filter: (r) => r.routeId === '/_appLayout' });
+        router.navigate({ to: '/notes' });
+        setNoteToDelete(null);
+      } else {
+        await router.invalidate({ sync: true, filter: (r) => r.routeId === '/_appLayout' });
+        setNoteToDelete(null);
       }
-      await router.invalidate({ sync: true, filter: (r) => r.id === '/_appLayout' });
-      setNoteToDelete(null);
     } catch (error: any) {
       console.error('Failed to delete note:', error);
       toast.error(error.message || "Failed to delete note. Please try again.");
