@@ -1,7 +1,7 @@
 import { AppLayout } from '@/layouts/app-layout/app-layout';
 import { createFileRoute, redirect, useRouter } from '@tanstack/react-router';
 import { useAuthStore } from '@/stores/auth-store';
-import { HttpError, listUsersApi } from '@fullstack-starter/shared-api';
+import { HttpError } from '@fullstack-starter/shared-api';
 import { Button } from '@/components/ui/button';
 import { useEffect, useState } from 'react';
 import { LoaderCircle } from 'lucide-react';
@@ -18,11 +18,6 @@ export const Route = createFileRoute('/_appLayout')({
       throw redirect({ to: '/login' });
     }
   },
-
-  loader: async () => {
-    return listUsersApi();
-  },
-  shouldReload: () => false,
 
   component: AppLayout,
 

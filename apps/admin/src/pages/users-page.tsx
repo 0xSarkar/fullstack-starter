@@ -1,4 +1,4 @@
-import { useLoaderData, useMatch, useRouter } from '@tanstack/react-router';
+import { useLoaderData, useRouter } from '@tanstack/react-router';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { Separator } from '@radix-ui/react-separator';
@@ -20,18 +20,12 @@ import { toast } from 'sonner';
 import type { AdminUser } from '@fullstack-starter/shared-schemas';
 
 export function UsersPage() {
-  const { data: users } = useLoaderData({ from: "/_appLayout" });
-  const parentMatch = useMatch({ from: "/_appLayout", shouldThrow: false });
-  const isParentSettled = parentMatch?.status !== 'pending' && parentMatch?.isFetching === false;
+  const { data: users } = useLoaderData({ from: "/_appLayout/users" });
   const router = useRouter();
 
   const [userToToggle, setUserToToggle] = useState<AdminUser | null>(null);
   const [isToggling, setIsToggling] = useState(false);
 
-  // Don't show any UI until the loader data is settled
-  if (!isParentSettled) {
-    return null;
-  }
 
   const handleUserStatusToggle = (user: AdminUser) => {
     setUserToToggle(user);
