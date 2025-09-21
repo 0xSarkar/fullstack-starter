@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useRouter, useMatchRoute } from '@tanstack/react-router';
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "../ui/alert-dialog";
+import { AlertDialog, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "../ui/alert-dialog";
 import { useNotesStore } from '@/stores/notes-store';
 import { LoaderCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import { deleteNoteApi } from '@fullstack-starter/shared-api';
+import { Button } from '../ui/button';
 
 export function DeleteNoteConfirmDialog() {
   const router = useRouter();
@@ -19,7 +20,7 @@ export function DeleteNoteConfirmDialog() {
 
   const [isDeleting, setIsDeleting] = useState(false);
 
-  const handleDeleteNote = async () => {
+  const handleDeleteNote = useCallback(async () => {
     setIsDeleting(true);
     try {
       await deleteNoteApi(noteToDelete!);
@@ -34,16 +35,12 @@ export function DeleteNoteConfirmDialog() {
     } finally {
       setIsDeleting(false);
     }
-  };
+  }, [noteToDelete, router, setNoteToDelete, currentNoteId]);
 
   return (
     <AlertDialog
       open={noteToDelete !== null}
-      // Prevent the dialog from closing while a delete is in progress (e.g. escape key or overlay click)
-      onOpenChange={(open) => {
-        if (isDeleting) return; // ignore close attempts during deletion
-        if (!open) setNoteToDelete(null);
-      }}
+      onOpenChange={(open) => { if (!open && !isDeleting) setNoteToDelete(null); }}
     >
       <AlertDialogContent>
         <AlertDialogHeader>
@@ -54,13 +51,12 @@ export function DeleteNoteConfirmDialog() {
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
-          <AlertDialogAction
-            // prevent Radix from auto-closing the dialog so the loading state is visible until the async flow finishes
+          <Button
             onClick={handleDeleteNote}
             disabled={isDeleting}
           >
             {isDeleting && <LoaderCircle className='animate-spin' />} Delete
-          </AlertDialogAction>
+          </Button>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
