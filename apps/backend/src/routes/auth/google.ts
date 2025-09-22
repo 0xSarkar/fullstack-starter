@@ -48,7 +48,8 @@ const googleAuthRoute: FastifyPluginAsyncTypebox = async (fastify) => {
         .select([
           'users.id as id',
           'users.email as email',
-          'users.display_name as display_name'
+          'users.display_name as display_name',
+          'users.active as active'
         ])
         .where('user_providers.provider', '=', 'google')
         .where('user_providers.provider_user_id', '=', sub)
@@ -66,7 +67,7 @@ const googleAuthRoute: FastifyPluginAsyncTypebox = async (fastify) => {
         // Check if a user already exists with this email (email/password signup earlier)
         const existingUserByEmail = await fastify.kysely
           .selectFrom('users')
-          .select(['id', 'email', 'display_name'])
+          .select(['id', 'email', 'display_name', 'active'])
           .where('email', '=', email)
           .executeTakeFirst();
 
@@ -114,6 +115,17 @@ const googleAuthRoute: FastifyPluginAsyncTypebox = async (fastify) => {
             })
             .execute();
         }
+      }
+
+      // Check if user account is active
+      const userRecord = await fastify.kysely
+        .selectFrom('users')
+        .select(['active'])
+        .where('id', '=', userId)
+        .executeTakeFirst();
+
+      if (!userRecord || !userRecord.active) {
+        return reply.code(401).send(errorResponse('Account has been deactivated'));
       }
 
       // Issue JWT

@@ -21,7 +21,7 @@ const login: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<void> =>
       // Find user by email
       const user = await fastify.kysely
         .selectFrom('users')
-        .select(['id', 'email', 'password_hash', 'display_name'])
+        .select(['id', 'email', 'password_hash', 'display_name', 'active'])
         .where('email', '=', email)
         .executeTakeFirst();
 
@@ -39,6 +39,11 @@ const login: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<void> =>
 
       if (!isValidPassword) {
         return reply.code(401).send(errorResponse('Invalid credentials', 'INVALID_CREDENTIALS'));
+      }
+
+      // Check if user account is active
+      if (!user.active) {
+        return reply.code(401).send(errorResponse('Account has been deactivated'));
       }
 
       // Generate JWT token
