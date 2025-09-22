@@ -3,13 +3,25 @@
   "version": "1.0.0",
   "description": "Shared typed API client functions",
   "type": "module",
-  "main": "src/index.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch",
     "typecheck": "tsc --noEmit",
     "clean": "rm -rf dist"
   },
+  "files": [
+    "dist",
+    "src",
+    "index.ts"
+  ],
   "dependencies": {
     "@fullstack-starter/shared-schemas": "workspace:*"
   },

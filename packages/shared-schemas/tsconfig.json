@@ -4,6 +4,7 @@
     "module": "ESNext",
     "moduleResolution": "Bundler",
     "declaration": true,
+    "declarationMap": true,
     "outDir": "./dist",
     "rootDir": "./",
     "strict": true,
@@ -12,6 +13,7 @@
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
     "noUncheckedIndexedAccess": true,
+    "sourceMap": true,
   },
   "include": [
     "src/*.ts",
