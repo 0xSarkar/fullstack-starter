@@ -8,7 +8,6 @@
     "dev": "pnpm --parallel --filter \"./packages/*\" --filter \"./apps/*\" dev",
     "start": "pnpm --parallel --filter \"./apps/*\" start",
     "build": "pnpm --recursive --filter \"./packages/*\" --filter \"./apps/*\" build",
-    "test": "pnpm --recursive --filter \"./packages/*\" --filter \"./apps/*\" test",
     "dev:backend": "pnpm --filter @fullstack-starter/backend dev",
     "dev:frontend": "pnpm --filter @fullstack-starter/frontend dev",
     "build:backend": "pnpm --filter @fullstack-starter/backend build",
@@ -21,10 +20,7 @@
     "seed:run": "pnpm --filter @fullstack-starter/backend run seed:run",
     "seed:reset": "pnpm --filter @fullstack-starter/backend run seed:reset",
     "seed:dev": "pnpm --filter @fullstack-starter/backend run seed:dev",
-    "seed:test": "pnpm --filter @fullstack-starter/backend run seed:test",
     "db:generate-types": "pnpm --filter @fullstack-starter/backend run db:generate-types",
-    "test:backend": "pnpm --filter @fullstack-starter/backend run test",
-    "test:backend:file": "pnpm --filter @fullstack-starter/backend run test:file",
     "typecheck": "pnpm --recursive --filter \"./packages/*\" --filter \"./apps/*\" run --if-present typecheck"
   },
   "devDependencies": {

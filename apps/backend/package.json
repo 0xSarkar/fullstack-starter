@@ -3,12 +3,7 @@
   "name": "@fullstack-starter/backend",
   "version": "1.0.0",
   "main": "dist/server.js",
-  "directories": {
-    "test": "test"
-  },
   "scripts": {
-    "test": "tsc -p test/tsconfig.json && NODE_ENV=test node --experimental-test-coverage --test dist/test",
-    "test:file": "tsc -p test/tsconfig.json && NODE_ENV=test node --test",
     "start": "pnpm build && node dist/server.js",
     "build": "rm -rf dist && tsc",
     "typecheck": "tsc --noEmit",
@@ -24,8 +19,7 @@
     "seed:run": "pnpm build:ts && node dist/scripts/seed.js run",
     "seed:reset": "pnpm build:ts && node dist/scripts/seed.js reset",
     "seed:reset-and-seed": "pnpm build:ts && node dist/scripts/seed.js reset-and-seed",
-    "seed:dev": "NODE_ENV=development pnpm seed:reset-and-seed",
-    "seed:test": "NODE_ENV=test pnpm seed:reset-and-seed"
+    "seed:dev": "NODE_ENV=development pnpm seed:reset-and-seed"
   },
   "keywords": [],
   "author": "",

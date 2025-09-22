@@ -95,8 +95,7 @@
 - **Workspace Dependencies**: Cross-package imports with workspace protocol
 - **Parallel Development**: Independent dev servers with hot reload
 - **Shared Tooling**: Common TypeScript, ESLint, and build configurations
-- **Selective Building**: PNPM filtering for targeted builds and tests
- - **Script Orchestration**: Root scripts fan out via `--filter` to apps + packages
+- **Script Orchestration**: Root scripts fan out via `--filter` to apps + packages
 
 ### Technology Stack
 
@@ -106,7 +105,6 @@
 - **Database**: PostgreSQL with Kysely query builder
 - **Authentication**: JWT tokens, bcrypt hashing, Google OAuth
 - **Validation**: TypeBox schemas with Fastify integration
-- **Testing**: Node.js test runner with transaction isolation
 - **Infrastructure**: DBMate migrations, Nodemailer, Stripe SDK
  - **Autoload Plugins**: Fastify autoload for plugins & routes
 
@@ -118,7 +116,6 @@
 - **State**: Zustand for client state, Data Loaders for server state
 - **UI Components**: Shadcn/ui, Lucide icons, Sonner notifications
 - **Rich Text**: TipTap editor with extensions
- - **Testing**: Vitest + React Testing Library + jsdom (per app)
 
 #### Development Tools
 - **Package Manager**: PNPM with workspace support
