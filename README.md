@@ -13,7 +13,7 @@ Don't start a new SaaS project from scratch. Use this starter. You get:
 - **Migrations**: Database migrations with dbmate and Kysely codegen for DB types
 - **Monorepo**: All of this packed in a batteries-included monorepo with pnpm workspaces
 
-Build, iterate, and ship SaaS apps faster. Develop with confidence, avoid boilerplate, and scale features without reinventing the basics.
+Build, iterate, and ship SaaS apps faster. Develop with confidence and avoid boilerplate.
 
 ## Tech stack
 
