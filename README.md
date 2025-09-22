@@ -92,3 +92,8 @@ From the repo root (`package.json`):
 	- `pnpm migrate:up` | `pnpm migrate:down` | `pnpm migrate:status`
 - Seeding (backend):
   - `pnpm seed:run` — build, then reset and seed dev data
+
+## 🚧 Work In Progress:
+
+- E2E Tests (Playwright)
+- Deployment Scripts
