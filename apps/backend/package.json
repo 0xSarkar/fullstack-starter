@@ -6,19 +6,18 @@
   "scripts": {
     "start": "pnpm build && node dist/server.js",
     "build": "rm -rf dist && tsc",
+    "dev": "tsx watch src/server.ts",
     "typecheck": "tsc --noEmit",
     "build:ts": "tsc",
     "watch:ts": "tsc -w",
-    "dev": "nodemon",
-    "dev:start": "node --watch dist/server.js",
     "migrate:new": "dbmate new",
     "migrate:up": "dbmate up && pnpm db:generate-types",
     "migrate:down": "dbmate down && pnpm db:generate-types",
     "migrate:status": "dbmate status",
     "db:generate-types": "kysely-codegen --out-file src/types/database.ts",
-    "seed:run": "pnpm build:ts && node dist/scripts/seed.js run",
-    "seed:reset": "pnpm build:ts && node dist/scripts/seed.js reset",
-    "seed:reset-and-seed": "pnpm build:ts && node dist/scripts/seed.js reset-and-seed",
+    "seed:run": "tsx scripts/seed.ts run",
+    "seed:reset": "tsx scripts/seed.ts reset",
+    "seed:reset-and-seed": "tsx scripts/seed.ts reset-and-seed",
     "seed:dev": "NODE_ENV=development pnpm seed:reset-and-seed"
   },
   "keywords": [],
@@ -62,7 +61,7 @@
     "esbuild": "^0.25.9",
     "fastify-tsconfig": "^3.0.0",
     "kysely-codegen": "^0.18.5",
-    "nodemon": "^3.1.10",
+    "tsx": "^4.19.0",
     "ts-node": "^10.4.0",
     "typescript": "~5.8.2"
   }

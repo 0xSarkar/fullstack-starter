@@ -1,8 +1,0 @@
-{
-  "watch": [
-    "src"
-  ],
-  "ext": "ts,mjs,js,json,graphql",
-  "exec": "esbuild `find src \\( -name '*.ts' \\)` --platform=node --outdir=dist --format=esm && node dist/server.js",
-  "legacyWatch": true
-}
