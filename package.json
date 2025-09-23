@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "predev": "pnpm --recursive --filter \"./packages/*\" build",
-    "dev": "pnpm --parallel --filter \"./packages/*\" --filter \"./apps/*\" dev",
+    "dev": "pnpm --parallel --filter \"./packages/*\" --filter \"./apps/*\" run dev",
     "start": "pnpm --parallel --filter \"./apps/*\" start",
     "build": "pnpm --recursive --filter \"./packages/*\" --filter \"./apps/*\" build",
     "dev:backend": "pnpm --filter @fullstack-starter/backend dev",

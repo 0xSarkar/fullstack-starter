@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "main": "dist/server.js",
   "scripts": {
-    "start": "pnpm build && node dist/server.js",
+    "start": "node dist/server.js",
     "build": "rm -rf dist && tsc",
     "dev": "tsx watch src/server.ts",
     "typecheck": "tsc --noEmit",

@@ -3,6 +3,7 @@
   "compilerOptions": {
     "strict": true,
     "outDir": "dist",
+    "rootDir": "src",
     "sourceMap": true,
     "moduleResolution": "NodeNext",
     "module": "NodeNext",
@@ -11,8 +12,11 @@
     "noUncheckedIndexedAccess": true
   },
   "include": [
-    "src/**/*.ts",
-    "scripts/**/*.ts",
-    "db/seeds/**/*.ts"
+    "src/**/*.ts"
+  ],
+  "exclude": [
+    "dist",
+    "scripts",
+    "db/seeds"
   ]
 }
