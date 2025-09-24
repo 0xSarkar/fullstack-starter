@@ -21,6 +21,16 @@ export class ApiClient {
     this.baseUrl = baseUrl;
   }
 
+  // Method to update the base URL
+  setBaseUrl(baseUrl: string): void {
+    this.baseUrl = baseUrl;
+  }
+
+  // Method to get the current base URL
+  getBaseUrl(): string {
+    return this.baseUrl;
+  }
+
   private async request<T>(method: string, path: string, body?: any, query?: Record<string, any>): Promise<T> {
     let url = `${this.baseUrl}${path}`;
     if (query) {
@@ -75,8 +85,13 @@ export class ApiClient {
   }
 }
 
-// Default client instance - apps can configure it
+// Default client instance - apps should configure the baseUrl
 export const defaultClient = new ApiClient('http://localhost:3000');
+
+// Method to configure the default client
+export function configureDefaultClient(baseUrl: string) {
+  defaultClient.setBaseUrl(baseUrl);
+}
 
 // Export for apps to create their own
 export { ApiClient as createClient };
