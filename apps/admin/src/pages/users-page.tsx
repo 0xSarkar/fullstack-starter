@@ -14,7 +14,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { updateUserStatusApi } from '@fullstack-starter/shared-api';
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { toast } from 'sonner';
 import type { AdminUser } from '@fullstack-starter/shared-schemas';
 import { Route } from '@/routes/_appLayout/users';
@@ -31,23 +31,28 @@ export function UsersPage() {
   const [isToggling, setIsToggling] = useState(false);
   const [searchQuery, setSearchQuery] = useState(search.q || '');
 
-  // Debounce search query
-  const debouncedSearchQuery = useMemo(() => {
+  // Keep local input state in sync if user navigates via history/back etc.
+  useEffect(() => {
+    const current = search.q || '';
+    // Avoid cursor jump while typing same value
+    if (current !== searchQuery) {
+      setSearchQuery(current);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [search.q]);
+
+  // Debounce pushing query param changes to the router
+  useEffect(() => {
     const timeoutId = setTimeout(() => {
-      if (searchQuery !== search.q) {
+      if (searchQuery !== (search.q || '')) {
         navigate({
-          search: (prev) => ({ ...prev, q: searchQuery || undefined }),
+          search: (prev) => ({ ...prev, q: searchQuery || undefined, offset: 0 }),
           replace: true,
         });
       }
     }, 300);
-
     return () => clearTimeout(timeoutId);
   }, [searchQuery, search.q, navigate]);
-
-  useEffect(() => {
-    debouncedSearchQuery();
-  }, [debouncedSearchQuery]);
 
   const handleUserStatusToggle = (user: AdminUser) => {
     setUserToToggle(user);
