@@ -13,7 +13,7 @@
     "dev:frontend": "pnpm --filter @fullstack-starter/frontend dev",
     "build:backend": "pnpm --filter @fullstack-starter/backend build",
     "build:frontend": "pnpm --filter @fullstack-starter/frontend build",
-    "clean": "pnpm --recursive exec rm -rf node_modules dist",
+    "clean": "rimraf node_modules **/node_modules **/dist",
     "migrate:new": "pnpm --filter @fullstack-starter/backend run migrate:new",
     "migrate:up": "pnpm --filter @fullstack-starter/backend run migrate:up",
     "migrate:down": "pnpm --filter @fullstack-starter/backend run migrate:down",
@@ -25,6 +25,7 @@
     "typecheck": "pnpm --recursive --filter \"./packages/*\" --filter \"./apps/*\" run --if-present typecheck"
   },
   "devDependencies": {
+    "rimraf": "^6.0.0",
     "typescript": "~5.8.3"
   },
   "engines": {

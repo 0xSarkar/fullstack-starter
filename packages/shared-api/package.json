@@ -13,10 +13,10 @@
     }
   },
   "scripts": {
-    "build": "rm -rf dist && tsc",
+    "build": "pnpm run clean && tsc",
     "dev": "tsc -w",
     "typecheck": "tsc --noEmit",
-    "clean": "rm -rf dist"
+    "clean": "rimraf dist"
   },
   "sideEffects": false,
   "files": [

@@ -5,11 +5,12 @@
   "main": "dist/server.js",
   "scripts": {
     "start": "node dist/server.js",
-    "build": "rm -rf dist && tsc",
+    "build": "pnpm run clean && tsc",
     "dev": "tsx watch src/server.ts",
     "typecheck": "tsc --noEmit",
     "build:ts": "tsc",
     "watch:ts": "tsc -w",
+    "clean": "rimraf dist",
     "migrate:new": "dbmate new",
     "migrate:up": "dbmate up && pnpm db:generate-types",
     "migrate:down": "dbmate down && pnpm db:generate-types",
