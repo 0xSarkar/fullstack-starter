@@ -1,7 +1,7 @@
 import { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
 import { errorResponse, DefaultErrorResponseSchema } from '@fullstack-starter/shared-schemas';
 import { ListUsersQuerySchema, ListUsersResponseSchema } from '@fullstack-starter/shared-schemas';
-import { serializeUserDates } from '../../utils/serialize-user-dates.js';
+import { normalizeTimestampFields } from '../../utils/timestamps.js';
 
 const ListUsersSchema = {
   querystring: ListUsersQuerySchema,
@@ -64,7 +64,9 @@ const listUsers: FastifyPluginAsyncTypebox = async (fastify): Promise<void> => {
         .execute();
 
       // Convert dates to strings for API response
-      const users = usersRaw.map(serializeUserDates);
+      const users = usersRaw.map((user) =>
+        normalizeTimestampFields(user, ['created_at', 'updated_at'] as const)
+      );
 
       return reply.code(200).send({
         success: true as const,

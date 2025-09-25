@@ -1,4 +1,4 @@
-import { HttpError } from '@fullstack-starter/shared-api';
+import { HttpError } from './client';
 
 export type ApiFieldError = { field: string; message: string; };
 

@@ -9,7 +9,7 @@ import { useNotesStore } from "@/stores/notes-store";
 import { LoaderCircle } from "lucide-react";
 import { toast } from "sonner";
 import { updateNoteApi } from "@fullstack-starter/shared-api";
-import { getFieldErrors } from '@/lib/api-errors';
+import { getFieldErrors } from '@fullstack-starter/shared-api';
 
 interface RenameNoteFormData {
   title: string;

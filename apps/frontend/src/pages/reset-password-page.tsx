@@ -15,7 +15,7 @@ import { Link, useRouter, useSearch } from "@tanstack/react-router";
 import { resetPasswordApi } from "@fullstack-starter/shared-api";
 import { LoaderCircle } from "lucide-react";
 import { toast } from "sonner";
-import { getFieldErrors } from '@/lib/api-errors';
+import { getFieldErrors } from '@fullstack-starter/shared-api';
 
 interface ResetPasswordFormData {
   newPassword: string;
