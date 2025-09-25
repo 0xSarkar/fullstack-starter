@@ -87,6 +87,8 @@ From the repo root (`package.json`):
 - `pnpm dev` — start all packages/apps in parallel
 - `pnpm build` — build all packages/apps
 - `pnpm typecheck` — TypeScript noEmit check across workspace
+- `pnpm lint` — run ESLint across the workspace
+- `pnpm check` — run lint followed by workspace type checks
 - Migrations (backend):
 	- `pnpm migrate:new <name>`
 	- `pnpm migrate:up` | `pnpm migrate:down` | `pnpm migrate:status`

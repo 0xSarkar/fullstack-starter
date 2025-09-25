@@ -8,6 +8,8 @@
     "build": "pnpm run clean && tsc",
     "dev": "tsx watch src/server.ts",
     "typecheck": "tsc --noEmit",
+    "lint": "pnpm exec eslint .",
+    "check": "pnpm run lint && pnpm run typecheck",
     "build:ts": "tsc",
     "watch:ts": "tsc -w",
     "clean": "rimraf dist",

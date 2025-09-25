@@ -13,9 +13,12 @@
 - Build project: `pnpm build`
 - Build a package: `pnpm build --filter <package-name>`
 
-### Type Checking
+### Linting and Type Checking
 - Run type checks on project: `pnpm run typecheck`
 - Run type checks on a package: `pnpm --filter <package-name> run typecheck`
+- Run ESLint across the workspace: `pnpm run lint`
+- Run lint + typecheck together: `pnpm run check`
+- Lint a specific package/app: `pnpm --filter <package-name> run lint`
 
 ### Seeding & Database Utilities
 - Run full seed (build then seed): `pnpm seed:run`

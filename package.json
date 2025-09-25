@@ -22,7 +22,9 @@
     "seed:reset": "pnpm --filter @fullstack-starter/backend run seed:reset",
     "seed:dev": "pnpm --filter @fullstack-starter/backend run seed:dev",
     "db:generate-types": "pnpm --filter @fullstack-starter/backend run db:generate-types",
-    "typecheck": "pnpm --recursive --filter \"./packages/*\" --filter \"./apps/*\" run --if-present typecheck"
+    "lint": "pnpm exec eslint .",
+    "typecheck": "pnpm --recursive --filter \"./packages/*\" --filter \"./apps/*\" run --if-present typecheck",
+    "check": "pnpm run lint && pnpm run typecheck"
   },
   "devDependencies": {
     "@eslint/js": "^9.36.0",
