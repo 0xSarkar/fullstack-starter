@@ -60,8 +60,8 @@ const list: FastifyPluginAsyncTypebox = async (fastify) => {
           totalPages: Math.ceil(total / limit)
         }
       });
-    } catch (err: any) {
-      fastify.log.error(err);
+    } catch (err: unknown) {
+      fastify.log.error({ err }, 'Failed to list notes');
       return reply.code(500).send(errorResponse('Failed to list notes', 'LIST_NOTES_FAILED'));
     }
   });

@@ -16,6 +16,7 @@ import { Link, useRouter, useSearch } from "@tanstack/react-router";
 import { useAuthStore } from '@/stores/auth-store';
 import { LoaderCircle } from "lucide-react";
 import { toast } from "sonner";
+import { getFieldErrors } from '@/lib/api-errors';
 
 interface SignupFormData {
   email: string;
@@ -41,8 +42,10 @@ export function SignupPage() {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     startTransition(async () => {
-      const email = formData.get('email') as string;
-      const password = formData.get('password') as string;
+      const emailEntry = formData.get('email');
+      const passwordEntry = formData.get('password');
+      const email = typeof emailEntry === 'string' ? emailEntry.trim() : '';
+      const password = typeof passwordEntry === 'string' ? passwordEntry : '';
 
       // Basic validation
       const newErrors: Partial<SignupFormData> = {};
@@ -60,19 +63,21 @@ export function SignupPage() {
       try {
         await signup(email, password);
         await router.navigate({ to: "/" });
-      } catch (err: any) {
+      } catch (err: unknown) {
         // Handle field-specific validation errors from API
-        if (err.details?.errors) {
+        const fieldErrorsList = getFieldErrors(err);
+        if (fieldErrorsList.length > 0) {
           const fieldErrors: Partial<SignupFormData> = {};
-          err.details.errors.forEach((error: { field: string; message: string; }) => {
+          fieldErrorsList.forEach((error) => {
             if (error.field === 'email' || error.field === 'password') {
-              fieldErrors[error.field as keyof SignupFormData] = error.message;
+              fieldErrors[error.field] = error.message;
             }
           });
           setErrors(fieldErrors);
         } else {
           // General error - show toast
-          toast.error(err.message || "Signup failed. Please try again.");
+          const message = err instanceof Error ? err.message : "Signup failed. Please try again.";
+          toast.error(message);
         }
       }
     });

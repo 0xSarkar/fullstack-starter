@@ -67,9 +67,10 @@ export function UsersPage() {
       toast.success(`User ${userToToggle.active ? 'deactivated' : 'activated'} successfully`);
       // Refresh the data
       router.invalidate();
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Failed to update user status:', error);
-      toast.error('Failed to update user status');
+      const message = error instanceof Error ? error.message : 'Failed to update user status';
+      toast.error(message);
     } finally {
       setIsToggling(false);
       setUserToToggle(null);

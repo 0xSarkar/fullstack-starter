@@ -55,8 +55,8 @@ const update: FastifyPluginAsyncTypebox = async (fastify) => {
         success: true as const,
         data: response
       });
-    } catch (err: any) {
-      fastify.log.error(err);
+    } catch (err: unknown) {
+      fastify.log.error({ err }, 'Failed to update note');
       return reply.code(500).send(errorResponse('Failed to update note', 'UPDATE_NOTE_FAILED'));
     }
   });

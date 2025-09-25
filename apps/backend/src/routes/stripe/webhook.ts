@@ -58,8 +58,9 @@ const webhook: FastifyPluginAsyncTypebox = async (fastify): Promise<void> => {
         signatureString,
         webhookSecret
       );
-    } catch (error: any) {
-      fastify.log.error({ error: error.message }, 'Webhook signature verification failed');
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'Unknown error';
+      fastify.log.error({ error, message }, 'Webhook signature verification failed');
       return reply.code(400).send(errorResponse('Webhook signature verification failed'));
     }
 

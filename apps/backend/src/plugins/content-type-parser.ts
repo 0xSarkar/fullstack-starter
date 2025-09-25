@@ -25,7 +25,7 @@ const contentTypeParserPlugin: FastifyPluginAsync = async (fastify) => {
             // Try to parse as JSON
             const parsed = body ? JSON.parse(body) : {};
             done(null, parsed);
-          } catch (err) {
+          } catch {
             // If JSON parsing fails, return the raw body as a string
             done(null, body);
           }
@@ -45,8 +45,8 @@ const contentTypeParserPlugin: FastifyPluginAsync = async (fastify) => {
         try {
           const parsed = body ? JSON.parse(body) : {};
           done(null, parsed);
-        } catch (err) {
-          done(err as Error, null);
+        } catch (error) {
+          done(error instanceof Error ? error : new Error('Failed to parse request body'), null);
         }
       });
       payload.on('error', done);

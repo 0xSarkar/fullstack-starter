@@ -45,8 +45,8 @@ const create: FastifyPluginAsyncTypebox = async (fastify) => {
         success: true as const,
         data: response
       });
-    } catch (err: any) {
-      fastify.log.error(err);
+    } catch (err: unknown) {
+      fastify.log.error({ err }, 'Failed to create note');
       return reply.code(500).send(errorResponse('Failed to create note', 'CREATE_NOTE_FAILED'));
     }
   });

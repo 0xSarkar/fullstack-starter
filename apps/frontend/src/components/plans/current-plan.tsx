@@ -1,14 +1,17 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import type { AuthUser } from '@/stores/auth-store';
 
 interface CurrentPlanProps {
-  user: any; // from useAuthStore
+  user: AuthUser;
   loading: boolean;
   confirming: boolean;
   onManageSubscription: () => void;
 }
 
 export function CurrentPlan({ user, loading, confirming, onManageSubscription }: CurrentPlanProps) {
+  const subscription = user.subscription;
+
   return (
     <div className="flex flex-col items-center justify-center min-h-[400px] gap-6">
       <div className="text-center">
@@ -20,28 +23,28 @@ export function CurrentPlan({ user, loading, confirming, onManageSubscription }:
           </div>
           <CardHeader className="text-center pb-4">
             <CardTitle className="text-xl">
-              {user.subscription?.product_name || user.subscription?.price_name || 'Your Plan'}
+              {subscription?.product_name || subscription?.price_name || 'Your Plan'}
             </CardTitle>
             <div className="text-3xl font-bold mb-1">
-              {user.subscription?.amount !== undefined ? (
+              {subscription?.amount !== undefined ? (
                 <>
                   <span className="text-2xl">$</span>
-                  {(user.subscription.amount / 100).toFixed(0)}
+                  {(subscription.amount / 100).toFixed(0)}
                   <span className="text-sm font-normal text-muted-foreground">
-                    /{user.subscription.interval}
+                    /{subscription.interval}
                   </span>
                 </>
               ) : (
                 <span className="text-muted-foreground">Custom pricing</span>
               )}
             </div>
-            {user.subscription?.amount !== undefined && (
+            {subscription?.amount !== undefined && subscription.interval && subscription.currency && (
               <div className="text-sm text-muted-foreground mb-4">
-                ${(user.subscription.amount / 100).toFixed(2)} {user.subscription.currency?.toUpperCase()} per {user.subscription.interval}
+                ${(subscription.amount / 100).toFixed(2)} {subscription.currency.toUpperCase()} per {subscription.interval}
               </div>
             )}
             <div className="text-sm text-muted-foreground">
-              Status: <span className="capitalize font-medium">{user.subscription?.status}</span>
+              Status: <span className="capitalize font-medium">{subscription?.status ?? 'unknown'}</span>
             </div>
           </CardHeader>
           <CardContent className="text-center pt-0">

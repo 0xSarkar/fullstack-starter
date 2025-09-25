@@ -1,6 +1,7 @@
 import fp from 'fastify-plugin';
 import { FastifyPluginAsync } from 'fastify';
 import nodemailer from 'nodemailer';
+import type { SentMessageInfo } from 'nodemailer';
 
 const emailPlugin: FastifyPluginAsync = async (fastify) => {
   // Create a transporter only if SMTP config exists; otherwise fallback to logger
@@ -20,7 +21,7 @@ const emailPlugin: FastifyPluginAsync = async (fastify) => {
     // verify transporter in dev to log connection issues
     transporter.verify().then(() => {
       fastify.log.info('Email transporter verified');
-    }).catch((err: any) => {
+    }).catch((err: unknown) => {
       fastify.log.warn({ err }, 'Email transporter verification failed');
     });
   } else {
@@ -56,6 +57,6 @@ export default fp(emailPlugin, { name: 'email', dependencies: ['config'] });
 // Type augmentation
 declare module 'fastify' {
   interface FastifyInstance {
-    sendEmail(to: string, subject: string, html: string, text?: string): Promise<any>;
+    sendEmail(to: string, subject: string, html: string, text?: string): Promise<SentMessageInfo | { logged: true; }>;
   }
 }

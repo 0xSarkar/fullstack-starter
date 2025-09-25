@@ -15,6 +15,7 @@ import { Link, useRouter, useSearch } from "@tanstack/react-router";
 import { resetPasswordApi } from "@fullstack-starter/shared-api";
 import { LoaderCircle } from "lucide-react";
 import { toast } from "sonner";
+import { getFieldErrors } from '@/lib/api-errors';
 
 interface ResetPasswordFormData {
   newPassword: string;
@@ -39,8 +40,10 @@ export function ResetPasswordPage() {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     startTransition(async () => {
-      const newPassword = formData.get('newPassword') as string;
-      const confirmPassword = formData.get('confirmPassword') as string;
+      const newPasswordEntry = formData.get('newPassword');
+      const confirmPasswordEntry = formData.get('confirmPassword');
+      const newPassword = typeof newPasswordEntry === 'string' ? newPasswordEntry : '';
+      const confirmPassword = typeof confirmPasswordEntry === 'string' ? confirmPasswordEntry : '';
 
       // Basic validation
       const newErrors: Partial<ResetPasswordFormData> = {};
@@ -70,19 +73,21 @@ export function ResetPasswordPage() {
         // Success - show toast and redirect to login
         toast.success("Password reset successfully! You can now log in with your new password.");
         await router.navigate({ to: "/login" });
-      } catch (err: any) {
+      } catch (err: unknown) {
         // Handle field-specific validation errors from API
-        if (err.details?.errors) {
+        const fieldErrorsList = getFieldErrors(err);
+        if (fieldErrorsList.length > 0) {
           const fieldErrors: Partial<ResetPasswordFormData> = {};
-          err.details.errors.forEach((error: { field: string; message: string; }) => {
+          fieldErrorsList.forEach((error) => {
             if (error.field === 'newPassword' || error.field === 'confirmPassword') {
-              fieldErrors[error.field as keyof ResetPasswordFormData] = error.message;
+              fieldErrors[error.field] = error.message;
             }
           });
           setErrors(fieldErrors);
         } else {
           // General error - show toast
-          toast.error(err.message || "Failed to reset password. Please try again.");
+          const message = err instanceof Error ? err.message : "Failed to reset password. Please try again.";
+          toast.error(message);
         }
       }
     });

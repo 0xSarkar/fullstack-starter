@@ -8,7 +8,8 @@ const LogoutSchema = {
   }
 };
 
-const logout: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<void> => {
+const logout: FastifyPluginAsyncTypebox = async (fastify, _opts): Promise<void> => {
+  void _opts;
   fastify.post('/logout', {
     schema: LogoutSchema,
     onRequest: fastify.authenticate

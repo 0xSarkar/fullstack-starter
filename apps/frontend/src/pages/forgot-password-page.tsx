@@ -15,6 +15,7 @@ import { Link, useRouter } from "@tanstack/react-router";
 import { forgotPasswordApi } from "@fullstack-starter/shared-api";
 import { LoaderCircle } from "lucide-react";
 import { toast } from "sonner";
+import { getFieldErrors } from '@/lib/api-errors';
 
 interface ForgotPasswordFormData {
   email: string;
@@ -37,7 +38,8 @@ export function ForgotPasswordPage() {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     startTransition(async () => {
-      const email = formData.get('email') as string;
+      const emailEntry = formData.get('email');
+      const email = typeof emailEntry === 'string' ? emailEntry.trim() : '';
 
       // Basic validation
       const newErrors: Partial<ForgotPasswordFormData> = {};
@@ -55,11 +57,12 @@ export function ForgotPasswordPage() {
         // Success - show toast and redirect to login
         toast.success("Password reset link sent! Check your email.");
         await router.navigate({ to: "/login" });
-      } catch (err: any) {
+      } catch (err: unknown) {
         // Handle field-specific validation errors from API
-        if (err.details?.errors) {
+        const fieldErrorsList = getFieldErrors(err);
+        if (fieldErrorsList.length > 0) {
           const fieldErrors: Partial<ForgotPasswordFormData> = {};
-          err.details.errors.forEach((error: { field: string; message: string; }) => {
+          fieldErrorsList.forEach((error) => {
             if (error.field === 'email') {
               fieldErrors.email = error.message;
             }
@@ -67,7 +70,8 @@ export function ForgotPasswordPage() {
           setErrors(fieldErrors);
         } else {
           // General error - show toast
-          toast.error(err.message || "Failed to send reset link. Please try again.");
+          const message = err instanceof Error ? err.message : "Failed to send reset link. Please try again.";
+          toast.error(message);
         }
       }
     });

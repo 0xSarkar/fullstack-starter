@@ -1,6 +1,6 @@
 import { useRouter, getRouteApi } from '@tanstack/react-router';
 import { useNotesStore } from '@/stores/notes-store';
-import { useEffect, useState, useRef } from 'react';
+import { useCallback, useEffect, useState, useRef } from 'react';
 import { updateNoteApi } from '@fullstack-starter/shared-api';
 import Tiptap from '@/components/tiptap';
 import { useEditor } from '@tiptap/react';
@@ -28,18 +28,19 @@ export function NotePage() {
     },
   });
 
-  const handleSave = async () => {
+  const handleSave = useCallback(async () => {
     try {
       const updateData: UpdateNoteRequest = {
-        content: content ?? undefined,
+        content,
       };
       await updateNoteApi(noteData.id, updateData);
       router.invalidate();
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Failed to save note:', error);
-      toast.error('Failed to save note');
+      const message = error instanceof Error ? error.message : 'Failed to save note';
+      toast.error(message);
     }
-  };
+  }, [content, noteData.id, router]);
 
   // Autosave on content change, skip initial load
   const firstRun = useRef(true);
@@ -53,10 +54,10 @@ export function NotePage() {
     // Skip autosave if we're currently loading a new note
     if (isLoadingNote.current) return;
     const timeoutId = setTimeout(() => {
-      handleSave();
+      void handleSave();
     }, 1000);
     return () => clearTimeout(timeoutId);
-  }, [content, editor]);
+  }, [content, editor, handleSave]);
 
   // Replace content on initial load or when switching notes, but avoid on autosave reloads
   const prevNoteId = useRef<string | null>(null);

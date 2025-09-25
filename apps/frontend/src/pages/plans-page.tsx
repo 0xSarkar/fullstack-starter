@@ -1,5 +1,5 @@
 import { getRouteApi } from '@tanstack/react-router';
-import { confirmCheckoutSessionApi, createCheckoutSessionApi, createBillingPortalApi } from '@fullstack-starter/shared-api';
+import { confirmCheckoutSessionApi, createCheckoutSessionApi, createBillingPortalApi, HttpError } from '@fullstack-starter/shared-api';
 import { Separator } from '@/components/ui/separator';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { sleep } from '@/lib/utils';
@@ -88,18 +88,28 @@ export function PlansPage() {
   }, [clearCheckoutParams]);
 
   const handleConfirmationError = useCallback((
-    err: any,
+    err: unknown,
     lastStatus: { current: ConfirmationStatus; }
   ) => {
     if (!isMountedRef.current) return false;
 
     console.error('confirmSession error', err);
 
-    const isClientError = err?.status >= 400 && err?.status < 500;
+    const httpError = err instanceof HttpError ? err : undefined;
+    const isClientError = httpError?.status !== undefined && httpError.status >= 400 && httpError.status < 500;
     if (isClientError) {
       lastStatus.current = 'failed';
       setStatus('failed');
-      const message = err.data?.error || err.message || MESSAGES.fallbackError;
+      let message: string = MESSAGES.fallbackError;
+      const details = httpError?.details;
+      if (details && typeof details === 'object' && !Array.isArray(details) && 'error' in details) {
+        const errorMessage = (details as Record<string, unknown>).error;
+        if (typeof errorMessage === 'string') {
+          message = errorMessage;
+        }
+      } else if (httpError?.message) {
+        message = httpError.message;
+      }
       toast.error(message);
       clearCheckoutParams();
       return true;
@@ -152,7 +162,7 @@ export function PlansPage() {
       } else {
         toast.error(MESSAGES.genericError);
       }
-    } catch (err) {
+    } catch (err: unknown) {
       console.error('Error creating checkout session:', err);
       toast.error(MESSAGES.genericError);
     } finally {
@@ -169,7 +179,7 @@ export function PlansPage() {
       } else {
         toast.error(MESSAGES.genericError);
       }
-    } catch (err) {
+    } catch (err: unknown) {
       console.error('Error creating billing portal:', err);
       toast.error(MESSAGES.genericError);
     } finally {
@@ -205,7 +215,7 @@ export function PlansPage() {
     return () => {
       cancelled = true;
     };
-  }, [checkout, session_id]);
+  }, [checkout, session_id, clearCheckoutParams, confirmSessionPolling]);
 
   // Component mount/unmount tracking
   useEffect(() => {

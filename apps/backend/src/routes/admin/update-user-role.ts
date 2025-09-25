@@ -6,6 +6,7 @@ import {
   UpdateUserRoleResponseSchema,
   DefaultErrorResponseSchema
 } from '@fullstack-starter/shared-schemas';
+import { serializeUserDates } from '../../utils/serialize-user-dates.js';
 
 const UpdateUserRoleRequestSchema = {
   params: UserIdParamSchema,
@@ -71,19 +72,15 @@ const updateUserRole: FastifyPluginAsyncTypebox = async (fastify): Promise<void>
       }
 
       // Convert dates to strings for API response
-      const userResponse = {
-        ...updatedUser,
-        created_at: updatedUser.created_at.toISOString(),
-        updated_at: updatedUser.updated_at.toISOString()
-      };
+      const userResponse = serializeUserDates(updatedUser);
 
       return reply.code(200).send({
         success: true as const,
         data: userResponse
       });
 
-    } catch (error: any) {
-      fastify.log.error('Error updating user role:', error);
+    } catch (error: unknown) {
+      fastify.log.error({ error }, 'Error updating user role');
       return reply.code(500).send(errorResponse('Failed to update user role'));
     }
   });

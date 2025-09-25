@@ -5,6 +5,8 @@ import type {
   CreateNoteResponse,
   UpdateNoteResponse,
   ListNotesResponse,
+  GetNoteResponse,
+  DeleteNoteResponse,
 } from '@fullstack-starter/shared-schemas';
 import { defaultClient } from './client.js';
 
@@ -16,14 +18,14 @@ export async function updateNoteApi(id: string, data: UpdateNoteRequest): Promis
   return defaultClient.patch<UpdateNoteResponse>(`/notes/${id}`, data);
 }
 
-export async function getNoteApi(id: string): Promise<any> { // Assuming a response type
-  return defaultClient.get(`/notes/${id}`);
+export async function getNoteApi(id: string): Promise<GetNoteResponse> {
+  return defaultClient.get<GetNoteResponse>(`/notes/${id}`);
 }
 
 export async function listNotesApi(query?: ListNotesQuery): Promise<ListNotesResponse> {
   return defaultClient.get<ListNotesResponse>('/notes', query);
 }
 
-export async function deleteNoteApi(id: string): Promise<void> {
-  await defaultClient.delete(`/notes/${id}`);
+export async function deleteNoteApi(id: string): Promise<DeleteNoteResponse> {
+  return defaultClient.delete<DeleteNoteResponse>(`/notes/${id}`);
 }

@@ -31,7 +31,12 @@ export class ApiClient {
     return this.baseUrl;
   }
 
-  private async request<T>(method: string, path: string, body?: any, query?: Record<string, any>): Promise<T> {
+  private async request<TResponse>(
+    method: string,
+    path: string,
+    body?: unknown,
+    query?: Record<string, string | number | boolean | null | undefined>,
+  ): Promise<TResponse> {
     let url = `${this.baseUrl}${path}`;
     if (query) {
       const params = new URLSearchParams();
@@ -61,27 +66,30 @@ export class ApiClient {
       throw new HttpError(response.status, error.code, error.details, error.error);
     }
 
-    return responseJson as T;
+    return responseJson as TResponse;
   }
 
-  get<T>(path: string, query?: Record<string, any>): Promise<T> {
-    return this.request<T>('GET', path, undefined, query);
+  get<TResponse>(
+    path: string,
+    query?: Record<string, string | number | boolean | null | undefined>,
+  ): Promise<TResponse> {
+    return this.request<TResponse>('GET', path, undefined, query);
   }
 
-  post<T>(path: string, body?: any): Promise<T> {
-    return this.request<T>('POST', path, body);
+  post<TResponse, TBody = unknown>(path: string, body?: TBody): Promise<TResponse> {
+    return this.request<TResponse>('POST', path, body);
   }
 
-  put<T>(path: string, body?: any): Promise<T> {
-    return this.request<T>('PUT', path, body);
+  put<TResponse, TBody = unknown>(path: string, body?: TBody): Promise<TResponse> {
+    return this.request<TResponse>('PUT', path, body);
   }
 
-  patch<T>(path: string, body?: any): Promise<T> {
-    return this.request<T>('PATCH', path, body);
+  patch<TResponse, TBody = unknown>(path: string, body?: TBody): Promise<TResponse> {
+    return this.request<TResponse>('PATCH', path, body);
   }
 
-  delete<T>(path: string): Promise<T> {
-    return this.request<T>('DELETE', path, {});
+  delete<TResponse>(path: string): Promise<TResponse> {
+    return this.request<TResponse>('DELETE', path);
   }
 }
 

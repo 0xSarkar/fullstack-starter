@@ -3,6 +3,27 @@ import fp from 'fastify-plugin';
 import { errorResponse } from '@fullstack-starter/shared-schemas';
 import "@fastify/jwt"; // imported due to module augmentation (at the end)
 
+type JwtError = Error & { code?: string; };
+
+function getJwtError(error: unknown): JwtError | undefined {
+  if (!(error instanceof Error)) {
+    return undefined;
+  }
+
+  const possibleCode = (error as { code?: unknown; }).code;
+
+  if (typeof possibleCode === 'string') {
+    (error as JwtError).code = possibleCode;
+    return error as JwtError;
+  }
+
+  if (possibleCode === undefined) {
+    return error as JwtError;
+  }
+
+  return undefined;
+}
+
 // Type definition for JWT payload
 export interface JWTPayload {
   id: string;
@@ -43,41 +64,44 @@ const authPlugin: FastifyPluginAsync = async (fastify) => {
 
       // If successful, request.user will be populated with the JWT payload
       // No additional action needed - @fastify/jwt handles this automatically
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const jwtError = getJwtError(err);
+      const code = jwtError?.code;
       // Handle different types of authentication errors
-      if (err.code === 'FST_JWT_NO_AUTHORIZATION_IN_COOKIE' ||
-        err.code === 'FST_JWT_NO_AUTHORIZATION_IN_HEADER') {
+      if (code === 'FST_JWT_NO_AUTHORIZATION_IN_COOKIE' ||
+        code === 'FST_JWT_NO_AUTHORIZATION_IN_HEADER') {
         // No token found in either cookie or header
         return reply.code(401).send(errorResponse('Authentication required'));
       }
 
-      if (err.code === 'FST_JWT_AUTHORIZATION_TOKEN_EXPIRED') {
+      if (code === 'FST_JWT_AUTHORIZATION_TOKEN_EXPIRED') {
         // Token has expired
         return reply.code(401).send(errorResponse('Token has expired'));
       }
 
-      if (err.code === 'FST_JWT_AUTHORIZATION_TOKEN_INVALID') {
+      if (code === 'FST_JWT_AUTHORIZATION_TOKEN_INVALID') {
         // Invalid token
         return reply.code(401).send(errorResponse('Invalid authentication token'));
       }
 
-      if (err.code === 'FST_JWT_BAD_REQUEST' || err.code === 'FST_JWT_BAD_COOKIE_REQUEST') {
+      if (code === 'FST_JWT_BAD_REQUEST' || code === 'FST_JWT_BAD_COOKIE_REQUEST') {
         // Malformed token
         return reply.code(400).send(errorResponse('Malformed authentication token'));
       }
 
       // Generic authentication error
-      fastify.log.error('Authentication error:', err);
+      fastify.log.error({ err }, 'Authentication error');
       return reply.code(401).send(errorResponse('Authentication failed'));
     }
   });
 
   // Optional: Soft authentication decorator (doesn't fail if no token)
-  fastify.decorate('authenticateOptional', async function (request: FastifyRequest, reply: FastifyReply) {
+  fastify.decorate('authenticateOptional', async function (request: FastifyRequest) {
     try {
       await request.jwtVerify();
       // If successful, request.user will be populated
-    } catch (err) {
+    } catch (_error) {
+      void _error;
       // Silently fail - request.user will be undefined
       // This allows routes to handle both authenticated and unauthenticated users
     }
@@ -120,27 +144,29 @@ const authPlugin: FastifyPluginAsync = async (fastify) => {
 
       // Add role to the request user object for use in handlers
       request.user.role = user.role;
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const jwtError = getJwtError(err);
+      const code = jwtError?.code;
       // Handle JWT verification errors (same as authenticate)
-      if (err.code === 'FST_JWT_NO_AUTHORIZATION_IN_COOKIE' ||
-        err.code === 'FST_JWT_NO_AUTHORIZATION_IN_HEADER') {
+      if (code === 'FST_JWT_NO_AUTHORIZATION_IN_COOKIE' ||
+        code === 'FST_JWT_NO_AUTHORIZATION_IN_HEADER') {
         return reply.code(401).send(errorResponse('Authentication required'));
       }
 
-      if (err.code === 'FST_JWT_AUTHORIZATION_TOKEN_EXPIRED') {
+      if (code === 'FST_JWT_AUTHORIZATION_TOKEN_EXPIRED') {
         return reply.code(401).send(errorResponse('Token has expired'));
       }
 
-      if (err.code === 'FST_JWT_AUTHORIZATION_TOKEN_INVALID') {
+      if (code === 'FST_JWT_AUTHORIZATION_TOKEN_INVALID') {
         return reply.code(401).send(errorResponse('Invalid authentication token'));
       }
 
-      if (err.code === 'FST_JWT_BAD_REQUEST' || err.code === 'FST_JWT_BAD_COOKIE_REQUEST') {
+      if (code === 'FST_JWT_BAD_REQUEST' || code === 'FST_JWT_BAD_COOKIE_REQUEST') {
         return reply.code(400).send(errorResponse('Malformed authentication token'));
       }
 
       // Generic authentication error
-      fastify.log.error('Admin authentication error:', err);
+      fastify.log.error({ err }, 'Admin authentication error');
       return reply.code(401).send(errorResponse('Authentication failed'));
     }
   });
@@ -155,7 +181,7 @@ export default fp(authPlugin, {
 declare module 'fastify' {
   export interface FastifyInstance {
     authenticate(request: FastifyRequest, reply: FastifyReply): Promise<void>;
-    authenticateOptional(request: FastifyRequest, reply: FastifyReply): Promise<void>;
+    authenticateOptional(request: FastifyRequest, reply?: FastifyReply): Promise<void>;
     authenticateAdmin(request: FastifyRequest, reply: FastifyReply): Promise<void>;
     createJWTPayload(user: { id: string; email: string; }): JWTPayload;
   }

@@ -20,7 +20,7 @@ const googleAuthRoute: FastifyPluginAsyncTypebox = async (fastify) => {
 
   const oauthClient = new OAuth2Client(clientId);
 
-  fastify.post('/google', { schema: GoogleAuthSchema }, async (request: any, reply) => {
+  fastify.post('/google', { schema: GoogleAuthSchema }, async (request, reply) => {
     if (!clientId) {
       return reply.code(500).send(errorResponse('Google auth not configured', 'GOOGLE_AUTH_DISABLED'));
     }
@@ -85,9 +85,10 @@ const googleAuthRoute: FastifyPluginAsyncTypebox = async (fastify) => {
                 provider_user_id: sub
               })
               .execute();
-          } catch (err: any) {
+          } catch (err: unknown) {
             // Unique constraint violation is fine (simultaneous requests)
-            if (!/duplicate key/i.test(err?.message)) {
+            const message = err instanceof Error ? err.message : undefined;
+            if (!message || !/duplicate key/i.test(message)) {
               fastify.log.error({ err }, 'Failed linking existing user to google');
             }
           }
@@ -177,7 +178,7 @@ const googleAuthRoute: FastifyPluginAsyncTypebox = async (fastify) => {
         },
         message: 'Google login successful'
       });
-    } catch (err: any) {
+    } catch (err: unknown) {
       fastify.log.error({ err }, 'Google auth failed');
       return reply.code(401).send(errorResponse('Google authentication failed', 'GOOGLE_AUTH_FAILED'));
     }

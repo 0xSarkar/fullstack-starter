@@ -13,9 +13,41 @@ interface GoogleSignInButtonProps {
   redirectPath?: string;
 }
 
+type GoogleCredentialResponse = {
+  clientId?: string;
+  credential?: string;
+  select_by?: string;
+};
+
+type GoogleInitializationConfig = {
+  client_id: string;
+  callback: (response: GoogleCredentialResponse) => void | Promise<void>;
+  auto_select?: boolean;
+  ux_mode?: 'popup' | 'redirect';
+};
+
+type GoogleButtonConfiguration = {
+  theme?: 'outline' | 'filled_blue' | 'filled_black';
+  size?: 'large' | 'medium' | 'small';
+  text?: GoogleSignInButtonProps['text'];
+  shape?: GoogleSignInButtonProps['shape'];
+  width?: number;
+};
+
+interface GoogleAccountsId {
+  initialize(config: GoogleInitializationConfig): void;
+  renderButton(parent: HTMLElement, options: GoogleButtonConfiguration): void;
+}
+
+interface GoogleIdentityServices {
+  accounts: {
+    id: GoogleAccountsId;
+  };
+}
+
 declare global {
   interface Window {
-    google?: any;
+    google?: GoogleIdentityServices;
   }
 }
 
@@ -57,10 +89,15 @@ export function GoogleSignInButton({
       400
     );
 
+    const googleIdentity = window.google?.accounts?.id;
+    if (!googleIdentity) {
+      return;
+    }
+
     try {
-      window.google.accounts.id.initialize({
+      googleIdentity.initialize({
         client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
-        callback: async (resp: any) => {
+        callback: async (resp: GoogleCredentialResponse) => {
           if (!resp?.credential) {
             toast.error('Google login failed');
             return;
@@ -70,15 +107,16 @@ export function GoogleSignInButton({
             if (onSuccessNavigate) {
               await onSuccessNavigate(redirectPath);
             }
-          } catch (err: any) {
-            toast.error(err?.message || 'Google login failed');
+          } catch (err: unknown) {
+            const message = err instanceof Error ? err.message : 'Google login failed';
+            toast.error(message);
           }
         },
         auto_select: false,
         ux_mode: 'popup'
       });
 
-      window.google.accounts.id.renderButton(divRef.current, {
+      googleIdentity.renderButton(divRef.current, {
         theme: 'outline',
         size,
         text,
@@ -86,7 +124,7 @@ export function GoogleSignInButton({
         width: targetWidth,
       });
       setInitialized(true);
-    } catch (err) {
+    } catch {
       // Fail silently; user can still use email/password
       // console.error('Google init error', err);
     }

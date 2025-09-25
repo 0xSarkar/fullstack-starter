@@ -43,8 +43,8 @@ const getNote: FastifyPluginAsyncTypebox = async (fastify) => {
         success: true as const,
         data: response
       });
-    } catch (err: any) {
-      fastify.log.error(err);
+    } catch (err: unknown) {
+      fastify.log.error({ err }, 'Failed to fetch note');
       return reply.code(500).send(errorResponse('Failed to fetch note', 'FETCH_NOTE_FAILED'));
     }
   });
