@@ -12,7 +12,6 @@ const ResetSchema = {
 };
 
 const resetPassword: FastifyPluginAsyncTypebox = async (fastify, _opts): Promise<void> => {
-  void _opts;
   fastify.post('/reset-password', { schema: ResetSchema }, async function (request, reply) {
     const { token, newPassword, confirmPassword } = request.body;
 

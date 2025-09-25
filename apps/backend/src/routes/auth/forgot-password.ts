@@ -11,7 +11,6 @@ const ForgotSchema = {
 };
 
 const forgotPassword: FastifyPluginAsyncTypebox = async (fastify, _opts): Promise<void> => {
-  void _opts;
   fastify.post('/forgot-password', { schema: ForgotSchema }, async function (request, reply) {
     const { email } = request.body;
 

@@ -100,8 +100,7 @@ const authPlugin: FastifyPluginAsync = async (fastify) => {
     try {
       await request.jwtVerify();
       // If successful, request.user will be populated
-    } catch (_error) {
-      void _error;
+    } catch {
       // Silently fail - request.user will be undefined
       // This allows routes to handle both authenticated and unauthenticated users
     }

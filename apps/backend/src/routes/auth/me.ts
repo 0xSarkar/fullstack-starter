@@ -10,7 +10,6 @@ const MeSchema = {
 };
 
 const me: FastifyPluginAsyncTypebox = async (fastify, _opts): Promise<void> => {
-  void _opts;
   fastify.get('/me', {
     schema: MeSchema,
     onRequest: fastify.authenticate

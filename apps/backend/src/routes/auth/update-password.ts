@@ -11,7 +11,6 @@ const UpdatePasswordSchema = {
 };
 
 const updatePassword: FastifyPluginAsyncTypebox = async (fastify, _opts): Promise<void> => {
-  void _opts;
   fastify.put('/update-password', {
     schema: UpdatePasswordSchema,
     onRequest: fastify.authenticate
