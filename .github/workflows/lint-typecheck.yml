@@ -1,9 +1,6 @@
 name: Lint and Typecheck
 
 on:
-  push:
-    branches:
-      - main
   pull_request:
     branches:
       - "*"
