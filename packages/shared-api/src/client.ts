@@ -48,14 +48,18 @@ export class ApiClient {
       url += `?${params.toString()}`;
     }
 
-    const headers: Record<string, string> = {
-      'Content-Type': 'application/json',
-    };
+    const headers: Record<string, string> = {};
+
+    const hasBody = body !== undefined;
+
+    if (hasBody) {
+      headers['Content-Type'] = 'application/json';
+    }
 
     const response = await fetch(url, {
       method,
       headers,
-      body: body ? JSON.stringify(body) : undefined,
+      body: hasBody ? JSON.stringify(body) : undefined,
       credentials: 'include', // Include cookies for auth
     });
 
