@@ -8,6 +8,7 @@ import { SidebarTrigger } from '@/components/ui/sidebar';
 import { Separator } from '@radix-ui/react-separator';
 import { NoteCard } from '@/components/notes/note-card';
 import { useState } from 'react';
+import type { NoteData } from '@fullstack-starter/shared-schemas';
 import { toast } from 'sonner';
 
 export function NotesPage() {
@@ -21,11 +22,11 @@ export function NotesPage() {
     setIsCreating(true);
     try {
       const response = await createNoteApi({ title: 'New Note', content: '' });
-      const noteData = { ...response.data, updatedAt: response.data.createdAt };
+      const noteData: NoteData = { ...response.data, updatedAt: response.data.createdAt };
       setCreatedNote(noteData);
       await navigate({ to: '/notes/$noteId', params: { noteId: response.data.id } });
       router.invalidate();
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Failed to create note:', error);
       const errorMessage = error instanceof Error ? error.message : 'Failed to create note';
       toast.error(errorMessage);

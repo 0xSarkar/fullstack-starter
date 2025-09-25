@@ -1,6 +1,7 @@
 import { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
 import { errorResponse, DefaultErrorResponseSchema } from '@fullstack-starter/shared-schemas';
 import { NoteParamsSchema, GetNoteResponseSchema } from '@fullstack-starter/shared-schemas';
+import { normalizeTimestamp } from '../../utils/timestamps.js';
 
 const GetSchema = {
   params: NoteParamsSchema,
@@ -34,16 +35,16 @@ const getNote: FastifyPluginAsyncTypebox = async (fastify) => {
         id: row.id,
         title: row.title,
         content: row.content,
-        createdAt: typeof row.created_at === 'string' ? row.created_at : new Date(row.created_at as any).toISOString(),
-        updatedAt: typeof row.updated_at === 'string' ? row.updated_at : new Date(row.updated_at as any).toISOString()
+        createdAt: normalizeTimestamp(row.created_at),
+        updatedAt: normalizeTimestamp(row.updated_at)
       };
 
       return reply.code(200).send({
         success: true as const,
         data: response
       });
-    } catch (err: any) {
-      fastify.log.error(err);
+    } catch (err: unknown) {
+      fastify.log.error({ err }, 'Failed to fetch note');
       return reply.code(500).send(errorResponse('Failed to fetch note', 'FETCH_NOTE_FAILED'));
     }
   });

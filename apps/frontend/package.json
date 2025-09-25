@@ -7,6 +7,8 @@
     "start": "vite preview",
     "build": "vite build && tsc",
     "typecheck": "tsc --noEmit",
+    "lint": "pnpm exec eslint .",
+    "check": "pnpm run lint && pnpm run typecheck",
     "test": "vitest run"
   },
   "dependencies": {

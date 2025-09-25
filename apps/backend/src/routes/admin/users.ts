@@ -1,6 +1,7 @@
 import { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
 import { errorResponse, DefaultErrorResponseSchema } from '@fullstack-starter/shared-schemas';
 import { ListUsersQuerySchema, ListUsersResponseSchema } from '@fullstack-starter/shared-schemas';
+import { serializeUserDates } from '../../utils/serialize-user-dates.js';
 
 const ListUsersSchema = {
   querystring: ListUsersQuerySchema,
@@ -41,9 +42,9 @@ const listUsers: FastifyPluginAsyncTypebox = async (fastify): Promise<void> => {
 
       // Get total count for pagination (separate aggregate query)
       const countResult = await filtered
-        .select(({ fn }) => fn.countAll().as('count'))
+        .select(({ fn }) => fn.countAll<string>().as('count'))
         .executeTakeFirst();
-      const total = Number((countResult as any)?.count ?? 0);
+      const total = countResult ? Number(countResult.count) : 0;
 
       // Get paginated results (select concrete columns after filtering)
       const usersRaw = await filtered
@@ -63,11 +64,7 @@ const listUsers: FastifyPluginAsyncTypebox = async (fastify): Promise<void> => {
         .execute();
 
       // Convert dates to strings for API response
-      const users = usersRaw.map(user => ({
-        ...user,
-        created_at: user.created_at.toISOString(),
-        updated_at: user.updated_at.toISOString()
-      }));
+      const users = usersRaw.map(serializeUserDates);
 
       return reply.code(200).send({
         success: true as const,
@@ -80,8 +77,8 @@ const listUsers: FastifyPluginAsyncTypebox = async (fastify): Promise<void> => {
         }
       });
 
-    } catch (error: any) {
-      fastify.log.error('Error listing users:', error);
+    } catch (error: unknown) {
+      fastify.log.error({ error }, 'Error listing users');
       return reply.code(500).send(errorResponse('Failed to list users'));
     }
   });

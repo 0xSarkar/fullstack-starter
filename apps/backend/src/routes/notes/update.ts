@@ -1,6 +1,9 @@
 import { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
 import { errorResponse, DefaultErrorResponseSchema } from '@fullstack-starter/shared-schemas';
 import { NoteParamsSchema, UpdateNoteRequestSchema, UpdateNoteResponseSchema } from '@fullstack-starter/shared-schemas';
+import { normalizeTimestamp } from '../../utils/timestamps.js';
+import type { Notes } from '../../types/database.js';
+import type { Updateable } from 'kysely';
 
 const UpdateSchema = {
   params: NoteParamsSchema,
@@ -23,11 +26,11 @@ const update: FastifyPluginAsyncTypebox = async (fastify) => {
       const { title, content } = body;
 
       // perform update
-      const updateData: any = {
-        updated_at: new Date() as any
+      const updateData: Partial<Updateable<Notes>> = {
+        updated_at: new Date()
       };
-      if (title !== undefined) updateData.title = title;
-      if (content !== undefined) updateData.content = content;
+      if (title !== undefined) updateData.title = title ?? null;
+      if (content !== undefined) updateData.content = content ?? null;
 
       const updated = await fastify.kysely
         .updateTable('notes')
@@ -45,15 +48,15 @@ const update: FastifyPluginAsyncTypebox = async (fastify) => {
         id: updated.id,
         title: updated.title,
         content: updated.content,
-        updatedAt: typeof updated.updated_at === 'string' ? updated.updated_at : new Date(updated.updated_at as any).toISOString()
+        updatedAt: normalizeTimestamp(updated.updated_at)
       };
 
       return reply.code(200).send({
         success: true as const,
         data: response
       });
-    } catch (err: any) {
-      fastify.log.error(err);
+    } catch (err: unknown) {
+      fastify.log.error({ err }, 'Failed to update note');
       return reply.code(500).send(errorResponse('Failed to update note', 'UPDATE_NOTE_FAILED'));
     }
   });

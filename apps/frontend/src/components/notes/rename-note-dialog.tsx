@@ -9,6 +9,7 @@ import { useNotesStore } from "@/stores/notes-store";
 import { LoaderCircle } from "lucide-react";
 import { toast } from "sonner";
 import { updateNoteApi } from "@fullstack-starter/shared-api";
+import { getFieldErrors } from '@/lib/api-errors';
 
 interface RenameNoteFormData {
   title: string;
@@ -33,7 +34,8 @@ export function RenameNoteDialog() {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     startTransition(async () => {
-      const title = formData.get('title') as string;
+      const titleEntry = formData.get('title');
+      const title = typeof titleEntry === 'string' ? titleEntry.trim() : '';
 
       // Basic validation
       const newErrors: Partial<RenameNoteFormData> = {};
@@ -47,21 +49,27 @@ export function RenameNoteDialog() {
       setErrors({}); // Clear errors
 
       try {
-        await updateNoteApi(noteToRename!.id, { title });
+        if (!noteToRename) {
+          return;
+        }
+
+        await updateNoteApi(noteToRename.id, { title });
         toast.success("Note renamed successfully!");
         await router.invalidate({ sync: true });
         setNoteToRename(null);
-      } catch (err: any) {
-        if (err.details?.errors) {
+      } catch (err: unknown) {
+        const fieldErrorsList = getFieldErrors(err);
+        if (fieldErrorsList.length > 0) {
           const fieldErrors: Partial<RenameNoteFormData> = {};
-          err.details.errors.forEach((error: { field: string; message: string; }) => {
+          fieldErrorsList.forEach((error) => {
             if (error.field === 'title') {
               fieldErrors.title = error.message;
             }
           });
           setErrors(fieldErrors);
         } else {
-          toast.error(err.message || "Failed to rename note. Please try again.");
+          const message = err instanceof Error ? err.message : "Failed to rename note. Please try again.";
+          toast.error(message);
         }
       }
     });

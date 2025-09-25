@@ -15,6 +15,7 @@ import { useNotesStore } from '@/stores/notes-store';
 import { createNoteApi } from '@fullstack-starter/shared-api';
 import { toast } from 'sonner';
 import { useState } from 'react';
+import type { NoteData } from '@fullstack-starter/shared-schemas';
 
 export function NavMain({
   items,
@@ -41,12 +42,12 @@ export function NavMain({
     setIsCreating(true);
     try {
       const response = await createNoteApi({ title: 'New Note', content: '' });
-      const noteData = { ...response.data, updatedAt: response.data.createdAt };
+      const noteData: NoteData = { ...response.data, updatedAt: response.data.createdAt };
       setCreatedNote(noteData);
       setOpenMobile(false);
       await navigate({ to: '/notes/$noteId', params: { noteId: response.data.id } });
       router.invalidate();
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Failed to create note:', error);
       const errorMessage = error instanceof Error ? error.message : 'Failed to create note';
       toast.error(errorMessage);

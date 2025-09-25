@@ -16,6 +16,8 @@
     "build": "pnpm run clean && tsc",
     "dev": "tsc -w",
     "typecheck": "tsc --noEmit",
+    "lint": "pnpm exec eslint .",
+    "check": "pnpm run lint && pnpm run typecheck",
     "clean": "rimraf dist"
   },
   "dependencies": {

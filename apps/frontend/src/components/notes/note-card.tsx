@@ -10,19 +10,16 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Edit, MoreHorizontal, Trash2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import type { NoteData } from '@fullstack-starter/shared-schemas';
 
 interface NoteCardProps {
-  note: {
-    id: string;
-    title: string | null;
-    content: string | null;
-  };
-  onRename: (note: any) => void;
+  note: NoteData;
+  onRename: (note: NoteData) => void;
   onDelete: (id: string) => void;
 }
 
 export function NoteCard({ note, onRename, onDelete }: NoteCardProps) {
-  const cleanText = (html: string) => {
+  const cleanText = (html: string | null | undefined) => {
     if (!html) return '';
     return html
       .replace(/<p>/g, '')
@@ -32,7 +29,7 @@ export function NoteCard({ note, onRename, onDelete }: NoteCardProps) {
       .trim();
   };
 
-  const previewText = note.content ? cleanText(note.content).slice(0, 100) + '...' : 'No content';
+  const previewText = note.content ? `${cleanText(note.content).slice(0, 100)}...` : 'No content';
 
   return (
     <Link to="/notes/$noteId" params={{ noteId: note.id }} className="block">

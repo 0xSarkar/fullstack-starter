@@ -34,8 +34,8 @@ const del: FastifyPluginAsyncTypebox = async (fastify) => {
         success: true as const,
         data: null
       });
-    } catch (err: any) {
-      fastify.log.error(err);
+    } catch (err: unknown) {
+      fastify.log.error({ err }, 'Failed to delete note');
       return reply.code(500).send(errorResponse('Failed to delete note', 'DELETE_NOTE_FAILED'));
     }
   });

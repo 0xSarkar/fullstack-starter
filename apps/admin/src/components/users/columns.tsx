@@ -103,8 +103,9 @@ export const createColumns = (onUserStatusToggle?: (user: AdminUser) => void): C
         try {
           await navigator.clipboard.writeText(user.id);
           toast.success("User ID copied to clipboard");
-        } catch (error) {
-          toast.error("Failed to copy user ID");
+        } catch (error: unknown) {
+          const message = error instanceof Error ? error.message : "Failed to copy user ID";
+          toast.error(message);
         }
       };
 
@@ -112,8 +113,9 @@ export const createColumns = (onUserStatusToggle?: (user: AdminUser) => void): C
         try {
           await navigator.clipboard.writeText(user.email);
           toast.success("Email copied to clipboard");
-        } catch (error) {
-          toast.error("Failed to copy email");
+        } catch (error: unknown) {
+          const message = error instanceof Error ? error.message : "Failed to copy email";
+          toast.error(message);
         }
       };
 

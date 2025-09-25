@@ -11,7 +11,7 @@ const LoginSchema = {
   }
 };
 
-const login: FastifyPluginAsyncTypebox = async (fastify, opts): Promise<void> => {
+const login: FastifyPluginAsyncTypebox = async (fastify, _opts): Promise<void> => {
   fastify.post('/login', {
     schema: LoginSchema
   }, async function (request, reply) {

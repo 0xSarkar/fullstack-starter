@@ -1,6 +1,7 @@
 import { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
 import { errorResponse, DefaultErrorResponseSchema } from '@fullstack-starter/shared-schemas';
 import { CreateNoteRequestSchema, CreateNoteResponseSchema } from '@fullstack-starter/shared-schemas';
+import { normalizeTimestamp } from '../../utils/timestamps.js';
 
 const CreateSchema = {
   body: CreateNoteRequestSchema,
@@ -37,15 +38,15 @@ const create: FastifyPluginAsyncTypebox = async (fastify) => {
         id: inserted.id,
         title: inserted.title,
         content: inserted.content,
-        createdAt: typeof inserted.created_at === 'string' ? inserted.created_at : new Date(inserted.created_at as any).toISOString()
+        createdAt: normalizeTimestamp(inserted.created_at)
       };
 
       return reply.code(201).send({
         success: true as const,
         data: response
       });
-    } catch (err: any) {
-      fastify.log.error(err);
+    } catch (err: unknown) {
+      fastify.log.error({ err }, 'Failed to create note');
       return reply.code(500).send(errorResponse('Failed to create note', 'CREATE_NOTE_FAILED'));
     }
   });

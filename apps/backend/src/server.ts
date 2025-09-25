@@ -25,7 +25,7 @@ const server = Fastify({
 await server.register(app);
 
 // delay is the number of milliseconds for the graceful close to finish
-closeWithGrace({ delay: Number(process.env.FASTIFY_CLOSE_GRACE_DELAY) || 500 }, async function ({ signal, err, manual }) {
+closeWithGrace({ delay: Number(process.env.FASTIFY_CLOSE_GRACE_DELAY) || 500 }, async function ({ err }) {
   if (err) {
     server.log.error(err);
   }

@@ -22,11 +22,18 @@
     "seed:reset": "pnpm --filter @fullstack-starter/backend run seed:reset",
     "seed:dev": "pnpm --filter @fullstack-starter/backend run seed:dev",
     "db:generate-types": "pnpm --filter @fullstack-starter/backend run db:generate-types",
-    "typecheck": "pnpm --recursive --filter \"./packages/*\" --filter \"./apps/*\" run --if-present typecheck"
+    "lint": "pnpm exec eslint .",
+    "typecheck": "pnpm --recursive --filter \"./packages/*\" --filter \"./apps/*\" run --if-present typecheck",
+    "check": "pnpm run lint && pnpm run typecheck"
   },
   "devDependencies": {
+    "@eslint/js": "^9.36.0",
+    "eslint": "^9.36.0",
+    "eslint-plugin-react-hooks": "^5.1.0",
+    "globals": "^15.12.0",
     "rimraf": "^6.0.0",
-    "typescript": "~5.8.3"
+    "typescript": "~5.8.3",
+    "typescript-eslint": "^8.44.1"
   },
   "engines": {
     "node": ">=18",

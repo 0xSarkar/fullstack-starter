@@ -43,10 +43,8 @@ const ConfirmSchema = {
         }
       });
     } catch (err) {
-      const e = err as any;
-      // If Stripe indicates the session/resource is missing, return 404 so the frontend can stop polling
-      if (e && (e.statusCode === 404 || e.code === 'resource_missing')) {
-        fastify.log.info({ err: e, sessionId }, 'confirm-checkout-session: session not found');
+      if (isStripeError(err) && (err.statusCode === 404 || err.code === 'resource_missing')) {
+        fastify.log.info({ err, sessionId }, 'confirm-checkout-session: session not found');
         return reply.code(404).send(errorResponse('Checkout session not found', 'SESSION_NOT_FOUND'));
       }
 
@@ -57,3 +55,12 @@ const ConfirmSchema = {
 };
 
 export default confirmCheckoutSession;
+
+type StripeErrorShape = {
+  statusCode?: number;
+  code?: string;
+};
+
+function isStripeError(error: unknown): error is StripeErrorShape {
+  return typeof error === 'object' && error !== null && ('statusCode' in error || 'code' in error);
+}

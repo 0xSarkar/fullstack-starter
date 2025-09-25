@@ -1,10 +1,18 @@
 import { Type, type Static } from "@sinclair/typebox";
 
+export type ErrorDetails =
+  | Record<string, unknown>
+  | Array<unknown>
+  | string
+  | number
+  | boolean
+  | null;
+
 export interface ErrorResponse {
   success: false;
   error: string;
   code?: string;
-  details?: any;
+  details?: ErrorDetails;
 }
 
 // Default error response schema for consistent error handling
@@ -18,7 +26,7 @@ export const DefaultErrorResponseSchema = Type.Object({
     description: 'Machine-readable error code for programmatic handling',
     examples: ['USER_EXISTS', 'VALIDATION_ERROR', 'UNAUTHORIZED', 'INTERNAL_ERROR']
   })),
-  details: Type.Optional(Type.Any({
+  details: Type.Optional(Type.Unknown({
     description: 'Additional error context (structure varies by error type)'
   }))
 }, {
@@ -31,7 +39,7 @@ export type DefaultErrorResponse = Static<typeof DefaultErrorResponseSchema>;
 export function errorResponse(
   error: string,
   code?: string,
-  details?: any
+  details?: ErrorDetails
 ): ErrorResponse {
   return {
     success: false,

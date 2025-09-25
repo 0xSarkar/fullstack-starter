@@ -1,6 +1,7 @@
 import { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
 import { errorResponse, DefaultErrorResponseSchema } from '@fullstack-starter/shared-schemas';
 import { ListNotesQuerySchema, ListNotesResponseSchema } from '@fullstack-starter/shared-schemas';
+import { normalizeTimestamp } from '../../utils/timestamps.js';
 
 const ListSchema = {
   querystring: ListNotesQuerySchema,
@@ -26,11 +27,11 @@ const list: FastifyPluginAsyncTypebox = async (fastify) => {
       // total count
       const totalRes = await fastify.kysely
         .selectFrom('notes')
-        .select(fastify.kysely.fn.count('id').as('cnt'))
+        .select(({ fn }) => fn.count<string>('id').as('cnt'))
         .where('user_id', '=', userId)
         .executeTakeFirst();
 
-      const total = Number((totalRes as any)?.cnt ?? 0);
+      const total = totalRes ? Number(totalRes.cnt) : 0;
 
       const rows = await fastify.kysely
         .selectFrom('notes')
@@ -41,12 +42,12 @@ const list: FastifyPluginAsyncTypebox = async (fastify) => {
         .offset(offset)
         .execute();
 
-      const items = rows.map((r: any) => ({
+      const items = rows.map((r) => ({
         id: r.id,
         title: r.title,
         content: r.content,
-        createdAt: typeof r.created_at === 'string' ? r.created_at : new Date(r.created_at as any).toISOString(),
-        updatedAt: typeof r.updated_at === 'string' ? r.updated_at : new Date(r.updated_at as any).toISOString()
+        createdAt: normalizeTimestamp(r.created_at),
+        updatedAt: normalizeTimestamp(r.updated_at)
       }));
 
       return reply.code(200).send({
@@ -59,8 +60,8 @@ const list: FastifyPluginAsyncTypebox = async (fastify) => {
           totalPages: Math.ceil(total / limit)
         }
       });
-    } catch (err: any) {
-      fastify.log.error(err);
+    } catch (err: unknown) {
+      fastify.log.error({ err }, 'Failed to list notes');
       return reply.code(500).send(errorResponse('Failed to list notes', 'LIST_NOTES_FAILED'));
     }
   });
