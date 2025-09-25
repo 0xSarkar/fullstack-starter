@@ -11,13 +11,15 @@
   <link rel="manifest" href="/manifest.json" />
   <title>Fullstack Starter</title>
 
-  <!-- Google Identity Services -->
-  <script src="https://accounts.google.com/gsi/client" async defer></script>
-
   <!-- Connection warming and preload for auth session (Vite will replace %VITE_API_BASE_URL%) -->
   <link rel="dns-prefetch" href="%VITE_API_BASE_URL%">
   <link rel="preconnect" href="%VITE_API_BASE_URL%" crossorigin>
   <link rel="preload" as="fetch" href="%VITE_API_BASE_URL%/auth/me" crossorigin="use-credentials" fetchpriority="high">
+
+  <!-- Connection warming for Google Identity Services -->
+  <link rel="dns-prefetch" href="https://accounts.google.com">
+  <link rel="preconnect" href="https://accounts.google.com" crossorigin>
+  <link rel="preconnect" href="https://apis.google.com" crossorigin>
 
 </head>
 

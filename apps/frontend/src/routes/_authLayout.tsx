@@ -1,6 +1,7 @@
 import { AuthLayout } from '@/layouts/auth-layout';
 import { createFileRoute, redirect } from '@tanstack/react-router';
 import { useAuthStore } from '@/stores/auth-store';
+import { preloadGoogleGsiClient } from '@/hooks/use-google-gsi-client';
 
 export const Route = createFileRoute('/_authLayout')({
   beforeLoad: async () => {
@@ -11,6 +12,12 @@ export const Route = createFileRoute('/_authLayout')({
     }
     if (useAuthStore.getState().status === 'authenticated') {
       throw redirect({ to: '/' });
+    }
+  },
+
+  loader: () => {
+    if (typeof window !== 'undefined') {
+      preloadGoogleGsiClient();
     }
   },
 

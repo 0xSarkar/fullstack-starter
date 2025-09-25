@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { useAuthStore } from '@/stores/auth-store';
 import { toast } from 'sonner';
+import { useGoogleGsiClient } from '@/hooks/use-google-gsi-client';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface GoogleSignInButtonProps {
   text?: 'signin_with' | 'signup_with' | 'continue_with' | 'signin';
@@ -29,15 +31,31 @@ export function GoogleSignInButton({
   const [initialized, setInitialized] = useState(false);
   const [computedWidth, setComputedWidth] = useState<number | null>(null);
   const googleLogin = useAuthStore(s => s.googleLogin);
+  const { isReady, isError } = useGoogleGsiClient();
 
   useEffect(() => {
-    if (!window.google || initialized || !divRef.current) return;
-
-    if (computedWidth === null) {
-      const containerWidth = divRef.current.clientWidth;
-      setComputedWidth(containerWidth);
+    if (typeof width === 'number') {
+      setComputedWidth(width);
       return;
     }
+
+    if (!divRef.current) {
+      return;
+    }
+
+    const measuredWidth = divRef.current.clientWidth;
+    if (measuredWidth && measuredWidth !== computedWidth) {
+      setComputedWidth(measuredWidth);
+    }
+  }, [width, computedWidth]);
+
+  useEffect(() => {
+    if (!isReady || initialized || !divRef.current) return;
+
+    const targetWidth = Math.min(
+      width ?? computedWidth ?? divRef.current.clientWidth ?? 400,
+      400
+    );
 
     try {
       window.google.accounts.id.initialize({
@@ -65,14 +83,34 @@ export function GoogleSignInButton({
         size,
         text,
         shape,
-        width: Math.min(computedWidth || 400, 400),
+        width: targetWidth,
       });
       setInitialized(true);
     } catch (err) {
       // Fail silently; user can still use email/password
       // console.error('Google init error', err);
     }
-  }, [initialized, googleLogin, onSuccessNavigate, redirectPath, size, shape, text, width, computedWidth]);
+  }, [initialized, googleLogin, onSuccessNavigate, redirectPath, size, shape, text, width, computedWidth, isReady]);
 
-  return <div ref={divRef} className='w-full' />;
+  if (isError) {
+    return (
+      <div className='w-full rounded-md border border-dashed px-4 py-3 text-center text-sm text-muted-foreground'>
+        Google sign-in is temporarily unavailable.
+      </div>
+    );
+  }
+
+  const skeletonHeight = size === 'small' ? 32 : size === 'medium' ? 40 : 48;
+
+  return (
+    <div className='relative w-full'>
+      {!isReady && (
+        <Skeleton className='w-full' style={{ height: skeletonHeight }} />
+      )}
+      <div
+        ref={divRef}
+        className={`w-full ${!isReady ? 'opacity-0 pointer-events-none' : ''}`}
+      />
+    </div>
+  );
 }
