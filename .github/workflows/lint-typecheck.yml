@@ -30,6 +30,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Build packages
+        run: pnpm --recursive --filter "./packages/*" build
+
       - name: Run lint
         run: pnpm run lint
 
