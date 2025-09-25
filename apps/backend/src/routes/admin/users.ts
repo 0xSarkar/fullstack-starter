@@ -41,9 +41,9 @@ const listUsers: FastifyPluginAsyncTypebox = async (fastify): Promise<void> => {
 
       // Get total count for pagination (separate aggregate query)
       const countResult = await filtered
-        .select(({ fn }) => fn.countAll().as('count'))
+        .select(({ fn }) => fn.countAll<string>().as('count'))
         .executeTakeFirst();
-      const total = Number((countResult as any)?.count ?? 0);
+      const total = countResult ? Number(countResult.count) : 0;
 
       // Get paginated results (select concrete columns after filtering)
       const usersRaw = await filtered

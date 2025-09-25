@@ -1,6 +1,7 @@
 import { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
 import { errorResponse, DefaultErrorResponseSchema } from '@fullstack-starter/shared-schemas';
 import { NoteParamsSchema, GetNoteResponseSchema } from '@fullstack-starter/shared-schemas';
+import { normalizeTimestamp } from '../../utils/timestamps.js';
 
 const GetSchema = {
   params: NoteParamsSchema,
@@ -34,8 +35,8 @@ const getNote: FastifyPluginAsyncTypebox = async (fastify) => {
         id: row.id,
         title: row.title,
         content: row.content,
-        createdAt: typeof row.created_at === 'string' ? row.created_at : new Date(row.created_at as any).toISOString(),
-        updatedAt: typeof row.updated_at === 'string' ? row.updated_at : new Date(row.updated_at as any).toISOString()
+        createdAt: normalizeTimestamp(row.created_at),
+        updatedAt: normalizeTimestamp(row.updated_at)
       };
 
       return reply.code(200).send({

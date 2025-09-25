@@ -26,7 +26,7 @@ const webhook: FastifyPluginAsyncTypebox = async (fastify): Promise<void> => {
     preParsing: async (request, reply, payload) => {
       // Collect the raw body for Stripe signature verification
       const rawBody = await streamToBuffer(payload);
-      (request as any).rawBody = rawBody;
+      request.rawBody = rawBody;
 
       // Return a new stream with the same data for normal parsing
       const newStream = new Readable();
@@ -49,8 +49,12 @@ const webhook: FastifyPluginAsyncTypebox = async (fastify): Promise<void> => {
     let webhookEvent;
     try {
       // Use the raw body stored in preParsing hook
+      if (!request.rawBody) {
+        throw new Error('Missing raw request body for Stripe webhook verification');
+      }
+
       webhookEvent = stripe.webhooks.constructEvent(
-        (request as any).rawBody,
+        request.rawBody,
         signatureString,
         webhookSecret
       );
@@ -224,3 +228,9 @@ const webhook: FastifyPluginAsyncTypebox = async (fastify): Promise<void> => {
 };
 
 export default webhook;
+
+declare module 'fastify' {
+  interface FastifyRequest {
+    rawBody?: Buffer;
+  }
+}
