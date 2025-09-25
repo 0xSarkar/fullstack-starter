@@ -1,0 +1,18 @@
+# This file defines code owners who are automatically requested for review.
+# Each rule maps a path pattern to one or more GitHub usernames or teams.
+# Update owners as the maintainer team grows.
+
+# Default owner for everything in the repository.
+* @0xSarkar
+
+# Application owners (override default if needed).
+/apps/backend/ @0xSarkar
+/apps/frontend/ @0xSarkar
+/apps/admin/ @0xSarkar
+
+# Shared packages.
+/packages/shared-api/ @0xSarkar
+/packages/shared-schemas/ @0xSarkar
+
+# Documentation.
+/docs/ @0xSarkar
