@@ -6,7 +6,7 @@ import {
   UpdateUserStatusResponseSchema,
   DefaultErrorResponseSchema
 } from '@fullstack-starter/shared-schemas';
-import { serializeUserDates } from '../../utils/serialize-user-dates.js';
+import { normalizeTimestampFields } from '../../utils/timestamps.js';
 
 const UpdateUserStatusRequestSchema = {
   params: UserIdParamSchema,
@@ -67,7 +67,7 @@ const updateUserStatus: FastifyPluginAsyncTypebox = async (fastify): Promise<voi
       }
 
       // Convert dates to strings for API response
-      const userResponse = serializeUserDates(updatedUser);
+      const userResponse = normalizeTimestampFields(updatedUser, ['created_at', 'updated_at'] as const);
 
       return reply.code(200).send({
         success: true as const,

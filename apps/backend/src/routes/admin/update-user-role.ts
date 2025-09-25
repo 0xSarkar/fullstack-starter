@@ -6,7 +6,7 @@ import {
   UpdateUserRoleResponseSchema,
   DefaultErrorResponseSchema
 } from '@fullstack-starter/shared-schemas';
-import { serializeUserDates } from '../../utils/serialize-user-dates.js';
+import { normalizeTimestampFields } from '../../utils/timestamps.js';
 
 const UpdateUserRoleRequestSchema = {
   params: UserIdParamSchema,
@@ -72,7 +72,7 @@ const updateUserRole: FastifyPluginAsyncTypebox = async (fastify): Promise<void>
       }
 
       // Convert dates to strings for API response
-      const userResponse = serializeUserDates(updatedUser);
+      const userResponse = normalizeTimestampFields(updatedUser, ['created_at', 'updated_at'] as const);
 
       return reply.code(200).send({
         success: true as const,
