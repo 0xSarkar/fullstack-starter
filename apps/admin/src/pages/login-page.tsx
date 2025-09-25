@@ -16,7 +16,7 @@ import { useRouter, useSearch } from "@tanstack/react-router";
 import { useAuthStore } from '@/stores/auth-store';
 import { LoaderCircle } from "lucide-react";
 import { toast } from "sonner";
-import { getFieldErrors } from '@/lib/api-errors';
+import { getFieldErrors } from '@fullstack-starter/shared-api';
 
 interface LoginFormData {
   email: string;

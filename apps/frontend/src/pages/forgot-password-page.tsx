@@ -15,7 +15,7 @@ import { Link, useRouter } from "@tanstack/react-router";
 import { forgotPasswordApi } from "@fullstack-starter/shared-api";
 import { LoaderCircle } from "lucide-react";
 import { toast } from "sonner";
-import { getFieldErrors } from '@/lib/api-errors';
+import { getFieldErrors } from '@fullstack-starter/shared-api';
 
 interface ForgotPasswordFormData {
   email: string;
