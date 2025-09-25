@@ -1,5 +1,5 @@
 import type { ColumnDef } from "@tanstack/react-table";
-import { MoreHorizontal, CheckCircle, XCircle, Shield, ShieldCheck, User } from "lucide-react";
+import { MoreHorizontal, XCircle, Shield, ShieldCheck, User, BadgeCheckIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -57,7 +57,7 @@ export const createColumns = (onUserStatusToggle?: (user: AdminUser) => void): C
       };
 
       return (
-        <Badge variant={getRoleVariant(role)} className="gap-1">
+        <Badge variant={getRoleVariant(role)}>
           {getRoleIcon(role)}
           {role === 'super_admin' ? 'Super Admin' : role.charAt(0).toUpperCase() + role.slice(1)}
         </Badge>
@@ -70,15 +70,15 @@ export const createColumns = (onUserStatusToggle?: (user: AdminUser) => void): C
     cell: ({ row }) => {
       const isActive = row.getValue("active") as boolean;
       return (
-        <Badge variant={isActive ? "default" : "secondary"} className="gap-1">
+        <Badge variant={isActive ? "default" : "destructive"}>
           {isActive ? (
             <>
-              <CheckCircle className="h-3 w-3 text-green-600" />
+              <BadgeCheckIcon className="h-3 w-3" />
               Active
             </>
           ) : (
             <>
-              <XCircle className="h-3 w-3 text-red-600" />
+              <XCircle className="h-3 w-3" />
               Inactive
             </>
           )}
