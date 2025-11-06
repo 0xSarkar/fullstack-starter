@@ -16,8 +16,9 @@ const route = getRouteApi('/_appLayout/notes_/$noteId');
 export function NotePage() {
   const { data: noteData } = route.useLoaderData();
   const router = useRouter();
-  const setNoteToRename = useNotesStore((state) => state.setNoteToRename);
   const [content, setContent] = useState(noteData.content || '');
+
+  const openEditDialog = useNotesStore(state => state.openEditDialog);
 
   // Create the editor instance here
   const editor = useEditor({
@@ -87,7 +88,7 @@ export function NotePage() {
           />
           <div
             className='font-semibold text-base max-w-56 md:max-w-xs truncate cursor-pointer hover:underline hover:underline-offset-2 flex items-center gap-2'
-            onClick={() => setNoteToRename(noteData)}
+            onClick={() => openEditDialog(noteData)}
           >
             <span className="truncate">{noteData?.title || 'Untitled Note'}</span>
             <Edit className="h-3.5 w-3.5 mt-0.5 text-muted-foreground flex-shrink-0 opacity-60 hover:opacity-100" />

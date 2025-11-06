@@ -26,8 +26,10 @@ function SubmitButton() {
 
 export function RenameNoteDialog() {
   const router = useRouter();
-  const noteToRename = useNotesStore((state) => state.noteToRename);
-  const setNoteToRename = useNotesStore((state) => state.setNoteToRename);
+
+  const editDialog = useNotesStore(state => state.editDialog);
+  const closeEditDialog = useNotesStore(state => state.closeEditDialog);
+
   const [errors, setErrors] = useState<Partial<RenameNoteFormData>>({});
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -49,14 +51,14 @@ export function RenameNoteDialog() {
       setErrors({}); // Clear errors
 
       try {
-        if (!noteToRename) {
+        if (!editDialog.note) {
           return;
         }
 
-        await updateNoteApi(noteToRename.id, { title });
+        await updateNoteApi(editDialog.note.id, { title });
         toast.success("Note renamed successfully!");
         await router.invalidate({ sync: true });
-        setNoteToRename(null);
+        closeEditDialog();
       } catch (err: unknown) {
         const fieldErrorsList = getFieldErrors(err);
         if (fieldErrorsList.length > 0) {
@@ -77,13 +79,13 @@ export function RenameNoteDialog() {
 
   const handleOpenChange = (open: boolean) => {
     if (!open) {
-      setNoteToRename(null);
+      closeEditDialog();
       setErrors({});
     }
   };
 
   return (
-    <Dialog open={noteToRename !== null} onOpenChange={handleOpenChange}>
+    <Dialog open={editDialog.note !== null} onOpenChange={handleOpenChange}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Rename Note</DialogTitle>
@@ -100,7 +102,7 @@ export function RenameNoteDialog() {
                 type="text"
                 name="title"
                 placeholder="Enter note title"
-                defaultValue={noteToRename?.title || ""}
+                defaultValue={editDialog.note?.title || ""}
                 aria-invalid={!!errors.title}
               />
               {errors.title && (

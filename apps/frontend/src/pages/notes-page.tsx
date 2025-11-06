@@ -35,8 +35,8 @@ export function NotesPage() {
     }
   };
 
-  const setNoteToDelete = useNotesStore((state) => state.setNoteToDelete);
-  const setNoteToRename = useNotesStore((state) => state.setNoteToRename);
+  const openDeleteDialog = useNotesStore(state => state.openDeleteDialog);
+  const openEditDialog = useNotesStore(state => state.openEditDialog);
 
   return (
     <>
@@ -59,7 +59,7 @@ export function NotesPage() {
         {notes && notes.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {notes.map((item) => (
-              <NoteCard key={item.id} note={item} onRename={setNoteToRename} onDelete={setNoteToDelete} />
+              <NoteCard key={item.id} note={item} onRename={() => openEditDialog(item)} onDelete={() => openDeleteDialog(item)} />
             ))}
           </div>
         ) : (

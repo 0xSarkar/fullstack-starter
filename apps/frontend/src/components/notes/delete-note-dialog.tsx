@@ -1,19 +1,19 @@
 import { useState } from 'react';
 import { useRouter, useMatchRoute } from '@tanstack/react-router';
 import { AlertDialog, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "../ui/alert-dialog";
-import { useNotesStore } from '@/stores/notes-store';
 import { LoaderCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import { deleteNoteApi } from '@fullstack-starter/shared-api';
 import { Button } from '../ui/button';
+import { useNotesStore } from '@/stores/notes-store';
 
 export function DeleteNoteConfirmDialog() {
   const router = useRouter();
 
-  const noteToDelete = useNotesStore(state => state.noteToDelete);
-  const setNoteToDelete = useNotesStore((state) => state.setNoteToDelete);
+  const closeDeleteDialog = useNotesStore(state => state.closeDeleteDialog);
+  const deleteDialog = useNotesStore(state => state.deleteDialog);
 
-  // Check if we're currently on a notes page
+  // Check if we're currently on a note page
   const matchRoute = useMatchRoute();
   const match = matchRoute({ to: '/notes/$noteId' });
   const currentNoteId = match ? match.noteId : null;
@@ -21,21 +21,20 @@ export function DeleteNoteConfirmDialog() {
   const [isDeleting, setIsDeleting] = useState(false);
 
   const handleDeleteNote = async () => {
-    if (!noteToDelete) {
+    if (!deleteDialog.noteId) {
       return;
     }
 
     setIsDeleting(true);
     try {
-      await deleteNoteApi(noteToDelete);
-      if (currentNoteId === noteToDelete) {
+      await deleteNoteApi(deleteDialog.noteId);
+      if (currentNoteId === deleteDialog.noteId) {
         await router.invalidate({ sync: true, filter: (r) => r.routeId === '/_appLayout' });
         router.navigate({ to: '/notes' });
-        setNoteToDelete(null);
       } else {
         await router.invalidate({ sync: true, filter: (r) => r.routeId === '/_appLayout' });
-        setNoteToDelete(null);
       }
+      closeDeleteDialog();
     } catch (error: unknown) {
       console.error('Failed to delete note:', error);
       const message = error instanceof Error ? error.message : 'Failed to delete note. Please try again.';
@@ -47,8 +46,8 @@ export function DeleteNoteConfirmDialog() {
 
   return (
     <AlertDialog
-      open={noteToDelete !== null}
-      onOpenChange={(open) => { if (!open && !isDeleting) setNoteToDelete(null); }}
+      open={deleteDialog.isOpen}
+      onOpenChange={(open) => { if (!open && !isDeleting) closeDeleteDialog(); }}
     >
       <AlertDialogContent>
         <AlertDialogHeader>
