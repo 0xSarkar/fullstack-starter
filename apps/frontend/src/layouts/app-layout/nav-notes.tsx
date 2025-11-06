@@ -27,8 +27,9 @@ import { useNotesStore } from "@/stores/notes-store";
 
 export function NavNotes() {
   const { isMobile, setOpenMobile } = useSidebar();
-  const setNoteToDelete = useNotesStore((state) => state.setNoteToDelete);
-  const setNoteToRename = useNotesStore((state) => state.setNoteToRename);
+
+  const openDeleteDialog = useNotesStore((state) => state.openDeleteDialog);
+  const openEditDialog = useNotesStore((state) => state.openEditDialog);
 
   const notesData = useLoaderData({ from: "/_appLayout" });
 
@@ -62,12 +63,12 @@ export function NavNotes() {
                   side={isMobile ? "bottom" : "right"}
                   align={isMobile ? "end" : "start"}
                 >
-                  <DropdownMenuItem onClick={() => setNoteToRename(item)}>
+                  <DropdownMenuItem onClick={() => openEditDialog(item)}>
                     <Edit className="text-muted-foreground" />
                     <span>Rename</span>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => setNoteToDelete(item.id)}>
+                  <DropdownMenuItem onClick={() => openDeleteDialog(item)}>
                     <Trash2 className="text-muted-foreground" />
                     <span>Delete</span>
                   </DropdownMenuItem>

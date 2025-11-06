@@ -46,7 +46,7 @@ if (rootElement && !rootElement.innerHTML) {
   root.render(
     <StrictMode>
       <InnerApp />
-    </StrictMode>,
+    </StrictMode>
   );
 }
 

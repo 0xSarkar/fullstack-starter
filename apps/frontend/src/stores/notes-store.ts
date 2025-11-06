@@ -2,21 +2,53 @@ import type { NoteData } from '@fullstack-starter/shared-schemas';
 import { create } from 'zustand';
 
 interface NotesStore {
-  noteToDelete: string | null;
-  setNoteToDelete: (noteId: string | null) => void;
+  deleteDialog: {
+    isOpen: boolean;
+    noteId: string | null;
+  };
+
+  editDialog: {
+    isOpen: boolean;
+    note: NoteData | null;
+  };
+
   createdNote: NoteData | null;
+
+  openDeleteDialog: (note: NoteData) => void;
+  closeDeleteDialog: () => void;
+
+  openEditDialog: (note: NoteData) => void;
+  closeEditDialog: () => void;
+
   setCreatedNote: (note: NoteData | null) => void;
-  noteToRename: NoteData | null;
-  setNoteToRename: (note: NoteData | null) => void;
+
   reset: () => void;
 }
 
 export const useNotesStore = create<NotesStore>((set) => ({
-  noteToDelete: null,
-  setNoteToDelete: (noteId: string | null) => set({ noteToDelete: noteId }),
+  deleteDialog: {
+    isOpen: false,
+    noteId: null,
+  },
+
+  editDialog: {
+    isOpen: false,
+    note: null,
+  },
+
   createdNote: null,
+
+  openDeleteDialog: (note: NoteData) => set({ deleteDialog: { isOpen: true, noteId: note.id } }),
+  closeDeleteDialog: () => set({ deleteDialog: { isOpen: false, noteId: null } }),
+
+  openEditDialog: (note: NoteData) => set({ editDialog: { isOpen: true, note } }),
+  closeEditDialog: () => set({ editDialog: { isOpen: false, note: null } }),
+
   setCreatedNote: (note: NoteData | null) => set({ createdNote: note }),
-  noteToRename: null,
-  setNoteToRename: (note: NoteData | null) => set({ noteToRename: note }),
-  reset: () => set({ noteToDelete: null, createdNote: null, noteToRename: null }),
+
+  reset: () => set({
+    deleteDialog: { isOpen: false, noteId: null },
+    createdNote: null,
+    editDialog: { isOpen: false, note: null },
+  }),
 }));
