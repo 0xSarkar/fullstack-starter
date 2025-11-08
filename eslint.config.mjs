@@ -57,6 +57,6 @@ export default defineConfig([
   },
   ...pluginQuery.configs['flat/recommended'].map(config => ({
     ...config,
-    files: ['apps/frontend/**/*.{ts,tsx}'],
+    files: ['apps/frontend/**/*.{ts,tsx}', 'apps/admin/**/*.{ts,tsx}'],
   })),
 ]);
