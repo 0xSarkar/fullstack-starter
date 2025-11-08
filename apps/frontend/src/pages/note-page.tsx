@@ -1,24 +1,26 @@
-import { useRouter, getRouteApi } from '@tanstack/react-router';
+import { getRouteApi } from '@tanstack/react-router';
 import { useNotesStore } from '@/stores/notes-store';
 import { useCallback, useEffect, useState, useRef } from 'react';
-import { updateNoteApi } from '@fullstack-starter/shared-api';
 import Tiptap from '@/components/tiptap';
 import { useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { Separator } from '@/components/ui/separator';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { Edit } from 'lucide-react';
-import type { UpdateNoteRequest } from '@fullstack-starter/shared-schemas';
-import { toast } from 'sonner';
+import { useSuspenseQuery } from '@tanstack/react-query';
+import { noteQueryOptions } from '@/data/queries/notes-queries';
+import { useUpdateNoteMutation } from '@/data/mutations/notes-mutations';
 
 const route = getRouteApi('/_appLayout/notes_/$noteId');
 
 export function NotePage() {
-  const { data: noteData } = route.useLoaderData();
-  const router = useRouter();
+  const { noteId } = route.useParams();
+  const { data: noteResponse } = useSuspenseQuery(noteQueryOptions(noteId));
+  const noteData = noteResponse.data;
   const [content, setContent] = useState(noteData.content || '');
 
   const openEditDialog = useNotesStore(state => state.openEditDialog);
+  const updateNoteMutation = useUpdateNoteMutation();
 
   // Create the editor instance here
   const editor = useEditor({
@@ -30,18 +32,11 @@ export function NotePage() {
   });
 
   const handleSave = useCallback(async () => {
-    try {
-      const updateData: UpdateNoteRequest = {
-        content,
-      };
-      await updateNoteApi(noteData.id, updateData);
-      router.invalidate();
-    } catch (error: unknown) {
-      console.error('Failed to save note:', error);
-      const message = error instanceof Error ? error.message : 'Failed to save note';
-      toast.error(message);
-    }
-  }, [content, noteData.id, router]);
+    await updateNoteMutation.mutateAsync({
+      noteId: noteData.id,
+      data: { content },
+    });
+  }, [content, noteData.id, updateNoteMutation]);
 
   // Autosave on content change, skip initial load
   const firstRun = useRef(true);

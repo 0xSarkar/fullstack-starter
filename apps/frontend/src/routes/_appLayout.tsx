@@ -2,11 +2,12 @@ import { AppLayout } from '@/layouts/app-layout/app-layout';
 import { createFileRoute, redirect, useRouter } from '@tanstack/react-router';
 import type { ErrorComponentProps } from '@tanstack/react-router';
 import { useAuthStore } from '@/stores/auth-store';
-import { HttpError, listNotesApi } from '@fullstack-starter/shared-api';
+import { HttpError } from '@fullstack-starter/shared-api';
 import { Button } from '@/components/ui/button';
 import { useEffect, useState } from 'react';
 import { LoaderCircle } from 'lucide-react';
 import { toast } from 'sonner';
+import { notesQueryOptions } from '@/data/queries/notes-queries';
 
 function RouteErrorComponent({ error }: ErrorComponentProps) {
   const router = useRouter();
@@ -61,10 +62,9 @@ export const Route = createFileRoute('/_appLayout')({
     }
   },
 
-  loader: async () => {
-    return listNotesApi();
+  loader: async ({ context: { queryClient } }) => {
+    await queryClient.ensureQueryData(notesQueryOptions);
   },
-  shouldReload: () => false,
 
   component: AppLayout,
 

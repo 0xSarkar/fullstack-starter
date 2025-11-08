@@ -22,8 +22,10 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { Link, useLoaderData } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 import { useNotesStore } from "@/stores/notes-store";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { notesQueryOptions } from "@/data/queries/notes-queries";
 
 export function NavNotes() {
   const { isMobile, setOpenMobile } = useSidebar();
@@ -31,20 +33,20 @@ export function NavNotes() {
   const openDeleteDialog = useNotesStore((state) => state.openDeleteDialog);
   const openEditDialog = useNotesStore((state) => state.openEditDialog);
 
-  const notesData = useLoaderData({ from: "/_appLayout" });
+  const { data: notesData } = useSuspenseQuery(notesQueryOptions);
 
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
       <SidebarGroupLabel>Notes</SidebarGroupLabel>
       <SidebarMenu>
-        {notesData?.data?.length === 0 ? (
+        {notesData.data.length === 0 ? (
           <SidebarMenuItem>
             <SidebarMenuButton disabled>
               <span className="text-muted-foreground">No notes yet</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
         ) : (
-          notesData?.data?.map((item) => (
+          notesData.data.map((item) => (
             <SidebarMenuItem key={item.id}>
               <SidebarMenuButton asChild>
                 <Link to="/notes/$noteId" params={{ noteId: item.id }} onClick={() => { setOpenMobile(false); }} className="[&.active]:bg-sidebar-accent [&.active]:font-medium [&.active]:text-sidebar-accent-foreground">
