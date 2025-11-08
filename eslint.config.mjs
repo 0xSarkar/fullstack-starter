@@ -3,6 +3,7 @@
 import eslint from '@eslint/js';
 import { defineConfig } from 'eslint/config';
 import globals from 'globals';
+import pluginQuery from '@tanstack/eslint-plugin-query';
 import reactHooks from 'eslint-plugin-react-hooks';
 import tseslint from 'typescript-eslint';
 
@@ -54,4 +55,8 @@ export default defineConfig([
       ],
     },
   },
+  ...pluginQuery.configs['flat/recommended'].map(config => ({
+    ...config,
+    files: ['apps/frontend/**/*.{ts,tsx}'],
+  })),
 ]);
