@@ -34,10 +34,11 @@ import {
 import { Link, useRouter } from "@tanstack/react-router";
 
 import { useAuthStore } from '@/stores/auth-store';
+import { useLogoutMutation } from '@/data/mutations/auth-mutations';
 
 export function NavUser() {
   const router = useRouter();
-  const logout = useAuthStore(s => s.logout);
+  const logoutMutation = useLogoutMutation();
   const authUser = useAuthStore(s => s.user);
 
   const { isMobile } = useSidebar();
@@ -49,9 +50,15 @@ export function NavUser() {
   const hasActiveSubscription = authUser?.subscription?.status === 'active' || authUser?.subscription?.status === 'trialing';
 
   const handleLogout = async () => {
-    await logout();
-    router.invalidate();
-    router.navigate({ to: "/login" });
+    // Navigate first, before the mutation completes
+    // This prevents the router from trying to refetch on the current protected route
+    const navigatePromise = router.navigate({ to: "/login" });
+
+    // Then logout (which clears cache)
+    await logoutMutation.mutateAsync();
+
+    // Wait for navigation to complete
+    await navigatePromise;
   };
 
   // Use actual user data from store, with fallbacks

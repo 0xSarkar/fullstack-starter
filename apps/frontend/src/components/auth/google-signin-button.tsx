@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
-import { useAuthStore } from '@/stores/auth-store';
 import { toast } from 'sonner';
 import { useGoogleGsiClient } from '@/hooks/use-google-gsi-client';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useGoogleLoginMutation } from '@/data/mutations/auth-mutations';
 
 interface GoogleSignInButtonProps {
   text?: 'signin_with' | 'signup_with' | 'continue_with' | 'signin';
@@ -62,7 +62,7 @@ export function GoogleSignInButton({
   const divRef = useRef<HTMLDivElement | null>(null);
   const [initialized, setInitialized] = useState(false);
   const [computedWidth, setComputedWidth] = useState<number | null>(null);
-  const googleLogin = useAuthStore(s => s.googleLogin);
+  const googleLoginMutation = useGoogleLoginMutation();
   const { isReady, isError } = useGoogleGsiClient();
 
   useEffect(() => {
@@ -103,13 +103,13 @@ export function GoogleSignInButton({
             return;
           }
           try {
-            await googleLogin(resp.credential);
+            await googleLoginMutation.mutateAsync({ credential: resp.credential });
             if (onSuccessNavigate) {
               await onSuccessNavigate(redirectPath);
             }
           } catch (err: unknown) {
-            const message = err instanceof Error ? err.message : 'Google login failed';
-            toast.error(message);
+            // Error is already handled in the mutation
+            console.error('Google login error:', err);
           }
         },
         auto_select: false,
@@ -128,7 +128,7 @@ export function GoogleSignInButton({
       // Fail silently; user can still use email/password
       // console.error('Google init error', err);
     }
-  }, [initialized, googleLogin, onSuccessNavigate, redirectPath, size, shape, text, width, computedWidth, isReady]);
+  }, [initialized, googleLoginMutation, onSuccessNavigate, redirectPath, size, shape, text, width, computedWidth, isReady]);
 
   if (isError) {
     return (

@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react';
 import { LoaderCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import { notesQueryOptions } from '@/data/queries/notes-queries';
+import { meQueryOptions } from '@/data/queries/auth-queries';
 
 function RouteErrorComponent({ error }: ErrorComponentProps) {
   const router = useRouter();
@@ -51,13 +52,27 @@ function RouteErrorComponent({ error }: ErrorComponentProps) {
 }
 
 export const Route = createFileRoute('/_appLayout')({
-  beforeLoad: async () => {
-    const auth = useAuthStore.getState();
-    // If we haven't bootstrapped yet, do it now
-    if (auth.status === 'idle' || auth.status === 'loading') {
-      await useAuthStore.getState().bootstrap();
+  beforeLoad: async ({ context: { queryClient } }) => {
+    const authStore = useAuthStore.getState();
+
+    // Set loading state
+    if (authStore.status === 'idle') {
+      authStore.setLoading();
     }
-    if (useAuthStore.getState().status !== 'authenticated') {
+
+    // Fetch and ensure user is authenticated
+    try {
+      const meData = await queryClient.ensureQueryData(meQueryOptions);
+
+      if (meData.data?.user) {
+        authStore.setUser(meData.data.user);
+      } else {
+        authStore.clearUser();
+        throw redirect({ to: '/login' });
+      }
+    } catch (error) {
+      console.error('Error fetching authenticated user:', error);
+      authStore.clearUser();
       throw redirect({ to: '/login' });
     }
   },

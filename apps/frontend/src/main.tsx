@@ -8,7 +8,6 @@ import { routeTree } from './routeTree.gen';
 
 import './styles.css';
 import reportWebVitals from './reportWebVitals.ts';
-import { useAuthStore } from '@/stores/auth-store';
 import { configureDefaultClient } from '@fullstack-starter/shared-api';
 
 // Configure the shared API client
@@ -50,9 +49,6 @@ function InnerApp() {
 const rootElement = document.getElementById('app');
 if (rootElement && !rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement);
-
-  // Kick off bootstrap early (fire-and-forget)
-  void useAuthStore.getState().bootstrap();
 
   root.render(
     <StrictMode>

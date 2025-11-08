@@ -12,10 +12,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Link, useRouter } from "@tanstack/react-router";
-import { forgotPasswordApi } from "@fullstack-starter/shared-api";
 import { LoaderCircle } from "lucide-react";
-import { toast } from "sonner";
 import { getFieldErrors } from '@fullstack-starter/shared-api';
+import { useForgotPasswordMutation } from '@/data/mutations/auth-mutations';
 
 interface ForgotPasswordFormData {
   email: string;
@@ -32,6 +31,7 @@ function SubmitButton() {
 
 export function ForgotPasswordPage() {
   const router = useRouter();
+  const forgotPasswordMutation = useForgotPasswordMutation();
   const [errors, setErrors] = useState<Partial<ForgotPasswordFormData>>({});
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -53,9 +53,7 @@ export function ForgotPasswordPage() {
       setErrors({}); // Clear errors
 
       try {
-        await forgotPasswordApi({ email });
-        // Success - show toast and redirect to login
-        toast.success("Password reset link sent! Check your email.");
+        await forgotPasswordMutation.mutateAsync({ email });
         await router.navigate({ to: "/login" });
       } catch (err: unknown) {
         // Handle field-specific validation errors from API
@@ -68,10 +66,6 @@ export function ForgotPasswordPage() {
             }
           });
           setErrors(fieldErrors);
-        } else {
-          // General error - show toast
-          const message = err instanceof Error ? err.message : "Failed to send reset link. Please try again.";
-          toast.error(message);
         }
       }
     });

@@ -29,6 +29,7 @@ export function DeleteNoteConfirmDialog() {
       }
       closeDeleteDialog();
     } catch (error) {
+      console.error('Failed to delete note:', error);
       // Error is already handled by the mutation
     }
   };

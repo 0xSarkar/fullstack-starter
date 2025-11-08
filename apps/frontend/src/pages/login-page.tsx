@@ -14,10 +14,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Link, useRouter, useSearch } from "@tanstack/react-router";
-import { useAuthStore } from '@/stores/auth-store';
 import { LoaderCircle } from "lucide-react";
 import { toast } from "sonner";
 import { getFieldErrors } from '@fullstack-starter/shared-api';
+import { useLoginMutation } from '@/data/mutations/auth-mutations';
 
 interface LoginFormData {
   email: string;
@@ -35,7 +35,7 @@ function SubmitButton() {
 
 export function LoginPage() {
   const router = useRouter();
-  const login = useAuthStore(s => s.login);
+  const loginMutation = useLoginMutation();
   const { redirect } = useSearch({ from: '/_authLayout/login' });
   const [errors, setErrors] = useState<Partial<LoginFormData>>({});
 
@@ -65,7 +65,7 @@ export function LoginPage() {
       setErrors({}); // Clear errors
 
       try {
-        await login(email, password);
+        await loginMutation.mutateAsync({ email, password });
         const destination = getDestination(redirect);
         await router.navigate({ to: destination });
       } catch (err: unknown) {
