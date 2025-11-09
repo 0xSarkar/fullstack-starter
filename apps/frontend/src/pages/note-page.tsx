@@ -1,5 +1,4 @@
-import { getRouteApi } from '@tanstack/react-router';
-import { useNotesStore } from '@/stores/notes-store';
+import { getRouteApi, useNavigate } from '@tanstack/react-router';
 import { useCallback, useEffect, useState, useRef } from 'react';
 import Tiptap from '@/components/tiptap';
 import { useEditor } from '@tiptap/react';
@@ -14,13 +13,17 @@ import { useUpdateNoteMutation } from '@/data/mutations/notes-mutations';
 const route = getRouteApi('/_appLayout/notes_/$noteId');
 
 export function NotePage() {
+  const navigate = useNavigate();
   const { noteId } = route.useParams();
   const { data: noteResponse } = useSuspenseQuery(noteQueryOptions(noteId));
   const noteData = noteResponse.data;
   const [content, setContent] = useState(noteData.content || '');
 
-  const openEditDialog = useNotesStore(state => state.openEditDialog);
   const updateNoteMutation = useUpdateNoteMutation();
+
+  const openEditDialog = () => {
+    navigate({ to: '.', search: (prev) => ({ ...prev, renameNoteId: noteData.id }) });
+  };
 
   // Create the editor instance here
   const editor = useEditor({
@@ -83,7 +86,7 @@ export function NotePage() {
           />
           <div
             className='font-semibold text-base max-w-56 md:max-w-xs truncate cursor-pointer hover:underline hover:underline-offset-2 flex items-center gap-2'
-            onClick={() => openEditDialog(noteData)}
+            onClick={() => openEditDialog()}
           >
             <span className="truncate">{noteData?.title || 'Untitled Note'}</span>
             <Edit className="h-3.5 w-3.5 mt-0.5 text-muted-foreground flex-shrink-0 opacity-60 hover:opacity-100" />

@@ -9,6 +9,11 @@ import { toast } from 'sonner';
 import { notesQueryOptions } from '@/data/queries/notes-queries';
 import { meQueryOptions } from '@/data/queries/auth-queries';
 
+type AppLayoutSearch = {
+  deleteNoteId?: string;
+  renameNoteId?: string;
+};
+
 function RouteErrorComponent({ error }: ErrorComponentProps) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
@@ -47,6 +52,13 @@ function RouteErrorComponent({ error }: ErrorComponentProps) {
 }
 
 export const Route = createFileRoute('/_appLayout')({
+  validateSearch: (search: Record<string, unknown>): AppLayoutSearch => {
+    return {
+      deleteNoteId: typeof search.deleteNoteId === 'string' ? search.deleteNoteId : undefined,
+      renameNoteId: typeof search.renameNoteId === 'string' ? search.renameNoteId : undefined,
+    };
+  },
+
   beforeLoad: async ({ context: { queryClient } }) => {
     // Fetch and ensure user is authenticated
     try {

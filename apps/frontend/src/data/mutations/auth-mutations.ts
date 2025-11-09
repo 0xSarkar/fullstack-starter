@@ -11,7 +11,6 @@ import type {
 } from '@fullstack-starter/shared-schemas';
 import { toast } from 'sonner';
 import { meQueryOptions } from '@/data/queries/auth-queries';
-import { useNotesStore } from '@/stores/notes-store';
 import { http } from '@/lib/http';
 
 export function useLoginMutation() {
@@ -69,9 +68,6 @@ export function useLogoutMutation() {
   return useMutation({
     mutationFn: () => http.post('/auth/logout', {}),
     onSuccess: () => {
-      // Clear notes store state
-      useNotesStore.getState().reset();
-
       // Cancel any outgoing queries to prevent refetches
       queryClient.cancelQueries();
 
@@ -82,7 +78,6 @@ export function useLogoutMutation() {
     onError: (error: unknown) => {
       console.error('Logout failed:', error);
       // Even if logout fails on server, clear local state
-      useNotesStore.getState().reset();
       queryClient.cancelQueries();
       queryClient.removeQueries();
     },

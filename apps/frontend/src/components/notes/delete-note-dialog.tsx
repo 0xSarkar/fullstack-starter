@@ -1,15 +1,15 @@
-import { useRouter, useMatchRoute } from '@tanstack/react-router';
+import { useRouter, useMatchRoute, useNavigate, useSearch } from '@tanstack/react-router';
 import { AlertDialog, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "../ui/alert-dialog";
 import { LoaderCircle } from 'lucide-react';
 import { Button } from '../ui/button';
-import { useNotesStore } from '@/stores/notes-store';
 import { useDeleteNoteMutation } from '@/data/mutations/notes-mutations';
 
 export function DeleteNoteConfirmDialog() {
   const router = useRouter();
+  const navigate = useNavigate();
+  const search = useSearch({ from: '/_appLayout' });
+  const deleteNoteId = search.deleteNoteId;
 
-  const closeDeleteDialog = useNotesStore(state => state.closeDeleteDialog);
-  const deleteDialog = useNotesStore(state => state.deleteDialog);
   const deleteNoteMutation = useDeleteNoteMutation();
 
   // Check if we're currently on a note page
@@ -17,14 +17,25 @@ export function DeleteNoteConfirmDialog() {
   const match = matchRoute({ to: '/notes/$noteId' });
   const currentNoteId = match ? match.noteId : null;
 
+  const closeDeleteDialog = () => {
+    navigate({
+      to: '.',
+      search: (prev) => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { deleteNoteId, ...rest } = prev;
+        return rest;
+      },
+    });
+  };
+
   const handleDeleteNote = async () => {
-    if (!deleteDialog.noteId) {
+    if (!deleteNoteId) {
       return;
     }
 
     try {
-      await deleteNoteMutation.mutateAsync(deleteDialog.noteId);
-      if (currentNoteId === deleteDialog.noteId) {
+      await deleteNoteMutation.mutateAsync(deleteNoteId);
+      if (currentNoteId === deleteNoteId) {
         router.navigate({ to: '/notes' });
       }
       closeDeleteDialog();
@@ -36,7 +47,7 @@ export function DeleteNoteConfirmDialog() {
 
   return (
     <AlertDialog
-      open={deleteDialog.isOpen}
+      open={!!deleteNoteId}
       onOpenChange={(open) => { if (!open && !deleteNoteMutation.isPending) closeDeleteDialog(); }}
     >
       <AlertDialogContent>
