@@ -4,11 +4,13 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
-import { useNotesStore } from "@/stores/notes-store";
+import { useNavigate, useSearch } from "@tanstack/react-router";
 import { LoaderCircle } from "lucide-react";
 import { toast } from "sonner";
 import { getFieldErrors } from '@/lib/api-errors';
 import { useRenameNoteMutation } from '@/data/mutations/notes-mutations';
+import { useQuery } from "@tanstack/react-query";
+import { noteQueryOptions } from "@/data/queries/notes-queries";
 
 interface RenameNoteFormData {
   title: string;
@@ -24,11 +26,33 @@ function SubmitButton() {
 }
 
 export function RenameNoteDialog() {
-  const editDialog = useNotesStore(state => state.editDialog);
-  const closeEditDialog = useNotesStore(state => state.closeEditDialog);
+  const navigate = useNavigate();
+  const search = useSearch({ from: '/_appLayout' });
+  const renameNoteId = search.renameNoteId;
+
+  // Fetch individual note details when renameNoteId is present
+  const { data: noteData } = useQuery({
+    ...noteQueryOptions(renameNoteId || ''),
+    enabled: !!renameNoteId,
+  });
+
+  const note = noteData?.data;
+
   const renameNoteMutation = useRenameNoteMutation();
 
   const [errors, setErrors] = useState<Partial<RenameNoteFormData>>({});
+
+  const closeEditDialog = () => {
+    navigate({
+      to: '.',
+      search: (prev) => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { renameNoteId, ...rest } = prev;
+        return rest;
+      },
+    });
+    setErrors({});
+  };
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -49,12 +73,12 @@ export function RenameNoteDialog() {
       setErrors({}); // Clear errors
 
       try {
-        if (!editDialog.note) {
+        if (!note) {
           return;
         }
 
         await renameNoteMutation.mutateAsync({
-          noteId: editDialog.note.id,
+          noteId: note.id,
           title,
         });
         closeEditDialog();
@@ -79,12 +103,11 @@ export function RenameNoteDialog() {
   const handleOpenChange = (open: boolean) => {
     if (!open) {
       closeEditDialog();
-      setErrors({});
     }
   };
 
   return (
-    <Dialog open={editDialog.note !== null} onOpenChange={handleOpenChange}>
+    <Dialog open={!!note} onOpenChange={handleOpenChange}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Rename Note</DialogTitle>
@@ -101,7 +124,7 @@ export function RenameNoteDialog() {
                 type="text"
                 name="title"
                 placeholder="Enter note title"
-                defaultValue={editDialog.note?.title || ""}
+                defaultValue={note?.title || ""}
                 aria-invalid={!!errors.title}
               />
               {errors.title && (

@@ -1,6 +1,5 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { useNotesStore } from '@/stores/notes-store';
 import { LoaderCircle } from 'lucide-react';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { Separator } from '@radix-ui/react-separator';
@@ -8,8 +7,11 @@ import { NoteCard } from '@/components/notes/note-card';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { notesQueryOptions } from '@/data/queries/notes-queries';
 import { useCreateNoteMutation } from '@/data/mutations/notes-mutations';
+import { useNavigate } from '@tanstack/react-router';
+import type { NoteData } from '@fullstack-starter/shared-schemas';
 
 export function NotesPage() {
+  const navigate = useNavigate();
   const { data: notesData } = useSuspenseQuery(notesQueryOptions);
   const notes = notesData.data;
 
@@ -19,8 +21,13 @@ export function NotesPage() {
     await createNoteMutation.mutateAsync({ title: 'New Note', content: '' });
   };
 
-  const openDeleteDialog = useNotesStore(state => state.openDeleteDialog);
-  const openEditDialog = useNotesStore(state => state.openEditDialog);
+  const openDeleteDialog = (note: NoteData) => {
+    navigate({ to: '.', search: (prev) => ({ ...prev, deleteNoteId: note.id }) });
+  };
+
+  const openEditDialog = (note: NoteData) => {
+    navigate({ to: '.', search: (prev) => ({ ...prev, renameNoteId: note.id }) });
+  };
 
   return (
     <>

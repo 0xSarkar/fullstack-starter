@@ -22,18 +22,24 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { Link } from "@tanstack/react-router";
-import { useNotesStore } from "@/stores/notes-store";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { notesQueryOptions } from "@/data/queries/notes-queries";
+import type { NoteData } from "@fullstack-starter/shared-schemas";
 
 export function NavNotes() {
   const { isMobile, setOpenMobile } = useSidebar();
-
-  const openDeleteDialog = useNotesStore((state) => state.openDeleteDialog);
-  const openEditDialog = useNotesStore((state) => state.openEditDialog);
+  const navigate = useNavigate();
 
   const { data: notesData } = useSuspenseQuery(notesQueryOptions);
+
+  const openDeleteDialog = (note: NoteData) => {
+    navigate({ to: '.', search: (prev) => ({ ...prev, deleteNoteId: note.id }) });
+  };
+
+  const openEditDialog = (note: NoteData) => {
+    navigate({ to: '.', search: (prev) => ({ ...prev, renameNoteId: note.id }) });
+  };
 
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
