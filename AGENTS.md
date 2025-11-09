@@ -50,21 +50,22 @@
 - **`frontend/`**: Main React application (port 5173)
   - `src/components/`: Shadcn/ui components, auth forms, notes interface
   - `src/routes/`: TanStack Router file-based routing
-  - `src/stores/`: Zustand state management (auth, notes)
-  - `src/api/`: Type-safe API client functions
+  - `src/data/`: TanStack Query queries and mutations organized by feature
+    - `queries/`: Query options for data fetching (auth, notes, billing)
+    - `mutations/`: Mutation hooks for data updates (auth, notes, billing)
+  - `src/lib/`: Utilities including custom HTTP client with error handling
 - **`admin/`**: Administrative React dashboard (port 5174)
   - Similar structure to frontend with admin-specific features
-  - User management
+  - `src/data/`: TanStack Query queries and mutations for admin operations
+    - `queries/`: Query options for users, auth
+    - `mutations/`: Mutation hooks for user management
+  - User management and administration features
 
 #### Packages (`packages/`)
 - **`shared-schemas/`**: Shared TypeScript schemas using TypeBox
   - Central source of truth for runtime + compile-time contracts
   - Provides TypeBox primitives & response envelope structures
   - Ensures type safety between frontend and backend
- - **`shared-api/`**: Isomorphic API client helpers wrapping `fetch`
-   - Centralized HTTP error handling (`HttpError`)
-   - Feature-scoped modules: `auth-api`, `users-api`, `notes-api`, `billing-api`
-   - Provides default client + ability to construct custom clients per environment
 
 ### Key Architectural Patterns
 
@@ -88,11 +89,11 @@
 - **Audit Trail**: Created/updated timestamps with triggers
 
 #### Frontend State Management
-- **Zustand Stores**: Lightweight state management for auth and features
+- **TanStack Query**: Server state management with caching, invalidation, and optimistic updates
 - **TanStack Router**: File-based routing with nested layouts
-- **Data loaders**: Pre-fetching data for routes
+- **Route Loaders**: Pre-fetching data via TanStack Query in route loaders
 - **Component Architecture**: Shadcn/ui with Radix primitives
- - **Shared API Client**: Consumes `shared-api` helpers for consistent contract usage
+- **HTTP Client**: Custom `ApiClient` class with centralized error handling
 
 #### Monorepo Organization
 - **Workspace Dependencies**: Cross-package imports with workspace protocol
@@ -115,10 +116,11 @@
 - **Framework**: React 19 with TypeScript
 - **Build Tool**: Vite with hot module replacement
 - **Routing**: TanStack Router v1 with file-based routes
+- **Server State**: TanStack Query v5 for data fetching, caching, and synchronization
 - **Styling**: Tailwind CSS 4.x with Shadcn/ui components
-- **State**: Zustand for client state, Data Loaders for server state
 - **UI Components**: Shadcn/ui, Lucide icons, Sonner notifications
 - **Rich Text**: TipTap editor with extensions
+- **HTTP Client**: Custom fetch-based client with TypeScript integration
 
 #### Development Tools
 - **Package Manager**: PNPM with workspace support
@@ -126,14 +128,3 @@
 - **Code Quality**: ESLint, Prettier (implied from project structure)
 - **Database Tools**: Kysely codegen, DBMate migrations
 - **API Documentation**: Fastify Swagger with auto-generated specs
-
-## API Interaction Pattern
-
-Frontend & Admin apps import from `@fullstack-starter/shared-api`:
-
-```ts
-import { signupApi, listNotesApi, getPlansApi } from '@fullstack-starter/shared-api';
-
-await signupApi({ email, password });
-const notes = await listNotesApi();
-```
