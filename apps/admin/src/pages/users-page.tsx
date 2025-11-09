@@ -1,4 +1,4 @@
-import { useLoaderData, useRouter, useSearch } from '@tanstack/react-router';
+import { useSearch } from '@tanstack/react-router';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { Separator } from '@radix-ui/react-separator';
@@ -13,22 +13,34 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { updateUserStatusApi } from '@fullstack-starter/shared-api';
 import { useState, useEffect } from 'react';
 import { toast } from 'sonner';
-import type { AdminUser } from '@fullstack-starter/shared-schemas';
+import type { AdminUser, ListUsersQuery } from '@fullstack-starter/shared-schemas';
 import { Route } from '@/routes/_appLayout/users';
 import { Button } from '@/components/ui/button';
 import { LoaderCircle } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+import { usersQueryOptions } from '@/data/queries/users-queries';
+import { useUpdateUserStatusMutation } from '@/data/mutations/users-mutations';
 
 export function UsersPage() {
-  const { data: users, pagination } = useLoaderData({ from: "/_appLayout/users" });
-  const router = useRouter();
   const search = useSearch({ from: "/_appLayout/users" });
   const navigate = Route.useNavigate();
 
+  // Build query params
+  const page = Math.floor(search.offset / search.limit) + 1;
+  const query: ListUsersQuery = {
+    page,
+    limit: search.limit,
+    search: search.q,
+    role: search.role as 'user' | 'admin' | 'super_admin' | undefined,
+  };
+
+  // Use TanStack Query hook
+  const { data } = useQuery(usersQueryOptions(query));
+  const updateUserStatusMutation = useUpdateUserStatusMutation();
+
   const [userToToggle, setUserToToggle] = useState<AdminUser | null>(null);
-  const [isToggling, setIsToggling] = useState(false);
   const [searchQuery, setSearchQuery] = useState(search.q || '');
 
   // Keep local input state in sync if user navigates via history/back etc.
@@ -61,18 +73,13 @@ export function UsersPage() {
   const handleConfirmToggle = async () => {
     if (!userToToggle) return;
 
-    setIsToggling(true);
     try {
-      await updateUserStatusApi(userToToggle.id, { active: !userToToggle.active });
+      await updateUserStatusMutation.mutateAsync({
+        userId: userToToggle.id,
+        active: !userToToggle.active,
+      });
       toast.success(`User ${userToToggle.active ? 'deactivated' : 'activated'} successfully`);
-      // Refresh the data
-      router.invalidate();
-    } catch (error: unknown) {
-      console.error('Failed to update user status:', error);
-      const message = error instanceof Error ? error.message : 'Failed to update user status';
-      toast.error(message);
     } finally {
-      setIsToggling(false);
       setUserToToggle(null);
     }
   };
@@ -96,6 +103,10 @@ export function UsersPage() {
   };
 
   const columns = createColumns(handleUserStatusToggle);
+
+  // Use data from query
+  const users = data?.data || [];
+  const pagination = data?.pagination || { total: 0, page: 1, limit: search.limit, totalPages: 0 };
 
   return (
     <>
@@ -147,8 +158,8 @@ export function UsersPage() {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel onClick={handleCancelToggle}>Cancel</AlertDialogCancel>
-            <Button onClick={handleConfirmToggle} disabled={isToggling}>
-              {isToggling && <LoaderCircle className='animate-spin' />} Confirm
+            <Button onClick={handleConfirmToggle} disabled={updateUserStatusMutation.isPending}>
+              {updateUserStatusMutation.isPending && <LoaderCircle className='animate-spin' />} Confirm
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>

@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { useEffect, useState } from 'react';
 import { LoaderCircle } from 'lucide-react';
 import { toast } from 'sonner';
+import { meQueryOptions } from '@/data/queries/auth-queries';
 
 function RouteErrorComponent({ error }: ErrorComponentProps) {
   const router = useRouter();
@@ -50,13 +51,26 @@ function RouteErrorComponent({ error }: ErrorComponentProps) {
 }
 
 export const Route = createFileRoute('/_appLayout')({
-  beforeLoad: async () => {
+  beforeLoad: async ({ context: { queryClient } }) => {
     const auth = useAuthStore.getState();
-    // If we haven't bootstrapped yet, do it now
-    if (auth.status === 'idle' || auth.status === 'loading') {
-      await useAuthStore.getState().bootstrap();
+
+    // Set loading status
+    if (auth.status === 'idle') {
+      auth.setLoading();
     }
-    if (useAuthStore.getState().status !== 'authenticated') {
+
+    try {
+      // Fetch user data using TanStack Query
+      const meData = await queryClient.ensureQueryData(meQueryOptions);
+
+      if (meData.data?.user) {
+        auth.setUser(meData.data.user);
+      } else {
+        auth.clearUser();
+        throw redirect({ to: '/login' });
+      }
+    } catch {
+      auth.clearUser();
       throw redirect({ to: '/login' });
     }
   },
