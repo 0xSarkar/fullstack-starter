@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { UsersPage } from '@/pages/users-page';
-import { listUsersApi } from '@fullstack-starter/shared-api';
 import type { ListUsersQuery } from '@fullstack-starter/shared-schemas';
+import { usersQueryOptions } from '@/data/queries/users-queries';
 
 type UsersSearch = {
   offset: number;
@@ -22,7 +22,7 @@ export const Route = createFileRoute('/_appLayout/users')({
 
   loaderDeps: ({ search }) => search,
 
-  loader: async ({ deps: { offset, limit, q, role } }) => {
+  loader: async ({ deps: { offset, limit, q, role }, context: { queryClient } }) => {
     const page = Math.floor(offset / limit) + 1;
     const query: ListUsersQuery = {
       page,
@@ -30,7 +30,7 @@ export const Route = createFileRoute('/_appLayout/users')({
       search: q,
       role: role as 'user' | 'admin' | 'super_admin' | undefined,
     };
-    return listUsersApi(query);
+    await queryClient.ensureQueryData(usersQueryOptions(query));
   },
   shouldReload: () => false,
 });

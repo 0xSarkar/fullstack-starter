@@ -1,4 +1,4 @@
-import { HttpError } from './client';
+import { HttpError } from './http';
 
 export type ApiFieldError = { field: string; message: string; };
 

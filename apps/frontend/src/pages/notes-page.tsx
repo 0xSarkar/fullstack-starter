@@ -1,38 +1,22 @@
-import { useLoaderData, useNavigate, useRouter } from '@tanstack/react-router';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { createNoteApi } from '@fullstack-starter/shared-api';
 import { Button } from '@/components/ui/button';
 import { useNotesStore } from '@/stores/notes-store';
 import { LoaderCircle } from 'lucide-react';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { Separator } from '@radix-ui/react-separator';
 import { NoteCard } from '@/components/notes/note-card';
-import { useState } from 'react';
-import type { NoteData } from '@fullstack-starter/shared-schemas';
-import { toast } from 'sonner';
+import { useSuspenseQuery } from '@tanstack/react-query';
+import { notesQueryOptions } from '@/data/queries/notes-queries';
+import { useCreateNoteMutation } from '@/data/mutations/notes-mutations';
 
 export function NotesPage() {
-  const { data: notes } = useLoaderData({ from: "/_appLayout" });
-  const navigate = useNavigate();
-  const router = useRouter();
-  const setCreatedNote = useNotesStore(state => state.setCreatedNote);
-  const [isCreating, setIsCreating] = useState(false);
+  const { data: notesData } = useSuspenseQuery(notesQueryOptions);
+  const notes = notesData.data;
+
+  const createNoteMutation = useCreateNoteMutation();
 
   const handleCreateNote = async () => {
-    setIsCreating(true);
-    try {
-      const response = await createNoteApi({ title: 'New Note', content: '' });
-      const noteData: NoteData = { ...response.data, updatedAt: response.data.createdAt };
-      setCreatedNote(noteData);
-      await navigate({ to: '/notes/$noteId', params: { noteId: response.data.id } });
-      router.invalidate();
-    } catch (error: unknown) {
-      console.error('Failed to create note:', error);
-      const errorMessage = error instanceof Error ? error.message : 'Failed to create note';
-      toast.error(errorMessage);
-    } finally {
-      setIsCreating(false);
-    }
+    await createNoteMutation.mutateAsync({ title: 'New Note', content: '' });
   };
 
   const openDeleteDialog = useNotesStore(state => state.openDeleteDialog);
@@ -72,8 +56,8 @@ export function NotesPage() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <Button className="w-full" onClick={() => handleCreateNote()} disabled={isCreating}>
-                  {isCreating && <LoaderCircle className='animate-spin' />} Create Note
+                <Button className="w-full" onClick={() => handleCreateNote()} disabled={createNoteMutation.isPending}>
+                  {createNoteMutation.isPending && <LoaderCircle className='animate-spin' />} Create Note
                 </Button>
               </CardContent>
             </Card>

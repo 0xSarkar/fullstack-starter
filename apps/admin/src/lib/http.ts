@@ -14,21 +14,11 @@ export class HttpError extends Error {
   }
 }
 
-export class ApiClient {
+class ApiClient {
   private baseUrl: string;
 
   constructor(baseUrl: string) {
     this.baseUrl = baseUrl;
-  }
-
-  // Method to update the base URL
-  setBaseUrl(baseUrl: string): void {
-    this.baseUrl = baseUrl;
-  }
-
-  // Method to get the current base URL
-  getBaseUrl(): string {
-    return this.baseUrl;
   }
 
   private async request<TResponse>(
@@ -97,13 +87,5 @@ export class ApiClient {
   }
 }
 
-// Default client instance - apps should configure the baseUrl
-export const defaultClient = new ApiClient('http://localhost:3000');
-
-// Method to configure the default client
-export function configureDefaultClient(baseUrl: string) {
-  defaultClient.setBaseUrl(baseUrl);
-}
-
-// Export for apps to create their own
-export { ApiClient as createClient };
+// Singleton HTTP client instance
+export const http = new ApiClient(import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000');

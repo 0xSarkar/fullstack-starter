@@ -1,6 +1,5 @@
 import { useState, startTransition } from "react";
 import { useFormStatus } from "react-dom";
-import { useRouter } from "@tanstack/react-router";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../ui/dialog";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
@@ -8,8 +7,8 @@ import { Label } from "../ui/label";
 import { useNotesStore } from "@/stores/notes-store";
 import { LoaderCircle } from "lucide-react";
 import { toast } from "sonner";
-import { updateNoteApi } from "@fullstack-starter/shared-api";
-import { getFieldErrors } from '@fullstack-starter/shared-api';
+import { getFieldErrors } from '@/lib/api-errors';
+import { useRenameNoteMutation } from '@/data/mutations/notes-mutations';
 
 interface RenameNoteFormData {
   title: string;
@@ -25,10 +24,9 @@ function SubmitButton() {
 }
 
 export function RenameNoteDialog() {
-  const router = useRouter();
-
   const editDialog = useNotesStore(state => state.editDialog);
   const closeEditDialog = useNotesStore(state => state.closeEditDialog);
+  const renameNoteMutation = useRenameNoteMutation();
 
   const [errors, setErrors] = useState<Partial<RenameNoteFormData>>({});
 
@@ -55,9 +53,10 @@ export function RenameNoteDialog() {
           return;
         }
 
-        await updateNoteApi(editDialog.note.id, { title });
-        toast.success("Note renamed successfully!");
-        await router.invalidate({ sync: true });
+        await renameNoteMutation.mutateAsync({
+          noteId: editDialog.note.id,
+          title,
+        });
         closeEditDialog();
       } catch (err: unknown) {
         const fieldErrorsList = getFieldErrors(err);

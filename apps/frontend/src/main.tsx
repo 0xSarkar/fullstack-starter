@@ -1,19 +1,16 @@
 import { StrictMode } from 'react';
 import ReactDOM from 'react-dom/client';
 import { RouterProvider, createRouter } from '@tanstack/react-router';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 // Import the generated route tree
 import { routeTree } from './routeTree.gen';
 
 import './styles.css';
 import reportWebVitals from './reportWebVitals.ts';
-import { useAuthStore } from '@/stores/auth-store';
-import { configureDefaultClient } from '@fullstack-starter/shared-api';
 
-// Configure the shared API client
-if (import.meta.env.VITE_API_BASE_URL) {
-  configureDefaultClient(import.meta.env.VITE_API_BASE_URL);
-}
+// Create a client
+const queryClient = new QueryClient();
 
 // Create a new router instance
 const router = createRouter({
@@ -22,6 +19,9 @@ const router = createRouter({
   scrollRestoration: true,
   defaultStructuralSharing: true,
   defaultPreloadStaleTime: 0,
+  context: {
+    queryClient,
+  },
 });
 
 // Register the router instance for type safety
@@ -32,16 +32,17 @@ declare module '@tanstack/react-router' {
 }
 
 function InnerApp() {
-  return <RouterProvider router={router} />;
+  return (
+    <QueryClientProvider client={queryClient}>
+      <RouterProvider router={router} />
+    </QueryClientProvider>
+  );
 }
 
 // Render the app
 const rootElement = document.getElementById('app');
 if (rootElement && !rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement);
-
-  // Kick off bootstrap early (fire-and-forget)
-  void useAuthStore.getState().bootstrap();
 
   root.render(
     <StrictMode>

@@ -12,10 +12,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Link, useRouter, useSearch } from "@tanstack/react-router";
-import { resetPasswordApi } from "@fullstack-starter/shared-api";
 import { LoaderCircle } from "lucide-react";
 import { toast } from "sonner";
-import { getFieldErrors } from '@fullstack-starter/shared-api';
+import { getFieldErrors } from '@/lib/api-errors';
+import { useResetPasswordMutation } from '@/data/mutations/auth-mutations';
 
 interface ResetPasswordFormData {
   newPassword: string;
@@ -33,6 +33,7 @@ function SubmitButton() {
 
 export function ResetPasswordPage() {
   const router = useRouter();
+  const resetPasswordMutation = useResetPasswordMutation();
   const search = useSearch({ from: '/_authLayout/reset-password' }) as { token?: string; };
   const [errors, setErrors] = useState<Partial<ResetPasswordFormData>>({});
 
@@ -65,13 +66,11 @@ export function ResetPasswordPage() {
       setErrors({}); // Clear errors
 
       try {
-        await resetPasswordApi({
+        await resetPasswordMutation.mutateAsync({
           token: search.token,
           newPassword,
           confirmPassword
         });
-        // Success - show toast and redirect to login
-        toast.success("Password reset successfully! You can now log in with your new password.");
         await router.navigate({ to: "/login" });
       } catch (err: unknown) {
         // Handle field-specific validation errors from API
@@ -84,10 +83,6 @@ export function ResetPasswordPage() {
             }
           });
           setErrors(fieldErrors);
-        } else {
-          // General error - show toast
-          const message = err instanceof Error ? err.message : "Failed to reset password. Please try again.";
-          toast.error(message);
         }
       }
     });

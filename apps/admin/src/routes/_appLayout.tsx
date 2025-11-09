@@ -1,12 +1,12 @@
 import { AppLayout } from '@/layouts/app-layout/app-layout';
 import { createFileRoute, redirect, useRouter } from '@tanstack/react-router';
 import type { ErrorComponentProps } from '@tanstack/react-router';
-import { useAuthStore } from '@/stores/auth-store';
-import { HttpError } from '@fullstack-starter/shared-api';
+import { HttpError } from '@/lib/http';
 import { Button } from '@/components/ui/button';
 import { useEffect, useState } from 'react';
 import { LoaderCircle } from 'lucide-react';
 import { toast } from 'sonner';
+import { meQueryOptions } from '@/data/queries/auth-queries';
 
 function RouteErrorComponent({ error }: ErrorComponentProps) {
   const router = useRouter();
@@ -21,13 +21,9 @@ function RouteErrorComponent({ error }: ErrorComponentProps) {
 
   useEffect(() => {
     if (error instanceof HttpError && error.status === 401) {
-      const state = useAuthStore.getState();
-      if (state.status === 'authenticated') {
-        state.setFrom401();
-        const path = window.location.pathname + window.location.search;
-        toast.error('Session expired. Please log in again.');
-        router.navigate({ to: '/login', search: { redirect: path } }).catch(() => { });
-      }
+      const path = window.location.pathname + window.location.search;
+      toast.error('Session expired. Please log in again.');
+      router.navigate({ to: '/login', search: { redirect: path } }).catch(() => { });
     }
   }, [error, router]);
 
@@ -50,13 +46,16 @@ function RouteErrorComponent({ error }: ErrorComponentProps) {
 }
 
 export const Route = createFileRoute('/_appLayout')({
-  beforeLoad: async () => {
-    const auth = useAuthStore.getState();
-    // If we haven't bootstrapped yet, do it now
-    if (auth.status === 'idle' || auth.status === 'loading') {
-      await useAuthStore.getState().bootstrap();
-    }
-    if (useAuthStore.getState().status !== 'authenticated') {
+  beforeLoad: async ({ context: { queryClient } }) => {
+    // Fetch and ensure user is authenticated
+    try {
+      const meData = await queryClient.ensureQueryData(meQueryOptions);
+
+      if (!meData.data?.user) {
+        throw redirect({ to: '/login' });
+      }
+    } catch (error) {
+      console.error('Error fetching authenticated user:', error);
       throw redirect({ to: '/login' });
     }
   },

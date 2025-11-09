@@ -13,10 +13,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Link, useRouter, useSearch } from "@tanstack/react-router";
-import { useAuthStore } from '@/stores/auth-store';
 import { LoaderCircle } from "lucide-react";
 import { toast } from "sonner";
-import { getFieldErrors } from '@fullstack-starter/shared-api';
+import { getFieldErrors } from '@/lib/api-errors';
+import { useSignupMutation } from '@/data/mutations/auth-mutations';
 
 interface SignupFormData {
   email: string;
@@ -34,7 +34,7 @@ function SubmitButton() {
 
 export function SignupPage() {
   const router = useRouter();
-  const signup = useAuthStore(s => s.signup);
+  const signupMutation = useSignupMutation();
   const { redirect } = useSearch({ from: '/_authLayout/signup' });
   const [errors, setErrors] = useState<Partial<SignupFormData>>({});
 
@@ -61,7 +61,7 @@ export function SignupPage() {
       setErrors({}); // Clear errors
 
       try {
-        await signup(email, password);
+        await signupMutation.mutateAsync({ email, password });
         await router.navigate({ to: "/" });
       } catch (err: unknown) {
         // Handle field-specific validation errors from API

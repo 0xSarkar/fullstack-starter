@@ -1,15 +1,22 @@
 import { AuthLayout } from '@/layouts/auth-layout';
 import { createFileRoute, redirect } from '@tanstack/react-router';
-import { useAuthStore } from '@/stores/auth-store';
+import { meQueryOptions } from '@/data/queries/auth-queries';
 
 export const Route = createFileRoute('/_authLayout')({
-  beforeLoad: async () => {
-    const auth = useAuthStore.getState();
-    // If we haven't bootstrapped yet, do it now
-    if (auth.status === 'idle' || auth.status === 'loading') {
-      await useAuthStore.getState().bootstrap();
+  beforeLoad: async ({ context: { queryClient } }) => {
+    let shouldRedirectToHome = false;
+    // Check if user is already authenticated
+    try {
+      const meData = await queryClient.ensureQueryData(meQueryOptions);
+
+      if (meData.data?.user) {
+        shouldRedirectToHome = true;
+      }
+    } catch {
+      // If we get an error (like 401), user is not authenticated - continue
     }
-    if (useAuthStore.getState().status === 'authenticated') {
+
+    if (shouldRedirectToHome) {
       throw redirect({ to: '/' });
     }
   },

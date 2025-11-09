@@ -1,6 +1,7 @@
-import { getPlansApi } from '@fullstack-starter/shared-api';
+import type { GetPlansResponseType } from '@fullstack-starter/shared-schemas';
 import { createFileRoute } from '@tanstack/react-router';
 import { PlansPage } from '@/pages/plans-page';
+import { http } from '@/lib/http';
 
 
 export const Route = createFileRoute('/_appLayout/plans')({
@@ -11,7 +12,7 @@ export const Route = createFileRoute('/_appLayout/plans')({
     };
   },
   loader: async () => {
-    return getPlansApi();
+    return http.get<GetPlansResponseType>('/billing/plans');
   },
   component: PlansPage,
 });
