@@ -31,13 +31,13 @@ import {
 } from "@/components/ui/sidebar";
 import { useRouter } from "@tanstack/react-router";
 
-import { useAuthStore } from '@/stores/auth-store';
+import { useAuth } from '@/data/queries/auth-queries';
 import { useLogoutMutation } from '@/data/mutations/auth-mutations';
 
 export function NavUser() {
   const router = useRouter();
   const logoutMutation = useLogoutMutation();
-  const authUser = useAuthStore(s => s.user);
+  const { user: authUser } = useAuth();
 
   const { isMobile } = useSidebar();
   const { theme: selectedTheme, setTheme } = useTheme();
@@ -48,15 +48,11 @@ export function NavUser() {
   // const hasActiveSubscription = authUser?.subscription?.status === 'active' || authUser?.subscription?.status === 'trialing';
 
   const handleLogout = async () => {
-    // Navigate first, before the mutation completes
-    // This prevents the router from trying to refetch on the current protected route
-    const navigatePromise = router.navigate({ to: "/login" });
 
-    // Then logout (which clears cache)
     await logoutMutation.mutateAsync();
 
     // Wait for navigation to complete
-    await navigatePromise;
+    await router.navigate({ to: "/login" });
   };
 
   // Use actual user data from store, with fallbacks

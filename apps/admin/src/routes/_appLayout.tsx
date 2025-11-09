@@ -1,7 +1,6 @@
 import { AppLayout } from '@/layouts/app-layout/app-layout';
 import { createFileRoute, redirect, useRouter } from '@tanstack/react-router';
 import type { ErrorComponentProps } from '@tanstack/react-router';
-import { useAuthStore } from '@/stores/auth-store';
 import { HttpError } from '@fullstack-starter/shared-api';
 import { Button } from '@/components/ui/button';
 import { useEffect, useState } from 'react';
@@ -22,13 +21,9 @@ function RouteErrorComponent({ error }: ErrorComponentProps) {
 
   useEffect(() => {
     if (error instanceof HttpError && error.status === 401) {
-      const state = useAuthStore.getState();
-      if (state.status === 'authenticated') {
-        state.setFrom401();
-        const path = window.location.pathname + window.location.search;
-        toast.error('Session expired. Please log in again.');
-        router.navigate({ to: '/login', search: { redirect: path } }).catch(() => { });
-      }
+      const path = window.location.pathname + window.location.search;
+      toast.error('Session expired. Please log in again.');
+      router.navigate({ to: '/login', search: { redirect: path } }).catch(() => { });
     }
   }, [error, router]);
 
@@ -52,25 +47,15 @@ function RouteErrorComponent({ error }: ErrorComponentProps) {
 
 export const Route = createFileRoute('/_appLayout')({
   beforeLoad: async ({ context: { queryClient } }) => {
-    const auth = useAuthStore.getState();
-
-    // Set loading status
-    if (auth.status === 'idle') {
-      auth.setLoading();
-    }
-
+    // Fetch and ensure user is authenticated
     try {
-      // Fetch user data using TanStack Query
       const meData = await queryClient.ensureQueryData(meQueryOptions);
 
-      if (meData.data?.user) {
-        auth.setUser(meData.data.user);
-      } else {
-        auth.clearUser();
+      if (!meData.data?.user) {
         throw redirect({ to: '/login' });
       }
-    } catch {
-      auth.clearUser();
+    } catch (error) {
+      console.error('Error fetching authenticated user:', error);
       throw redirect({ to: '/login' });
     }
   },
