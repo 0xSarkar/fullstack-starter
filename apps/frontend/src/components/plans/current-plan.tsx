@@ -1,9 +1,9 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import type { AuthUser } from '@/stores/auth-store';
+import type { UserDataWithSubscription } from '@fullstack-starter/shared-schemas';
 
 interface CurrentPlanProps {
-  user: AuthUser;
+  user: UserDataWithSubscription;
   loading: boolean;
   confirming: boolean;
   onManageSubscription: () => void;

@@ -6,7 +6,7 @@ import { sleep } from '@/lib/utils';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { PricingTable } from '@/components/plans/pricing-table';
 import { toast } from 'sonner';
-import { useAuthStore } from '@/stores/auth-store';
+import { useAuth } from '@/data/queries/auth-queries';
 import { CurrentPlan } from '@/components/plans/current-plan';
 import type { PlanType } from '@fullstack-starter/shared-schemas';
 
@@ -41,7 +41,7 @@ export function PlansPage() {
   const isMountedRef = useRef(true);
   const startedSessionRef = useRef<string | undefined>(undefined);
   const { checkout, session_id } = route.useSearch();
-  const { user } = useAuthStore();
+  const { user } = useAuth();
 
   // Determine the most popular plan (highest price for current interval)
   const mostPopularPlanId = useMemo(() => {
