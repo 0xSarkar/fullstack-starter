@@ -35,9 +35,6 @@ importers:
 
   apps/admin:
     dependencies:
-      '@fullstack-starter/shared-api':
-        specifier: workspace:*
-        version: link:../../packages/shared-api
       '@fullstack-starter/shared-schemas':
         specifier: workspace:*
         version: link:../../packages/shared-schemas
@@ -295,9 +292,6 @@ importers:
 
   apps/frontend:
     dependencies:
-      '@fullstack-starter/shared-api':
-        specifier: workspace:*
-        version: link:../../packages/shared-api
       '@fullstack-starter/shared-schemas':
         specifier: workspace:*
         version: link:../../packages/shared-schemas

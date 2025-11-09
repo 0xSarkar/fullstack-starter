@@ -15,7 +15,7 @@ import { Label } from "@/components/ui/label";
 import { useRouter, useSearch } from "@tanstack/react-router";
 import { LoaderCircle } from "lucide-react";
 import { toast } from "sonner";
-import { getFieldErrors } from '@fullstack-starter/shared-api';
+import { getFieldErrors } from '@/lib/api-errors';
 import { useLoginMutation } from '@/data/mutations/auth-mutations';
 
 interface LoginFormData {

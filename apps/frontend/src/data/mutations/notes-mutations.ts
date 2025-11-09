@@ -1,23 +1,22 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
-import {
-  createNoteApi,
-  updateNoteApi,
-  deleteNoteApi,
-} from '@fullstack-starter/shared-api';
 import type {
   CreateNoteRequest,
+  CreateNoteResponse,
   UpdateNoteRequest,
+  UpdateNoteResponse,
+  DeleteNoteResponse,
 } from '@fullstack-starter/shared-schemas';
 import { toast } from 'sonner';
 import { notesQueryOptions, noteQueryOptions } from '@/data/queries/notes-queries';
+import { http } from '@/lib/http';
 
 export function useCreateNoteMutation() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: CreateNoteRequest) => createNoteApi(data),
+    mutationFn: (data: CreateNoteRequest) => http.post<CreateNoteResponse>('/notes', data),
     onSuccess: async (response) => {
       // Set the newly created note in the query cache
       queryClient.setQueryData(noteQueryOptions(response.data.id).queryKey, {
@@ -48,7 +47,7 @@ export function useUpdateNoteMutation() {
 
   return useMutation({
     mutationFn: ({ noteId, data }: { noteId: string; data: UpdateNoteRequest; }) =>
-      updateNoteApi(noteId, data),
+      http.patch<UpdateNoteResponse>(`/notes/${noteId}`, data),
     onSuccess: async (_response, variables) => {
       // Invalidate the specific note query
       await queryClient.invalidateQueries({
@@ -72,7 +71,7 @@ export function useRenameNoteMutation() {
 
   return useMutation({
     mutationFn: ({ noteId, title }: { noteId: string; title: string; }) =>
-      updateNoteApi(noteId, { title }),
+      http.patch<UpdateNoteResponse>(`/notes/${noteId}`, { title }),
     onSuccess: async (_response, variables) => {
       // Invalidate the specific note query
       await queryClient.invalidateQueries({
@@ -95,7 +94,7 @@ export function useDeleteNoteMutation() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (noteId: string) => deleteNoteApi(noteId),
+    mutationFn: (noteId: string) => http.delete<DeleteNoteResponse>(`/notes/${noteId}`),
     onSuccess: async (_response, noteId) => {
       // Remove the deleted note from the cache to prevent 404 refetches
       queryClient.removeQueries({ queryKey: noteQueryOptions(noteId).queryKey });

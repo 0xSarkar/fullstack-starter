@@ -1,5 +1,10 @@
 import { getRouteApi } from '@tanstack/react-router';
-import { confirmCheckoutSessionApi, createCheckoutSessionApi, createBillingPortalApi, HttpError } from '@fullstack-starter/shared-api';
+import type {
+  CreateCheckoutSessionResponseType,
+  CreateBillingPortalResponseType,
+  ConfirmCheckoutSessionResponseType,
+  PlanType,
+} from '@fullstack-starter/shared-schemas';
 import { Separator } from '@/components/ui/separator';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { sleep } from '@/lib/utils';
@@ -8,7 +13,7 @@ import { PricingTable } from '@/components/plans/pricing-table';
 import { toast } from 'sonner';
 import { useAuth } from '@/data/queries/auth-queries';
 import { CurrentPlan } from '@/components/plans/current-plan';
-import type { PlanType } from '@fullstack-starter/shared-schemas';
+import { http, HttpError } from '@/lib/http';
 
 // Constants
 const POLLING_CONFIG = {
@@ -127,7 +132,7 @@ export function PlansPage() {
 
     while (attempt < POLLING_CONFIG.maxAttempts && isMountedRef.current) {
       try {
-        const data = await confirmCheckoutSessionApi(sessionId);
+        const data = await http.get<ConfirmCheckoutSessionResponseType>('/billing/checkout', { session_id: sessionId });
         const shouldStop = handleConfirmationResult(data.data.status, lastStatus);
         if (shouldStop) break;
       } catch (err) {
@@ -156,7 +161,7 @@ export function PlansPage() {
   const handleUpgrade = async (plan: PlanType) => {
     setLoading(true);
     try {
-      const res = await createCheckoutSessionApi(plan.stripe_price_id);
+      const res = await http.post<CreateCheckoutSessionResponseType>('/billing/checkout', { priceId: plan.stripe_price_id });
       if (res.data?.url) {
         window.location.assign(res.data.url);
       } else {
@@ -173,7 +178,7 @@ export function PlansPage() {
   const handleManageSubscription = async () => {
     setLoading(true);
     try {
-      const res = await createBillingPortalApi();
+      const res = await http.post<CreateBillingPortalResponseType>('/billing/billing-portal', {});
       if (res.data?.url) {
         window.location.assign(res.data.url);
       } else {

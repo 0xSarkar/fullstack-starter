@@ -1,13 +1,13 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { loginApi, logoutApi } from '@fullstack-starter/shared-api';
-import type { LoginRequest } from '@fullstack-starter/shared-schemas';
+import type { LoginRequest, LoginResponse } from '@fullstack-starter/shared-schemas';
 import { meQueryOptions } from '@/data/queries/auth-queries';
+import { http } from '@/lib/http';
 
 export function useLoginMutation() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: LoginRequest) => loginApi(data),
+    mutationFn: (data: LoginRequest) => http.post<LoginResponse>('/auth/login', data),
     onSuccess: (response) => {
       // Update the me query cache
       queryClient.setQueryData(meQueryOptions.queryKey, response);
@@ -23,7 +23,7 @@ export function useLogoutMutation() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: () => logoutApi(),
+    mutationFn: () => http.post('/auth/logout', {}),
     onSuccess: () => {
       // Cancel any outgoing queries to prevent refetches
       queryClient.cancelQueries();

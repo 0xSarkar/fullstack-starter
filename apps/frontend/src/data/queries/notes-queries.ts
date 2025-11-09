@@ -1,13 +1,14 @@
 import { queryOptions } from '@tanstack/react-query';
-import { listNotesApi, getNoteApi } from '@fullstack-starter/shared-api';
+import type { ListNotesResponse, GetNoteResponse } from '@fullstack-starter/shared-schemas';
+import { http } from '@/lib/http';
 
 export const notesQueryOptions = queryOptions({
   queryKey: ['notes'],
-  queryFn: () => listNotesApi(),
+  queryFn: () => http.get<ListNotesResponse>('/notes'),
 });
 
 export const noteQueryOptions = (noteId: string) =>
   queryOptions({
     queryKey: ['notes', noteId],
-    queryFn: () => getNoteApi(noteId),
+    queryFn: () => http.get<GetNoteResponse>(`/notes/${noteId}`),
   });

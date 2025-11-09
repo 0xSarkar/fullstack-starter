@@ -1,28 +1,24 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import {
-  loginApi,
-  signupApi,
-  logoutApi,
-  googleLoginApi,
-  forgotPasswordApi,
-  resetPasswordApi,
-} from '@fullstack-starter/shared-api';
 import type {
   LoginRequest,
+  LoginResponse,
   SignupRequest,
+  SignupResponse,
   GoogleLoginRequest,
+  GoogleLoginResponse,
   ForgotPasswordRequest,
   ResetPasswordRequest,
 } from '@fullstack-starter/shared-schemas';
 import { toast } from 'sonner';
 import { meQueryOptions } from '@/data/queries/auth-queries';
 import { useNotesStore } from '@/stores/notes-store';
+import { http } from '@/lib/http';
 
 export function useLoginMutation() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: LoginRequest) => loginApi(data),
+    mutationFn: (data: LoginRequest) => http.post<LoginResponse>('/auth/login', data),
     onSuccess: (response) => {
       // Update the me query cache
       queryClient.setQueryData(meQueryOptions.queryKey, response);
@@ -38,7 +34,7 @@ export function useSignupMutation() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: SignupRequest) => signupApi(data),
+    mutationFn: (data: SignupRequest) => http.post<SignupResponse>('/auth/signup', data),
     onSuccess: (response) => {
       // Update the me query cache
       queryClient.setQueryData(meQueryOptions.queryKey, response);
@@ -54,7 +50,7 @@ export function useGoogleLoginMutation() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: GoogleLoginRequest) => googleLoginApi(data),
+    mutationFn: (data: GoogleLoginRequest) => http.post<GoogleLoginResponse>('/auth/google', data),
     onSuccess: (response) => {
       // Update the me query cache
       queryClient.setQueryData(meQueryOptions.queryKey, response);
@@ -71,7 +67,7 @@ export function useLogoutMutation() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: () => logoutApi(),
+    mutationFn: () => http.post('/auth/logout', {}),
     onSuccess: () => {
       // Clear notes store state
       useNotesStore.getState().reset();
@@ -95,7 +91,7 @@ export function useLogoutMutation() {
 
 export function useForgotPasswordMutation() {
   return useMutation({
-    mutationFn: (data: ForgotPasswordRequest) => forgotPasswordApi(data),
+    mutationFn: (data: ForgotPasswordRequest) => http.post('/auth/forgot-password', data),
     onSuccess: () => {
       toast.success('Password reset link sent! Check your email.');
     },
@@ -108,7 +104,7 @@ export function useForgotPasswordMutation() {
 
 export function useResetPasswordMutation() {
   return useMutation({
-    mutationFn: (data: ResetPasswordRequest) => resetPasswordApi(data),
+    mutationFn: (data: ResetPasswordRequest) => http.post('/auth/reset-password', data),
     onSuccess: () => {
       toast.success('Password reset successfully! You can now log in with your new password.');
     },

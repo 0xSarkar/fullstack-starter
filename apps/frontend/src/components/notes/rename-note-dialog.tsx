@@ -7,7 +7,7 @@ import { Label } from "../ui/label";
 import { useNotesStore } from "@/stores/notes-store";
 import { LoaderCircle } from "lucide-react";
 import { toast } from "sonner";
-import { getFieldErrors } from '@fullstack-starter/shared-api';
+import { getFieldErrors } from '@/lib/api-errors';
 import { useRenameNoteMutation } from '@/data/mutations/notes-mutations';
 
 interface RenameNoteFormData {

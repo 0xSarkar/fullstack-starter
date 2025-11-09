@@ -13,7 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Link, useRouter } from "@tanstack/react-router";
 import { LoaderCircle } from "lucide-react";
-import { getFieldErrors } from '@fullstack-starter/shared-api';
+import { getFieldErrors } from '@/lib/api-errors';
 import { useForgotPasswordMutation } from '@/data/mutations/auth-mutations';
 
 interface ForgotPasswordFormData {

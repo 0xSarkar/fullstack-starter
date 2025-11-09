@@ -8,12 +8,6 @@ import { routeTree } from './routeTree.gen';
 
 import './styles.css';
 import reportWebVitals from './reportWebVitals.ts';
-import { configureDefaultClient } from '@fullstack-starter/shared-api';
-
-// Configure the shared API client
-if (import.meta.env.VITE_API_BASE_URL) {
-  configureDefaultClient(import.meta.env.VITE_API_BASE_URL);
-}
 
 // Create a client
 const queryClient = new QueryClient();

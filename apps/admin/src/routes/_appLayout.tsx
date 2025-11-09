@@ -1,7 +1,7 @@
 import { AppLayout } from '@/layouts/app-layout/app-layout';
 import { createFileRoute, redirect, useRouter } from '@tanstack/react-router';
 import type { ErrorComponentProps } from '@tanstack/react-router';
-import { HttpError } from '@fullstack-starter/shared-api';
+import { HttpError } from '@/lib/http';
 import { Button } from '@/components/ui/button';
 import { useEffect, useState } from 'react';
 import { LoaderCircle } from 'lucide-react';
