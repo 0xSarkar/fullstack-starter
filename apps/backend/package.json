@@ -56,7 +56,6 @@
     "@types/pg": "^8.15.5",
     "c8": "^10.1.2",
     "concurrently": "^9.0.0",
-    "dbmate": "^2.28.0",
     "dotenv": "^17.2.1",
     "esbuild": "^0.25.9",
     "fastify-tsconfig": "^3.0.0",

@@ -10,7 +10,5 @@
   ],
   "exclude": [
     "dist",
-    "scripts",
-    "db/seeds"
   ]
 }
