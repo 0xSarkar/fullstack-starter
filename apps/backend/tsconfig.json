@@ -1,15 +1,9 @@
 {
-  "extends": "fastify-tsconfig",
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "extends": "../../tsconfig/node.json",
   "compilerOptions": {
-    "strict": true,
     "outDir": "dist",
-    "rootDir": "src",
-    "sourceMap": true,
-    "moduleResolution": "NodeNext",
-    "module": "NodeNext",
-    "target": "ES2022",
-    "esModuleInterop": true,
-    "noUncheckedIndexedAccess": true
+    "rootDir": "src"
   },
   "include": [
     "src/**/*.ts"

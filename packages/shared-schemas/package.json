@@ -23,9 +23,6 @@
   "dependencies": {
     "@sinclair/typebox": "^0.34.41"
   },
-  "devDependencies": {
-    "typescript": "~5.8.2"
-  },
   "sideEffects": false,
   "files": [
     "dist",
