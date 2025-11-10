@@ -10,7 +10,7 @@ Don't start a new SaaS project from scratch. Use this starter. You get:
 - **Auth**: Built-in auth (email/password + Google), user roles, and secure password reset
 - **Stripe Integration**: Stripe subscriptions with checkout, billing portal, pricing table, and webhook handling
 - **Seeding**: Database seeding scripts for development
-- **Migrations**: Database migrations with dbmate and Kysely codegen for DB types
+ - **Migrations**: Database migrations and seeds with Kysely-ctl and Kysely codegen for DB types
 - **Monorepo**: All of this packed in a batteries-included monorepo with pnpm workspaces
 
 Build, iterate, and ship SaaS apps faster. Develop with confidence and avoid boilerplate.
@@ -18,7 +18,7 @@ Build, iterate, and ship SaaS apps faster. Develop with confidence and avoid boi
 ## Tech stack
 
 - Backend: Fastify 5, TypeBox, Stripe
-- Database: PostgreSQL, dbmate, Kysely
+- Database: PostgreSQL, Kysely (migrations & seeds via Kysely-ctl)
 - Frontend (SPA): React 19, TanStack Router, Tanstack Query Tailwind v4, Shadcn UI, Vite
 - Shared: TypeScript everywhere, monorepo via pnpm workspaces
 
@@ -59,7 +59,7 @@ pnpm migrate:up
 pnpm seed:run
 ```
 
-This uses dbmate and also generates Kysely DB types (`apps/backend/src/types/database.ts`).
+This uses Kysely-ctl for migrations and seeds and also generates Kysely DB types (`apps/backend/src/types/database.ts`).
 
 4) Start dev server
 
@@ -90,7 +90,7 @@ From the repo root (`package.json`):
 - `pnpm check` — run lint followed by workspace type checks
 - Migrations (backend):
 	- `pnpm migrate:new <name>`
-	- `pnpm migrate:up` | `pnpm migrate:down` | `pnpm migrate:status`
+	- `pnpm migrate:up` | `pnpm migrate:down`
 - Seeding (backend):
   - `pnpm seed:run` — build, then reset and seed dev data
 

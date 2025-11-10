@@ -20,17 +20,13 @@
 - Run lint + typecheck together: `pnpm run check`
 - Lint a specific package/app: `pnpm --filter <package-name> run lint`
 
-### Seeding & Database Utilities
-- Run full seed (build then seed): `pnpm seed:run`
-- Reset and reseed dev data: `pnpm seed:dev`
-- (Backend only alt) `cd apps/backend && pnpm seed:reset-and-seed`
-
-### Migrations
+### Migrations and Seeds (via Kysely-ctl)
 - Create a new, empty migration file: `pnpm migrate:new <migration-name>`
 - Apply migrations: `pnpm migrate:up`
 - Rollback last migration: `pnpm migrate:down`
-- Check migration status: `pnpm migrate:status`
-  - NOTE: `migrate:up` / `migrate:down` automatically regenerate TypeScript DB types via `kysely-codegen`.
+- NOTE: `migrate:up` / `migrate:down` automatically regenerate TypeScript DB types via `kysely-codegen`.
+- Create a new, empty seed file: `pnpm seed:new <seed-name>`
+- Run seeds: `pnpm seed:run`
 
 ## High-Level Architecture
 
@@ -38,7 +34,8 @@
 - **Full-stack TypeScript**: End-to-end type safety with shared schemas
 - **Plugin-based Backend**: Fastify with modular plugin architecture
 - **Component-driven Frontend**: React with routing and state management
-- **Database-first Design**: PostgreSQL with schema migrations (with dbmate) and type generation (with kysely codegen)
+- **Database-first Design**: PostgreSQL with schema migrations (with kysely-ctl) and type generation (with kysely codegen)
+ - **Database-first Design**: PostgreSQL with schema migrations and type generation (migrations & seeds managed by Kysely-ctl)
 
 ### Core Directories
 
@@ -83,7 +80,7 @@
  - **Password Reset Flow**: Token-based (forgot / reset) endpoints + update password endpoint
 
 #### Database Architecture
-- **Migration-driven**: DBMate for version-controlled schema changes
+- **Migration-driven**: Kysely-ctl for version-controlled migrations and seeds
 - **Type Generation**: Kysely for type-safe database queries
 - **Connection Pooling**: PostgreSQL pool with Fastify decorator
 - **Audit Trail**: Created/updated timestamps with triggers
@@ -109,7 +106,7 @@
 - **Database**: PostgreSQL with Kysely query builder
 - **Authentication**: JWT tokens, bcrypt hashing, Google OAuth
 - **Validation**: TypeBox schemas with Fastify integration
-- **Infrastructure**: DBMate migrations, Nodemailer, Stripe SDK
+- **Infrastructure**: Kysely-ctl migrations & seeds, Nodemailer, Stripe SDK
  - **Autoload Plugins**: Fastify autoload for plugins & routes
 
 #### Frontend
@@ -126,5 +123,5 @@
 - **Package Manager**: PNPM with workspace support
 - **Type Checking**: TypeScript 5.8+ with strict mode
 - **Code Quality**: ESLint, Prettier (implied from project structure)
-- **Database Tools**: Kysely codegen, DBMate migrations
+- **Database Tools**: Kysely codegen, Kysely-ctl migrations & seeds
 - **API Documentation**: Fastify Swagger with auto-generated specs
