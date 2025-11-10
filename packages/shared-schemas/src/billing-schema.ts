@@ -26,25 +26,6 @@ export const CreateBillingPortalResponse = Type.Object({
 
 export type CreateBillingPortalResponseType = Static<typeof CreateBillingPortalResponse>;
 
-export const ConfirmCheckoutSessionQuery = Type.Object({
-  session_id: Type.String(),
-});
-
-export const ConfirmCheckoutSessionResponse = Type.Object({
-  success: Type.Literal(true),
-  data: Type.Object({
-    status: Type.Union([
-      Type.Literal('complete'),
-      Type.Literal('pending'),
-      Type.Literal('failed'),
-    ]),
-  }),
-  message: Type.Optional(Type.String())
-});
-
-export type ConfirmCheckoutSessionQueryType = Static<typeof ConfirmCheckoutSessionQuery>;
-export type ConfirmCheckoutSessionResponseType = Static<typeof ConfirmCheckoutSessionResponse>;
-
 export const PlanSchema = Type.Object({
   id: Type.String(),
   stripe_product_id: Type.String(),
