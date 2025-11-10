@@ -9,10 +9,10 @@ export default defineConfig({
     }),
   }),
   migrations: {
-    migrationFolder: "src/db/migrations",
+    migrationFolder: "db/migrations",
   },
   seeds: {
-    seedFolder: "src/db/seeds",
+    seedFolder: "db/seeds",
   }
   //   plugins: [],
 });

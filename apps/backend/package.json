@@ -5,7 +5,7 @@
   "main": "dist/server.js",
   "scripts": {
     "start": "node dist/server.js",
-    "build": "pnpm run clean && tsc",
+    "build": "pnpm run clean && tsc -p tsconfig.build.json",
     "dev": "tsx watch src/server.ts",
     "typecheck": "tsc --noEmit",
     "lint": "pnpm exec eslint .",
