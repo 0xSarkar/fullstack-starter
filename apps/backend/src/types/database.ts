@@ -46,10 +46,6 @@ export interface PasswordResetTokens {
   user_id: string;
 }
 
-export interface SchemaMigrations {
-  version: string;
-}
-
 export interface StripePrices {
   active: Generated<boolean>;
   amount: number | null;
@@ -112,7 +108,6 @@ export interface Users {
 export interface DB {
   notes: Notes;
   password_reset_tokens: PasswordResetTokens;
-  schema_migrations: SchemaMigrations;
   stripe_prices: StripePrices;
   stripe_subscriptions: StripeSubscriptions;
   stripe_webhook_events: StripeWebhookEvents;
