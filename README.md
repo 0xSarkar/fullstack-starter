@@ -4,7 +4,7 @@
 Don't start a new SaaS project from scratch. Use this starter. You get:
 
 - **Backend**: A fully typed backend with Fastify, PostgreSQL, Kysely, and TypeBox
-- **Frontend**: A modern React frontend with Vite, TanStack Router, Shadcn UI, and Zustand
+- **Frontend**: A modern React frontend with Vite, TanStack Router, Shadcn UI, and Tanstack Query
 - **Admin UI**: An Admin UI for user management (roles, activate/deactivate)
 - **Typesafety**: Typesafety between frontend and backend with shared schemas
 - **Auth**: Built-in auth (email/password + Google), user roles, and secure password reset
@@ -19,7 +19,7 @@ Build, iterate, and ship SaaS apps faster. Develop with confidence and avoid boi
 
 - Backend: Fastify 5, TypeBox, Stripe
 - Database: PostgreSQL, dbmate, Kysely
-- Frontend (SPA): React 19, TanStack Router, Tailwind v4, Shadcn UI, Zustand, Vite
+- Frontend (SPA): React 19, TanStack Router, Tanstack Query Tailwind v4, Shadcn UI, Vite
 - Shared: TypeScript everywhere, monorepo via pnpm workspaces
 
 ## Monorepo layout
@@ -31,7 +31,6 @@ apps/
 	admin/          # Admin UI (Users management)
 packages/
 	shared-schemas/ # Shared TypeBox schemas & TS types
-	shared-api/     # Typed API functions for frontend
 ```
 
 ## Getting started
